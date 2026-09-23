@@ -1,0 +1,26 @@
+[
+  {
+    "offerId": "seed-offer-001",
+    "merchant": "example-store",
+    "merchantDisplayName": "Example Store",
+    "affiliateUrl": "https://example.com/aff/seed-offer-001",
+    "region": "global",
+    "category": "deals",
+    "status": "active",
+    "lastChecked": "2026-09-23T08:00:00.000Z",
+    "lastStatus": "active",
+    "clickCount": 0
+  },
+  {
+    "offerId": "seed-offer-002",
+    "merchant": "demo-marketplace",
+    "merchantDisplayName": "Demo Marketplace",
+    "affiliateUrl": "https://example.org/aff/seed-offer-002",
+    "region": "global",
+    "category": "tech",
+    "status": "active",
+    "lastChecked": "2026-09-23T08:00:00.000Z",
+    "lastStatus": "active",
+    "clickCount": 0
+  }
+]

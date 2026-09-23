@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      # ads.txt validation
+      - name: Validate ads.txt
+        run: |
+          if [ ! -f public/ads.txt ]; then
+            echo "ERROR: public/ads.txt missing"
+            exit 1
+          fi
+          echo "ads.txt present"
+      # Basic smoke test
+      - name: Verify build output
+        run: |
+          if [ -d ".next" ]; then
+            echo "Build output exists"
+          else
+            echo "ERROR: .next directory missing"
+            exit 1
+          fi

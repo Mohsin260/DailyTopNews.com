@@ -1,0 +1,23 @@
+[
+  {
+    "articleId": "$firstArticle",
+    "event": "received",
+    "timestamp": "2026-09-23T08:01:00.000Z",
+    "publisherId": "system",
+    "details": { "source": "articles.json import", "seed": true }
+  },
+  {
+    "articleId": "$firstArticle",
+    "event": "validated",
+    "timestamp": "2026-09-23T08:01:10.000Z",
+    "publisherId": "system",
+    "details": { "schema": "Article", "seed": true }
+  },
+  {
+    "articleId": "$firstArticle",
+    "event": "published",
+    "timestamp": "2026-09-23T08:01:20.000Z",
+    "publisherId": "seed-script",
+    "details": { "status": "published", "seed": true }
+  }
+]

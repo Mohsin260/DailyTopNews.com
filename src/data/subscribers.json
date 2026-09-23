@@ -1,0 +1,22 @@
+[
+  {
+    "email": "reader@example.com",
+    "isActive": true,
+    "emailVerified": true,
+    "verificationToken": "6f1c2a9e4b7d8f0a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7c9e1b3d5f70",
+    "unsubscribeToken": "0a2b4c6d8e1f3a5b7c9d0e2f4a6b8c1d3e5f7a9b1c3d5e7f9a0b2c4d6e8f1a3b",
+    "locale": "en",
+    "alertPreferences": { "priceDrops": false, "verdictChanges": false },
+    "consentRecord": { "consented": true, "timestamp": "2026-09-23T08:00:00.000Z", "source": "newsletter" }
+  },
+  {
+    "email": "subscriber@example.com",
+    "isActive": true,
+    "emailVerified": true,
+    "verificationToken": "1b3d5f7a9c0e2d4f6a8b1c3e5d7f9a0b2c4e6d8f1a3b5c7e9d0f2a4b6c8e1d3f",
+    "unsubscribeToken": "9c1e3a5b7d9f0c2e4a6b8d1f3c5e7a9b1d3f5c7e9a0b2d4f6c8e1a3b5d7f9c0e",
+    "locale": "en",
+    "alertPreferences": { "priceDrops": true, "verdictChanges": false },
+    "consentRecord": { "consented": true, "timestamp": "2026-09-23T08:05:00.000Z", "source": "newsletter" }
+  }
+]

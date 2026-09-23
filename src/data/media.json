@@ -1,0 +1,40 @@
+[
+  {
+    "filename": "default-hero.jpg",
+    "mimeType": "image/jpeg",
+    "size": 184320,
+    "url": "https://picsum.photos/seed/dtn-media-hero/1200/630",
+    "provider": "supabase",
+    "variants": {
+      "original": "https://picsum.photos/seed/dtn-media-hero/1200/630",
+      "thumbnail": "https://picsum.photos/seed/dtn-media-hero/200/200",
+      "medium": "https://picsum.photos/seed/dtn-media-hero/600/315"
+    },
+    "alt": "Default hero image",
+    "metadata": {},
+    "tags": ["hero", "seed"],
+    "folder": "seed",
+    "cdnKey": "",
+    "publicUrl": "https://picsum.photos/seed/dtn-media-hero/1200/630",
+    "uploadedBy": "$admin"
+  },
+  {
+    "filename": "default-avatar.png",
+    "mimeType": "image/png",
+    "size": 42118,
+    "url": "https://picsum.photos/seed/dtn-avatar/200/200",
+    "provider": "supabase",
+    "variants": {
+      "original": "https://picsum.photos/seed/dtn-avatar/200/200",
+      "thumbnail": "https://picsum.photos/seed/dtn-avatar/50/50",
+      "medium": "https://picsum.photos/seed/dtn-avatar/100/100"
+    },
+    "alt": "Default avatar",
+    "metadata": {},
+    "tags": ["avatar", "seed"],
+    "folder": "seed",
+    "cdnKey": "",
+    "publicUrl": "https://picsum.photos/seed/dtn-avatar/200/200",
+    "uploadedBy": "$admin"
+  }
+]

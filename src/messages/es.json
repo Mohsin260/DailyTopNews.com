@@ -1,0 +1,143 @@
+{
+  "adActions": {
+    "whyThisAd": "Why this ad?",
+    "stopSeeing": "Stop seeing this ad",
+    "reportAd": "Report ad",
+    "aboutThisAd": "About this ad",
+    "aboutDescription": "Ads help keep this site free. Your feedback helps us improve the ads you see.",
+    "aboutFeedback": "You can give feedback on any ad you see.",
+    "whatWasWrong": "What was wrong with this ad?",
+    "notRelevant": "Not relevant",
+    "coveredContent": "Covered content",
+    "seenMultiple": "Seen multiple times",
+    "inappropriate": "Inappropriate",
+    "otherReason": "Other reason",
+    "moreDetails": "More details",
+    "describeIssue": "Describe the issue…",
+    "submit": "Submit",
+    "submitting": "Submitting…",
+    "thanksFeedback": "Thanks for your feedback",
+    "wontShowAgain": "You won't see this ad again",
+    "adOptions": "Ad options"
+  },
+  "article": {
+    "share": "Share",
+    "saveIt": "Save",
+    "saved": "Saved",
+    "savedToBookmarks": "Saved to bookmarks",
+    "removedFromBookmarks": "Removed from bookmarks",
+    "linkCopied": "Link copied",
+    "seniorEditor": "Senior Editor",
+    "reviewedBy": "Reviewed by",
+    "leaveComment": "Leave a comment",
+    "noComments": "No comments yet",
+    "review": "review",
+    "reviews": "reviews",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "yourRating": "Your rating",
+    "rating": "Rating",
+    "comment": "Comment",
+    "commentPlaceholder": "Write a comment…",
+    "submit": "Submit",
+    "reply": "Reply",
+    "cancel": "Cancel",
+    "error": "Something went wrong",
+    "fillAllFields": "Please fill in all fields",
+    "justNow": "Just now",
+    "minutesAgo": "{n}m ago",
+    "hoursAgo": "{n}h ago",
+    "daysAgo": "{n}d ago"
+  },
+  "audio": {
+    "audioReader": "Audio Reader",
+    "listenToArticle": "Listen to article",
+    "stopReading": "Stop reading",
+    "female": "Female",
+    "male": "Male",
+    "generatedUsingSystemVoice": "Generated using system voice"
+  },
+  "common": {
+    "topStories": "Top Stories",
+    "mostViewed": "Most Viewed",
+    "popularNews": "Popular News"
+  },
+  "comparison": {
+    "aiDisclosure": "AI disclosure: This content was reviewed by {reviewer}.",
+    "disclosure": "Disclosure",
+    "disclosureText": "We may earn a commission if you buy through our links.",
+    "learnHowWeTest": "Learn how we test",
+    "lastVerifiedLabel": "Last verified {date}",
+    "daysAgoShort": "{n} days ago",
+    "dueForRefresh": "Due for refresh",
+    "listen": "Listen",
+    "readAloud": "Read aloud",
+    "pauseReadAloud": "Pause read aloud",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "stopPlaying": "Stop playing",
+    "speed": "Speed: {label}",
+    "voice": "Voice: {name}",
+    "female": "Female",
+    "male": "Male",
+    "nativeVoices": "Native voices",
+    "systemVoices": "System voices",
+    "noLangVoices": "No voices available for {lang}",
+    "noVoicesAvailable": "No voices available",
+    "voicePackageMissing": "Voice package missing for {lang}"
+  },
+  "consent": {
+    "title": "We value your privacy",
+    "description": "We use cookies to improve your experience, analyze traffic, and personalize content. You can accept all or decline non-essential cookies.",
+    "decline": "Decline",
+    "acceptAll": "Accept all"
+  },
+  "home": {
+    "trendingNow": "Trending Now"
+  },
+  "newsletter": {
+    "title": "Newsletter",
+    "stayInTheLoop": "Stay in the loop",
+    "stayConnected": "Stay Connected",
+    "newsletterDescription": "Get the latest stories delivered to your inbox. No spam, unsubscribe anytime.",
+    "emailPlaceholder": "Your email address",
+    "subscribeNow": "Subscribe Now",
+    "subscribing": "Subscribing…",
+    "youSubscribed": "You're subscribed!",
+    "failedToSubscribe": "Failed to subscribe. Please try again.",
+    "unexpectedError": "Unexpected error. Please try again.",
+    "summarizeIt": "Summarize it",
+    "summaryTitle": "Summary",
+    "summaryDescription": "A quick overview of this article.",
+    "generatingSummary": "Generating summary…",
+    "summaryFailedTryAgain": "Could not generate summary. Try again.",
+    "readAloud": "Read aloud"
+  },
+  "social": {
+    "joinFollowers": "Join our followers"
+  },
+  "styleSelector": {
+    "selectLayout": "Select layout",
+    "lightDarkVersion": "Light / Dark version",
+    "colorScheme": "Color scheme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "widgets": {
+    "tags": "Tags",
+    "poll": {
+      "title": "Poll",
+      "question": "Do you like this article?",
+      "optionYes": "Yes",
+      "optionNo": "No",
+      "submit": "Vote"
+    },
+    "weather": {
+      "location": "New York",
+      "partlySunny": "Partly sunny",
+      "realFeel": "Real feel",
+      "chanceOfRain": "20% chance of rain"
+    }
+  }
+}

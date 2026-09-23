@@ -1,0 +1,5 @@
+[
+  { "email": "reader@example.com", "status": "active" },
+  { "email": "subscriber@example.com", "status": "active" },
+  { "email": "opted-out@example.com", "status": "unsubscribed" }
+]

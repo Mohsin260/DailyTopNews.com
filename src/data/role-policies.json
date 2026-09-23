@@ -1,0 +1,18 @@
+[
+  {
+    "roleName": "super_admin",
+    "permissions": ["articles.create", "articles.publish", "adsmanager.manage", "settings.manage", "templates.manage", "users.manage", "users.invite", "media.view", "media.upload"]
+  },
+  {
+    "roleName": "admin",
+    "permissions": ["articles.create", "articles.publish", "adsmanager.manage", "settings.manage", "templates.manage", "users.manage", "users.invite", "media.view", "media.upload"]
+  },
+  {
+    "roleName": "editor",
+    "permissions": ["articles.create", "articles.publish", "media.view", "media.upload"]
+  },
+  {
+    "roleName": "author",
+    "permissions": ["articles.create", "media.view", "media.upload"]
+  }
+]

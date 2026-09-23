@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Business",
+    "slug": "business",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Business News",
+      "description": "Latest business and financial news"
+    },
+    "color": "#e74c3c"
+  },
+  {
+    "name": "Entertainment",
+    "slug": "entertainment",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Entertainment News",
+      "description": "Latest entertainment and celebrity news"
+    },
+    "color": "#9b59b6"
+  },
+  {
+    "name": "Technology",
+    "slug": "technology",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Technology News",
+      "description": "Latest technology and science news"
+    },
+    "color": "#3498db"
+  },
+  {
+    "name": "Sports",
+    "slug": "sports",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Sports News",
+      "description": "Latest sports news and updates"
+    },
+    "color": "#27ae60"
+  },
+  {
+    "name": "Trending",
+    "slug": "trending",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Trending News",
+      "description": "Trending stories and viral content"
+    },
+    "color": "#f39c12"
+  },
+  {
+    "name": "Features",
+    "slug": "features",
+    "locale": "en",
+    "parent": null,
+    "meta": {
+      "title": "Features",
+      "description": "In-depth features and analysis"
+    },
+    "color": "#1abc9c"
+  }
+]

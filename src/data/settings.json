@@ -1,0 +1,31 @@
+[
+  {
+    "key": "site",
+    "locale": "en",
+    "value": {
+      "siteTitle": "Dailytopnews",
+      "defaultSeo": {
+        "metaTitle": "Dailytopnews – News, Trends & Analysis",
+        "metaDescription": "Dailytopnews brings you breaking news, trending stories, in-depth analysis and features from around the world."
+      },
+      "analyticsKey": "",
+      "adsEnabled": true,
+      "socialLinks": [
+        { "name": "Facebook", "network": "facebook", "url": "https://facebook.com/Dailytopnews", "count": "125K", "label": "Fans" },
+        { "name": "Twitter", "network": "twitter", "url": "https://twitter.com/Dailytopnews", "count": "89K", "label": "Followers" },
+        { "name": "YouTube", "network": "youtube", "url": "https://youtube.com/@Dailytopnews", "count": "1.2M", "label": "Subscribers" },
+        { "name": "Instagram", "network": "instagram", "url": "https://instagram.com/Dailytopnews", "count": "550K", "label": "Followers" }
+      ]
+    }
+  },
+  {
+    "key": "homepage.featuredComparisons",
+    "locale": "en",
+    "value": []
+  },
+  {
+    "key": "homepage.featuredComparisonsMaxCount",
+    "locale": "en",
+    "value": 6
+  }
+]

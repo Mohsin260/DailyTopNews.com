@@ -1,0 +1,42 @@
+[
+  {
+    "action": "settings.update",
+    "actorUserId": "$admin",
+    "resourceType": "Setting",
+    "resourceId": null,
+    "meta": { "note": "Initial settings seeded", "seed": true },
+    "createdAt": "2026-09-23T08:00:00.000Z"
+  },
+  {
+    "action": "post.create",
+    "actorUserId": "$admin",
+    "resourceType": "Article",
+    "resourceId": "$firstArticle",
+    "meta": { "note": "First article imported from articles.json", "seed": true },
+    "createdAt": "2026-09-23T08:01:00.000Z"
+  },
+  {
+    "action": "category.create",
+    "actorUserId": "$admin",
+    "resourceType": "Category",
+    "resourceId": null,
+    "meta": { "note": "Categories imported from categories.json", "seed": true },
+    "createdAt": "2026-09-23T08:02:00.000Z"
+  },
+  {
+    "action": "ad.create",
+    "actorUserId": "$admin",
+    "resourceType": "AdSnippet",
+    "resourceId": null,
+    "meta": { "note": "Default ad snippets seeded", "seed": true },
+    "createdAt": "2026-09-23T08:03:00.000Z"
+  },
+  {
+    "action": "media.upload",
+    "actorUserId": "$admin",
+    "resourceType": "Media",
+    "resourceId": null,
+    "meta": { "note": "Seed media records created", "seed": true },
+    "createdAt": "2026-09-23T08:04:00.000Z"
+  }
+]

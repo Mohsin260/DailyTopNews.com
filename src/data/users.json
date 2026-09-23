@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Administrator",
+    "email": "admin@Dailytopnews.com",
+    "passwordHash": "$2a$12$G0eDGmHtzSf0NgO7tZsSgOvmcpHTfGxT8ctSTwWmVyUaVGvMBZnfe",
+    "roles": ["super_admin"],
+    "isActive": true,
+    "avatarUrl": null
+  }
+]

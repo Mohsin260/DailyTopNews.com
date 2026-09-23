@@ -1,0 +1,14 @@
+[
+  {
+    "date": "2026-09-23T00:00:00.000Z",
+    "totalUploads": 4,
+    "failedUploads": 0,
+    "storageByProvider": { "cloudinary": 0, "cdn": 0 },
+    "uploadTimeByType": {
+      "image": { "totalTimeMs": 1250, "count": 4 },
+      "video": { "totalTimeMs": 0, "count": 0 },
+      "audio": { "totalTimeMs": 0, "count": 0 },
+      "other": { "totalTimeMs": 0, "count": 0 }
+    }
+  }
+]

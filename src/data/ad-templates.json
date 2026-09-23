@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Classic Leaderboard Banner",
+    "description": "Standard 728x90 image banner with click-through URL",
+    "category": "banner",
+    "code": "<a href=\"{{clickUrl}}\"><img src=\"{{imageUrl}}\" alt=\"{{altText}}\" width=\"728\" height=\"90\" style=\"border:0;\"></a>",
+    "variables": [
+      { "name": "imageUrl", "type": "url", "required": true, "defaultValue": "" },
+      { "name": "clickUrl", "type": "url", "required": true, "defaultValue": "https://example.com" },
+      { "name": "altText", "type": "text", "required": false, "defaultValue": "Advertisement" }
+    ],
+    "preview": "",
+    "isActive": true,
+    "validationStatus": "valid",
+    "createdBy": "$admin"
+  },
+  {
+    "name": "Responsive Rectangle Banner",
+    "description": "300x250 rectangle that scales down on mobile",
+    "category": "banner",
+    "code": "<a href=\"{{clickUrl}}\"><img src=\"{{imageUrl}}\" alt=\"{{altText}}\" style=\"width:100%;max-width:300px;height:auto;border:0;\"></a>",
+    "variables": [
+      { "name": "imageUrl", "type": "url", "required": true, "defaultValue": "" },
+      { "name": "clickUrl", "type": "url", "required": true, "defaultValue": "https://example.com" },
+      { "name": "altText", "type": "text", "required": false, "defaultValue": "Advertisement" }
+    ],
+    "preview": "",
+    "isActive": true,
+    "validationStatus": "valid",
+    "createdBy": "$admin"
+  }
+]

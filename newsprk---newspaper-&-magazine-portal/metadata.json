@@ -1,0 +1,6 @@
+{
+  "name": "NewsPrk - Newspaper & Magazine Portal",
+  "description": "1:1 pixel-perfect React + TypeScript clone of NewsPrk newspaper and magazine website.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,6 @@
+/* NewsPrk theme CSS - loaded via <link> tags in layout.tsx */
+
+/* Ensure Swiper and other interactive elements are visible */
+.swiper { width: 100%; }
+.swiper-wrapper { display: flex; }
+.swiper-slide { flex-shrink: 0; }

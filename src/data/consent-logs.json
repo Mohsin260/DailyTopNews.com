@@ -1,0 +1,24 @@
+[
+  {
+    "sessionId": "seed-session-001",
+    "timestamp": "2026-09-23T08:00:00.000Z",
+    "consentState": "accepted",
+    "ad_storage": "granted",
+    "analytics_storage": "granted",
+    "ad_user_data": "granted",
+    "ad_personalization": "granted",
+    "geo": "US",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SeedBot/1.0"
+  },
+  {
+    "sessionId": "seed-session-002",
+    "timestamp": "2026-09-23T08:10:00.000Z",
+    "consentState": "declined",
+    "ad_storage": "denied",
+    "analytics_storage": "denied",
+    "ad_user_data": "denied",
+    "ad_personalization": "denied",
+    "geo": "GB",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) SeedBot/1.0"
+  }
+]
