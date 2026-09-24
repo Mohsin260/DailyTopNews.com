@@ -61,7 +61,7 @@ const extraNews = [
 ];
 
 const mobileIcon =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAZCAYAAAABmx/yAAAABHNCSVQICAgIfAhkiAAAAJNJREFUOE/tlMsRgkAQBftFoCGYgYZACBqBZAJEgEakZqIZmMGjxpIquc3KjWLP2zWf3deyXQM9sCV3nsBJtt9AK+mS4Wy3QBWgJSkDxR3bFXD7gMA9C3';
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAZCAYAAAABmx/yAAAABHNCSVQICAgIfAhkiAAAAJNJREFUOE/tlMsRgkAQBftFoCGYgYZACBqBZAJEgEakZqIZmMGjxpIquc3KjWLP2zWf3deyXQM9sCV3nsBJtt9AK+mS4Wy3QBWgJSkDxR3bFXD7gMA9C35HOoxgVwDugPO8Vv+ecQWnDzX5AOtylrGcUEdhHusxyI8CMKS2nxXksFwj6Zqp+mu58GqocZMBgRdwHACNXreaci5tNAAAAABJRU5ErkJggg==';
 
 export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   const [email, setEmail] = useState('');
