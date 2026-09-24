@@ -137,7 +137,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                   </Swiper>
                 </div>
 
-                <div className="slider_demo1" style={{ marginBottom: '30px' }}>
+                <div className="slider_demo1">
                   <div className=" slider_arrow arrow_left slick-arrow gs-swiper-prev">
                     <Icon name="angle-left" />
                   </div>

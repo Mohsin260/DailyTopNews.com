@@ -6,11 +6,30 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Icon } from '@/components/Layout/common/Icon';
+import articlesData from '@/data/articles.json';
 
 interface TopBarProps {
   className?: string;
   dark?: boolean;
 }
+
+const MONTHS: Record<string, number> = {
+  January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+  July: 6, August: 7, September: 8, October: 9, November: 10, December: 11,
+};
+
+function parseArticleDate(dateStr: string): number {
+  const match = dateStr.match(/^(\w+)\s+(\d+),\s+(\d{4})$/);
+  if (!match) return 0;
+  const month = MONTHS[match[1]];
+  if (month === undefined) return 0;
+  return new Date(Number(match[3]), month, Number(match[2])).getTime();
+}
+
+const recentArticles = [...articlesData]
+  .filter((a) => a.status === 'published')
+  .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date))
+  .slice(0, 10);
 
 export const TopBar: React.FC<TopBarProps> = ({ className = '', dark = false }) => {
   return (
@@ -35,27 +54,15 @@ export const TopBar: React.FC<TopBarProps> = ({ className = '', dark = false }) 
                     disableOnInteraction: false,
                   }}
                 >
-                  <SwiperSlide>
-                    <div className="trancarousel_item">
-                      <p>
-                        <Link href="/">Top 10 Best Movies of 2018 So Far: Great Movies To Watch Now</Link>
-                      </p>
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="trancarousel_item">
-                      <p>
-                        <Link href="/">Top 10 Best Movies of 2018 So Far: Great Movies To Watch Now</Link>
-                      </p>
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="trancarousel_item">
-                      <p>
-                        <Link href="/">Top 10 Best Movies of 2018 So Far: Great Movies To Watch Now</Link>
-                      </p>
-                    </div>
-                  </SwiperSlide>
+                  {recentArticles.map((article) => (
+                    <SwiperSlide key={article.slug}>
+                      <div className="trancarousel_item">
+                        <p>
+                          <Link href={`/post/${article.slug}`}>{article.title}</Link>
+                        </p>
+                      </div>
+                    </SwiperSlide>
+                  ))}
                 </Swiper>
                 <div className="navBtns">
                   <button className="navBtn prevBtn swiper-button-prev14" aria-label="Previous">

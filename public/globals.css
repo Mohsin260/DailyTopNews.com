@@ -5,6 +5,24 @@
 .swiper-wrapper { display: flex; }
 .swiper-slide { flex-shrink: 0; }
 
+/* Gallery section: match reference hero/thumb proportions */
+.post_gallary_area .slider_demo2 .post_img {
+  aspect-ratio: 730 / 500;
+}
+.post_gallary_area .slider_demo2 .post_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.post_gallary_area .slider_demo1 .single_gallary_item {
+  height: 61px;
+}
+.post_gallary_area .slider_demo1 .single_gallary_item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* AdSlot layout (website routes do not load Tailwind — keep ad UI self-contained) */
 :root {
   --flex-gray-7: #f1f5f9;
