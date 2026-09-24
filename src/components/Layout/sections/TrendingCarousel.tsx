@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { Icon } from '../common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface TrendingCarouselProps {
@@ -59,6 +60,9 @@ export const TrendingCarousel: React.FC<TrendingCarouselProps> = ({ className = 
                       </div>
                     </SwiperSlide>
                   ))}
+                  <SwiperSlide>
+                    <InFeedNativeAd pageType="homepage" position="in-feed-1" cardStyle="post-type5" />
+                  </SwiperSlide>
                 </Swiper>
                 <div className="owl-nav">
                   <div className="owl-prev swiper-button-prev11">

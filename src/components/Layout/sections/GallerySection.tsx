@@ -11,6 +11,7 @@ import type { Swiper as SwiperType } from 'swiper';
 import { Icon } from '../common/Icon';
 import { VideoModal } from '../common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface GallerySectionProps {
@@ -130,6 +131,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                         </div>
                       </SwiperSlide>
                     ))}
+                    <SwiperSlide>
+                      <InFeedNativeAd pageType="homepage" position="in-feed-14" cardStyle="post-type6" />
+                    </SwiperSlide>
                   </Swiper>
                 </div>
 
@@ -205,6 +209,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                             <div className="space-15" />
                           </div>
                         ))}
+                        <InFeedNativeAd pageType="homepage" position="in-feed-2" cardStyle="widgets-small-sep" />
                       </div>
                     </div>
                   </div>
@@ -214,7 +219,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
           </div>
         </div>
       </div>
-      <VideoModal isOpen={videoModalOpen} videoId="0r6C3z3TEKw" onClose={() => setVideoModalOpen(false)} />
+      <VideoModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
     </div>
   );
 };

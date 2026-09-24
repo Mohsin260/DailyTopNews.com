@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface MostSharedProps {
@@ -94,6 +95,11 @@ export const MostShared: React.FC<MostSharedProps> = ({
               </div>
             </SwiperSlide>
           ))}
+          <SwiperSlide>
+            <div className="carousel_items">
+              <InFeedNativeAd pageType="homepage" position="in-feed-10" cardStyle="widgets-type4" dark={dark} />
+            </div>
+          </SwiperSlide>
         </Swiper>
         <div className="navBtns">
           <div className="navBtn prevtBtn swiper-button-prev7">

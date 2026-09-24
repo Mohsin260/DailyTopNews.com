@@ -1,5 +1,19 @@
 /* NewsPrk theme CSS - loaded via <link> tags in layout.tsx */
 
+/* Logo: theme caps .logo at 250px — enlarge so icon+text fill the header/footer */
+.logo {
+  max-width: 340px;
+}
+.logo img,
+.footer_logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.footer_logo.logo {
+  max-width: 340px;
+}
+
 /* Ensure Swiper and other interactive elements are visible */
 .swiper { width: 100%; }
 .swiper-wrapper { display: flex; }
@@ -313,4 +327,114 @@
 [data-sticky-footer-ad]:hover .sticky-ad-close,
 [data-sticky-footer-ad] .sticky-ad-close:focus {
   opacity: 1;
+}
+
+/* ── Native in-feed ads ─────────────────────────────────────────── */
+.native-ad-card {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+}
+.native-ad-card::after {
+  content: attr(data-sponsor);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 9px;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.62);
+  border-radius: 3px;
+  pointer-events: none;
+}
+.native-ad-card[data-card-style="post-type6"]::after,
+.native-ad-card[data-card-style="post-type7"]::after,
+.native-ad-card[data-card-style="post-type9"]::after {
+  background: rgba(255, 255, 255, 0.88);
+  color: #111;
+}
+.native-ad-card .single_post {
+  height: 100%;
+}
+.native-ad-card .single_post_text {
+  width: 100%;
+}
+.native-ad-card .post_img {
+  overflow: hidden;
+}
+.native-ad-card .post_img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.native-ad-card .post_img .img_wrap {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.native-ad-card .post_img .img_wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.native-ad-card .meta a,
+.native-ad-card .meta2 a,
+.native-ad-card .meta3 a,
+.native-ad-card .meta4 a,
+.native-ad-card .meta5 a {
+  text-transform: capitalize;
+}
+.native-sponsored-tag {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 500;
+}
+.native-ad-card.post-type5 .post_img,
+.native-ad-card[data-card-style="post-type5"] .post_img {
+  min-height: 70px;
+}
+/* Ensure aspect-ratio cards fill correctly for ads */
+.native-ad-card[data-card-style="post-type3"] .post_img {
+  aspect-ratio: 350 / 250;
+}
+.native-ad-card[data-card-style="post-type6"] .post_img {
+  aspect-ratio: 730 / 500;
+}
+.native-ad-card[data-card-style="post-type9"] .post_img {
+  aspect-ratio: 540 / 420;
+}
+.native-ad-card[data-card-style="post-type7"] .single_post.post_type7 {
+  min-height: 320px;
+}
+.native-ad-card[data-card-style="post-type12"] .post_img {
+  aspect-ratio: 350 / 250;
+}
+.native-ad-card[data-card-style="widgets-small"] .post_img,
+.native-ad-card[data-card-style="widgets-small-sep"] .post_img {
+  width: 100px;
+  height: 77px;
+  min-height: 77px;
+}
+.native-ad-card[data-card-style="type8"] .post_img {
+  width: 80px;
+  height: 64px;
+  min-height: 64px;
+}
+.native-ad-card[data-card-style="type10"] .post_img {
+  width: 100px;
+  height: 56px;
+  min-height: 56px;
 }

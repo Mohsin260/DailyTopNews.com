@@ -1,4 +1,7 @@
 import { Schema, model, models, type InferSchemaType } from "mongoose";
+import { NativeCardStyles, LEGACY_CARD_STYLE_MAP } from "@/lib/ads/nativeCardStyles";
+
+const CARD_STYLE_ENUM = [...NativeCardStyles, ...Object.keys(LEGACY_CARD_STYLE_MAP)] as const;
 
 /** Which page type the snippet targets — controls where the ad is eligible to render */
 export const PageTypes = ["homepage", "article", "category", "website"] as const;
@@ -29,10 +32,14 @@ export const AdPositions = [
   "atf-rectangle",
   "in-content-1",
   "in-content-2",
+  "article-native-1",
+  "article-native-2",
+  "article-related",
   "sidebar-sticky",
   "sidebar-rectangle",
   "sidebar-infeed",
   "bottom-leaderboard",
+  "above-footer",
   "video-section"
 ] as const;
 export type AdPosition = (typeof AdPositions)[number];
@@ -150,8 +157,9 @@ const adSnippetSchema = new Schema(
       categoryColor: { type: String, default: "" },
       readTime: { type: String, default: "" },
       author: { type: String, default: "" },
+      date: { type: String, default: "" },
       layout: { type: String, enum: ["column", "row"], default: "column" },
-      cardStyle: { type: String, enum: ["news-grid", "sidebar-list", "sidebar-featured", "latest-articles", "hero-side", "review-list", "carousel", "most-viewed"], default: "news-grid" },
+      cardStyle: { type: String, enum: [...CARD_STYLE_ENUM], default: "post-type3" },
     },
 
     // ── Tracking pixels for native/third-party ads ──

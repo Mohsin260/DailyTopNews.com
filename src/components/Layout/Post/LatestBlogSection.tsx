@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { Fragment } from 'react';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface LatestBlogSectionProps {
@@ -25,28 +27,35 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
         </div>
         <div className="row justify-content-center">
           {posts.map((item, idx) => (
-            <div className="col-md-6 col-lg-4" key={idx}>
-              <div className="single_post post_type3 mb30 post_type15 border-radious5">
-                <div className="post_img border-radious5">
-                  <div className="img_wrap">
-                    <img src={item.image} alt="thumb" />
+            <Fragment key={idx}>
+              <div className="col-md-6 col-lg-4">
+                <div className="single_post post_type3 mb30 post_type15 border-radious5">
+                  <div className="post_img border-radious5">
+                    <div className="img_wrap">
+                      <img src={item.image} alt="thumb" />
+                    </div>
+                    <span className="tranding border_tranding">
+                      <Icon name="bolt" />
+                    </span>
                   </div>
-                  <span className="tranding border_tranding">
-                    <Icon name="bolt" />
-                  </span>
-                </div>
-                <div className="single_post_text padding20 white_bg">
-                  <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
-                  <div className="space-10" />
-                  <p className="post-p">{item.excerpt}</p>
-                  <div className="space-20" />
-                  <div className="meta3">
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                  <div className="single_post_text padding20 white_bg">
+                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                    <div className="space-10" />
+                    <p className="post-p">{item.excerpt}</p>
+                    <div className="space-20" />
+                    <div className="meta3">
+                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
+                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              {idx === 1 && (
+                <div className="col-md-6 col-lg-4">
+                  <InFeedNativeAd pageType="article" position="article-related" cardStyle="post-type15" />
+                </div>
+              )}
+            </Fragment>
           ))}
         </div>
       </div>

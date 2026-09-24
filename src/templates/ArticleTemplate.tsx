@@ -10,8 +10,9 @@ import TabWidget from '@/components/Layout/Sidebar/TabWidget';
 import TrendingNewsWidget from '@/components/Layout/Sidebar/TrendingNewsWidget';
 import LatestBlogSection from '@/components/Layout/Post/LatestBlogSection';
 import CommentsSection from '@/components/Layout/Post/CommentsSection';
-import BottomBannerArea from '@/components/Layout/common/BottomBannerArea';
 import AdSlot from '@/components/ui/AdSlot';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import ArticleMediaBlock from '@/components/Layout/Post/ArticleMediaBlock';
 import { getArticleSlug } from '@/utils/articleUtils';
 import type { Article } from '@/types';
 
@@ -88,7 +89,13 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               beforeSpaceClass="space-40"
               afterSpaceClass="space-40"
             />
-            <img src={article.image} alt={article.title} style={{ width: '100%' }} />
+            <ArticleMediaBlock
+              media={article.articleMedia?.heroCoverMedia}
+              position="hero-cover"
+              alt={article.title}
+              fallbackImage={article.image}
+              alwaysFallback
+            />
             <div className="space-20" />
 
             <div className="row">
@@ -135,7 +142,18 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
             </div>
 
             <div className="space-20" />
+            <ArticleMediaBlock
+              media={article.articleMedia?.postBodyMedia}
+              position="post-body"
+              alt={article.title}
+            />
             <div dangerouslySetInnerHTML={{ __html: article.bodyContent || '' }} />
+
+            <InFeedNativeAd
+              pageType="article"
+              position="article-native-1"
+              cardStyle="post-type3"
+            />
 
             <AdSlot
               pageType="article"
@@ -148,13 +166,26 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               beforeSpaceClass="space-40"
             />
 
-            {article.keyTakeawaysContent && (
+            {(article.keyTakeawaysContent || article.articleMedia?.keyTakeawaysMedia?.url) && (
               <>
                 <div className="space-40" />
                 <h3>Key Takeaways</h3>
-                <div dangerouslySetInnerHTML={{ __html: article.keyTakeawaysContent }} />
+                <ArticleMediaBlock
+                  media={article.articleMedia?.keyTakeawaysMedia}
+                  position="key-takeaways"
+                  alt={article.title}
+                />
+                {article.keyTakeawaysContent && (
+                  <div dangerouslySetInnerHTML={{ __html: article.keyTakeawaysContent }} />
+                )}
               </>
             )}
+
+            <InFeedNativeAd
+              pageType="article"
+              position="article-native-2"
+              cardStyle="post-type3"
+            />
 
             <AdSlot
               pageType="article"
@@ -167,11 +198,18 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               beforeSpaceClass="space-40"
             />
 
-            {article.finalThoughtsContent && (
+            {(article.finalThoughtsContent || article.articleMedia?.finalThoughtsMedia?.url) && (
               <>
                 <div className="space-40" />
                 <h3>Final Thoughts</h3>
-                <div dangerouslySetInnerHTML={{ __html: article.finalThoughtsContent }} />
+                <ArticleMediaBlock
+                  media={article.articleMedia?.finalThoughtsMedia}
+                  position="final-thoughts"
+                  alt={article.title}
+                />
+                {article.finalThoughtsContent && (
+                  <div dangerouslySetInnerHTML={{ __html: article.finalThoughtsContent }} />
+                )}
               </>
             )}
 
@@ -241,10 +279,20 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
             </div>
           </div>
 
-          <div className="col-md-6 col-lg-4">
+            <div className="col-md-6 col-lg-4">
             <TabWidget posts={sidebarPosts} />
+            <InFeedNativeAd
+              pageType="article"
+              position="sidebar-infeed"
+              cardStyle="widgets-small-sep"
+            />
             <FollowUs title="Follow Us" />
             <TrendingNewsWidget posts={sidebarPosts} />
+            <InFeedNativeAd
+              pageType="article"
+              position="in-feed-x"
+              cardStyle="post-type3"
+            />
             <AdSlot
               pageType="article"
               position="sidebar-sticky"
@@ -290,7 +338,25 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
       <div className="space-60" />
       <CommentsSection dark={true} />
       <div className="space-60" />
-      <BottomBannerArea className="parimay_bg padding5050" />
+      <div className="parimay_bg padding5050">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 m-auto">
+              <div className="banner1">
+                <AdSlot
+                  pageType="article"
+                  position="above-footer"
+                  articleSlug={article.slug || getArticleSlug(article.title)}
+                  width="728px"
+                  height="90px"
+                  responsive
+                  fullWidth
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="space-30" />
     </div>
   );

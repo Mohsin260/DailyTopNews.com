@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import { Heading } from '@/components/Layout/common/Heading';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface TrendingNewsProps {
@@ -63,6 +64,9 @@ export const TrendingNews: React.FC<TrendingNewsProps> = ({ dark = false, carous
               </div>
             </SwiperSlide>
           ))}
+          <SwiperSlide>
+            <InFeedNativeAd pageType="homepage" position="in-feed-15" cardStyle="post-type3" dark={dark} />
+          </SwiperSlide>
         </Swiper>
         <div className="navBtns">
           <div className="navBtn prevtBtn swiper-button-prev17">
@@ -105,6 +109,7 @@ export const TrendingNews: React.FC<TrendingNewsProps> = ({ dark = false, carous
               <div className="space-15" />
             </div>
           ))}
+          <InFeedNativeAd pageType="homepage" position="in-feed-4" cardStyle="widgets-small" dark={dark} />
         </div>
 
         <div className="col-lg-6">

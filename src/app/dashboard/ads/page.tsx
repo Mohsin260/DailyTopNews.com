@@ -106,11 +106,29 @@ const PAGE_CONFIG: {
       { id: "header-leaderboard", name: `Header Leaderboard Ad (${POSITION_SIZE_CONFIG["header-leaderboard"]?.label || "728×90"})`, description: "Above trending ticker in header, highest visibility" },
       { id: "top-leaderboard", name: `Top Leaderboard Ad (ATF — ${POSITION_SIZE_CONFIG["top-leaderboard"]?.label || "728×90"})`, description: "Below the header, above the hero section" },
       { id: "mid-leaderboard", name: `Mid Leaderboard Ad (${POSITION_SIZE_CONFIG["mid-leaderboard"]?.label || "728×90"})`, description: "Between sports and business sections (banner area)" },
+      { id: "in-content-1", name: `In-Content Banner (${POSITION_SIZE_CONFIG["in-content-1"]?.label || "728×90"})`, description: "Banner after Trending News list column" },
       { id: "bottom-leaderboard", name: `Bottom Leaderboard Ad (${POSITION_SIZE_CONFIG["bottom-leaderboard"]?.label || "728×90"})`, description: "Above the footer, end of page" },
       { id: "sticky-footer", name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`, description: "Persistent at bottom of page" },
       { id: "sidebar-sticky", name: `Sidebar Sticky (${POSITION_SIZE_CONFIG["sidebar-sticky"]?.label || "300×600"})`, description: "Right sidebar, follows scroll" },
       { id: "sidebar-rectangle", name: `Sidebar Rectangle (${POSITION_SIZE_CONFIG["sidebar-rectangle"]?.label || "300×250"})`, description: "Right sidebar, between widgets" },
       { id: "video-section", name: `Video Section Ad (${POSITION_SIZE_CONFIG["video-section"]?.label || "728×90"})`, description: "Banner above the video section" },
+      { id: "in-feed-1", name: "Native In-Feed 1 — Trending Carousel", description: "Native card styled like post_type5 trending slides" },
+      { id: "in-feed-2", name: "Native In-Feed 2 — Gallery Related List", description: "Native card styled like related thumb list" },
+      { id: "in-feed-3", name: "Native In-Feed 3 — Feature News Overlay", description: "Native card styled like post_type7 feature overlay" },
+      { id: "in-feed-4", name: "Native In-Feed 4 — Trending News List", description: "Native card styled like widgets_small list" },
+      { id: "in-feed-5", name: "Native In-Feed 5 — Most Viewed", description: "Native card styled like type8 counter list" },
+      { id: "in-feed-6", name: "Native In-Feed 6 — Mix Area Overlay", description: "Native card styled like post_type9 overlay" },
+      { id: "in-feed-7", name: "Native In-Feed 7 — Entertainment Grid", description: "Native card styled like post_type3 feature card" },
+      { id: "in-feed-8", name: "Native In-Feed 8 — Sports List", description: "Native card styled like sports sidebar list" },
+      { id: "in-feed-9", name: "Native In-Feed 9 — Business Row", description: "Native card styled like post_type12 business split" },
+      { id: "in-feed-10", name: "Native In-Feed 10 — Most Share", description: "Native card styled like widgets_type4 share list" },
+      { id: "in-feed-11", name: "Native In-Feed 11 — Popular Numbered", description: "Native card styled like type10 numbered list" },
+      { id: "in-feed-12", name: "Native In-Feed 12 — Video Featured", description: "Native card styled like post_type11 video featured (below hero)" },
+      { id: "in-feed-13", name: "Native In-Feed 13 — Sports Feature", description: "Native card styled like sports post_type3 featured card" },
+      { id: "in-feed-14", name: "Native In-Feed 14 — Gallery Hero Overlay", description: "Native card styled like post_type6 gallery hero slide" },
+      { id: "in-feed-15", name: "Native In-Feed 15 — Trending Carousel", description: "Native card styled like post_type3 trending carousel slide" },
+      { id: "in-feed-x", name: "Native In-Feed X — Repeating", description: "Repeating in-feed native between major sections" },
+      { id: "sidebar-infeed", name: "Native Sidebar In-Feed", description: "Sidebar type8 native ad below Most Viewed" },
     ],
   },
   {
@@ -123,6 +141,15 @@ const PAGE_CONFIG: {
       { id: "sticky-footer", name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`, description: "Persistent at bottom" },
       { id: "sidebar-sticky", name: `Sidebar Sticky (${POSITION_SIZE_CONFIG["sidebar-sticky"]?.label || "300×600"})`, description: "Desktop only, follows scroll" },
       { id: "sidebar-rectangle", name: `Sidebar Rectangle (${POSITION_SIZE_CONFIG["sidebar-rectangle"]?.label || "300×250"})`, description: "Sidebar rectangle below sticky ad" },
+      { id: "bottom-leaderboard", name: `Bottom Leaderboard Ad (${POSITION_SIZE_CONFIG["bottom-leaderboard"]?.label || "728×90"})`, description: "End of article content, before Related section" },
+      { id: "above-footer", name: `Above Footer Leaderboard (${POSITION_SIZE_CONFIG["above-footer"]?.label || "728×90"})`, description: "Below Our Latest News / Comments, above footer (banner area)" },
+      { id: "in-content-1", name: "In-Content Banner 1", description: "Banner slot after article body" },
+      { id: "in-content-2", name: "In-Content Banner 2", description: "Banner slot after key takeaways" },
+      { id: "article-native-1", name: "Native In-Content 1", description: "Native post_type3 card after body content" },
+      { id: "article-native-2", name: "Native In-Content 2", description: "Native post_type3 card mid-article" },
+      { id: "article-related", name: "Native Related / Latest Blog", description: "Native post_type15 card in Our Latest Blog" },
+      { id: "sidebar-infeed", name: "Native Sidebar In-Feed", description: "Native widgets_small_sep card after Related tabs" },
+      { id: "in-feed-x", name: "Native Sidebar Trending", description: "Native post_type3 card after Trending News widget" },
     ],
   },
   {
@@ -477,9 +504,10 @@ export default function AdsPage() {
     setPreviewOpen(true);
   };
 
-  const handleSave = () => {
-    if (!editingPosition) return;
-    saveMutation.mutate(editingPosition);
+  const handleSave = (position?: EditingPosition) => {
+    const toSave = position || editingPosition;
+    if (!toSave) return;
+    saveMutation.mutate(toSave);
   };
 
   const handleSaveFromPreview = async () => {

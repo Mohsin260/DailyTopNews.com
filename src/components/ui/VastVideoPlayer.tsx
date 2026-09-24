@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
 interface VastVideoPlayerProps {
-  vastUrl: string;
+  vastUrl?: string;
   contentUrl?: string;
   poster?: string;
   width?: number;
@@ -134,6 +134,7 @@ function VastVideoPlayerInner({
   const adVideoRef = useRef<HTMLVideoElement>(null);
   const contentVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef<Set<string>>(new Set());
+  const cameFromAdRef = useRef(false);
 
   // ── Fetch + parse VAST ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -141,6 +142,12 @@ function VastVideoPlayerInner({
     setPhase("loading");
     setVast(null);
     trackedRef.current = new Set();
+
+    if (!vastUrl) {
+      cameFromAdRef.current = false;
+      setPhase(contentUrl ? "content" : "error");
+      return;
+    }
 
     const proxyUrl = `/api/vast-proxy?url=${encodeURIComponent(vastUrl)}`;
     fetch(proxyUrl, { cache: "no-store" })
@@ -152,11 +159,15 @@ function VastVideoPlayerInner({
           setVast(data);
           setPhase("ad");
         } else {
+          cameFromAdRef.current = false;
           setPhase(contentUrl ? "content" : "error");
         }
       })
       .catch(() => {
-        if (!cancelled) setPhase(contentUrl ? "content" : "error");
+        if (!cancelled) {
+          cameFromAdRef.current = false;
+          setPhase(contentUrl ? "content" : "error");
+        }
       });
 
     return () => { cancelled = true; };
@@ -181,18 +192,21 @@ function VastVideoPlayerInner({
     v.play().catch(() => {});
   }, [phase, vast, position]);
 
-  // ── Auto-play content when phase becomes "content" ─────────────────────────
+  // ── Content phase: play only after an ad, or when autoplay is enabled ──────
   useEffect(() => {
     if (phase !== "content" || !contentVideoRef.current) return;
-    
+
     // Hide "Sponsored Video" label when content plays
     const label = document.getElementById(`vast-sponsored-label-${position}`);
     if (label) {
       label.style.display = 'none';
     }
-    
-    contentVideoRef.current.play().catch(() => {});
-  }, [phase, position]);
+
+    if (cameFromAdRef.current || autoplay) {
+      contentVideoRef.current.play().catch(() => {});
+    }
+    cameFromAdRef.current = false;
+  }, [phase, position, autoplay]);
 
   // ── Ad time update → countdown + skip unlock + tracking ───────────────────
   const handleAdTimeUpdate = useCallback(() => {
@@ -225,24 +239,29 @@ function VastVideoPlayerInner({
     if (vast?.tracking?.complete) firePixels(vast.tracking.complete);
     // If content video exists, play it; otherwise re-request ad from VAST URL
     if (contentUrl) {
+      cameFromAdRef.current = true;
       setPhase("content");
-    } else {
+    } else if (vastUrl) {
       // No content video - re-request ad from VAST URL to loop
       setPhase("loading");
       setTimeout(() => {
         setPhase("ad");
       }, 100);
+    } else {
+      setPhase("error");
     }
-  }, [vast, contentUrl]);
+  }, [vast, contentUrl, vastUrl]);
 
   // ── Ad error → skip to content ─────────────────────────────────────────────
   const handleAdError = useCallback(() => {
+    if (contentUrl) cameFromAdRef.current = true;
     setPhase(contentUrl ? "content" : "error");
   }, [contentUrl]);
 
   // ── Skip button ────────────────────────────────────────────────────────────
   const handleSkip = useCallback(() => {
     if (vast?.tracking?.skip) firePixels(vast.tracking.skip);
+    if (contentUrl) cameFromAdRef.current = true;
     setPhase(contentUrl ? "content" : "error");
   }, [vast, contentUrl]);
 
@@ -471,8 +490,8 @@ function VastVideoPlayerInner({
           controlsList="nodownload"
           playsInline
           muted={muted}
-          loop={true}
-          autoPlay
+          loop={loop}
+          autoPlay={autoplay}
           onError={() => setPhase("error")}
           onEnded={() => {
             // Loop back to ad if VAST URL exists (re-request ad)

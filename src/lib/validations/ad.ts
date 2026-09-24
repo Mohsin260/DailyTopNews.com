@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AdPositions, AdTypes, PageTypes, TemplateTypes } from "@/lib/models/AdSnippet";
+import { ALL_CARD_STYLE_KEYS } from "@/lib/ads/nativeCardStyles";
 
 /**
  * Zod schemas for AdSnippet API endpoints.
@@ -52,8 +53,12 @@ export const AdSnippetCreateSchema = z.object({
     categoryColor: z.string().optional().default(""),
     readTime: z.string().max(50).optional().default(""),
     author: z.string().max(100).optional().default(""),
+    date: z.string().max(50).optional().default(""),
     layout: z.enum(["column", "row"]).optional().default("column"),
-    cardStyle: z.enum(["news-grid", "sidebar-list", "sidebar-featured", "latest-articles", "hero-side", "review-list", "carousel", "most-viewed"]).optional().default("news-grid"),
+    cardStyle: z
+      .enum(ALL_CARD_STYLE_KEYS as [string, ...string[]])
+      .optional()
+      .default("post-type3"),
   }).optional(),
 
   // Tracking pixels for native/third-party ads

@@ -59,6 +59,8 @@ interface AdSnippetData {
   height?: string;
   padding?: string;
   margin?: string;
+  nativeContent?: any;
+  trackingPixels?: { impression?: string; click?: string } | undefined;
 }
 
 interface ArticleAdEditorProps {
@@ -68,27 +70,77 @@ interface ArticleAdEditorProps {
   isSaving?: boolean;
 }
 
-// Article template positions
+// Article template positions — must match dashboard PAGE_CONFIG article tab
 const ARTICLE_POSITIONS = [
-  { 
-    id: "top-leaderboard", 
-    name: `Top Leaderboard Ad (ATF — ${POSITION_SIZE_CONFIG["top-leaderboard"]?.label || "728×90"})`, 
-    description: "Above the fold, highest visibility" 
+  {
+    id: "top-leaderboard",
+    name: `Top Leaderboard Ad (ATF — ${POSITION_SIZE_CONFIG["top-leaderboard"]?.label || "728×90"})`,
+    description: "Above the fold, highest visibility"
   },
-  { 
-    id: "atf-rectangle", 
-    name: `ATF Rectangle Ad (${POSITION_SIZE_CONFIG["atf-rectangle"]?.label || "336×280"})`, 
-    description: "Highest value position" 
+  {
+    id: "atf-rectangle",
+    name: `ATF Rectangle Ad (${POSITION_SIZE_CONFIG["atf-rectangle"]?.label || "336×280"})`,
+    description: "Highest value position"
   },
-  { 
-    id: "sticky-footer", 
-    name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`, 
-    description: "Persistent at bottom" 
+  {
+    id: "sticky-footer",
+    name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`,
+    description: "Persistent at bottom"
   },
-  { 
-    id: "sidebar-sticky", 
-    name: `Sidebar Sticky (${POSITION_SIZE_CONFIG["sidebar-sticky"]?.label || "300×600"})`, 
-    description: "Desktop only, follows scroll" 
+  {
+    id: "sidebar-sticky",
+    name: `Sidebar Sticky (${POSITION_SIZE_CONFIG["sidebar-sticky"]?.label || "300×600"})`,
+    description: "Desktop only, follows scroll"
+  },
+  {
+    id: "sidebar-rectangle",
+    name: `Sidebar Rectangle (${POSITION_SIZE_CONFIG["sidebar-rectangle"]?.label || "300×250"})`,
+    description: "Sidebar rectangle below sticky ad"
+  },
+  {
+    id: "bottom-leaderboard",
+    name: `Bottom Leaderboard Ad (${POSITION_SIZE_CONFIG["bottom-leaderboard"]?.label || "728×90"})`,
+    description: "End of article content, before Related section"
+  },
+  {
+    id: "above-footer",
+    name: `Above Footer Leaderboard (${POSITION_SIZE_CONFIG["above-footer"]?.label || "728×90"})`,
+    description: "Below Our Latest News / Comments, above footer (banner area)"
+  },
+  {
+    id: "in-content-1",
+    name: "In-Content Banner 1",
+    description: "Banner slot after article body"
+  },
+  {
+    id: "in-content-2",
+    name: "In-Content Banner 2",
+    description: "Banner slot after key takeaways"
+  },
+  {
+    id: "article-native-1",
+    name: "Native In-Content 1",
+    description: "Native post_type3 card after body content"
+  },
+  {
+    id: "article-native-2",
+    name: "Native In-Content 2",
+    description: "Native post_type3 card mid-article"
+  },
+  {
+    id: "article-related",
+    name: "Native Related / Latest Blog",
+    description: "Native post_type15 card in Our Latest Blog"
+  },
+  {
+    id: "sidebar-infeed",
+    name: "Native Sidebar In-Feed",
+    description: "Native widgets_small_sep card after Related tabs"
+  },
+  {
+    id: "in-feed-x",
+    name: "Native Sidebar Trending",
+    description: "Native post_type3 card after Trending News widget"
   },
 ];
 
@@ -111,9 +163,10 @@ export default function ArticleAdEditor({
     code: string;
     vastTagUrl: string;
     mediaUrl: string;
-    adType: "html" | "image" | "video" | "vast" | "audio";
+    adType: "html" | "image" | "video" | "vast" | "audio" | "native_feed";
     position: string;
     adSnippetId?: string;
+    nativeContent?: any;
   } | null>(null);
 
   // Cache loaded ad snippet data for preview
@@ -229,6 +282,13 @@ export default function ArticleAdEditor({
       clickThroughUrl: snippet?.clickThroughUrl || "",
       templateType: snippet?.templateType || "legacy",
       creativeType: snippet?.creativeType || "",
+      nativeContent: snippet?.nativeContent || undefined,
+      trackingPixels: snippet?.trackingPixels
+        ? {
+            impression: snippet.trackingPixels.impression || "",
+            click: snippet.trackingPixels.click || "",
+          }
+        : undefined,
       templateId: undefined,
       templateVariables: {},
       customCode: true,
@@ -243,7 +303,9 @@ export default function ArticleAdEditor({
       setLoadingPosition(positionId);
       const snippet = await loadAdSnippet(override.adSnippetId);
       if (snippet) {
-        const adType: "html" | "image" | "video" | "vast" | "audio" =
+        const isNative = snippet.templateType === "native_feed";
+        const adType: "html" | "image" | "video" | "vast" | "audio" | "native_feed" =
+          isNative ? "native_feed" :
           snippet.vastTagUrl ? "vast" :
           snippet.type === "video" ? "video" :
           snippet.type === "image" ? "image" :
@@ -259,6 +321,7 @@ export default function ArticleAdEditor({
           adType,
           position: positionId,
           adSnippetId: snippet._id,
+          nativeContent: snippet.nativeContent,
         });
         setPreviewOpen(true);
       } else {
@@ -269,15 +332,31 @@ export default function ArticleAdEditor({
     }
   };
 
-  const handleSavePosition = async () => {
-    if (!editingPosition) return;
+  const handleSavePosition = async (positionArg?: EditingPosition) => {
+    // Prefer the position payload passed from AdSnippetEditor (includes nativeContent)
+    const target = positionArg || editingPosition;
+    if (!target) return;
 
     const existingOverrideIndex = localOverrides.findIndex(
-      (o) => o.position === editingPosition.position
+      (o) => o.position === target.position
     );
 
-    // If code is empty, remove the override
-    if (editingPosition.code.trim() === "") {
+    // Empty check: native uses title/image; other types use code/media urls
+    const isEmptyNative =
+      target.templateType === "native_feed" &&
+      !(target.nativeContent?.title?.trim() || target.nativeContent?.image?.trim());
+    const isEmptyOther =
+      target.templateType !== "native_feed" &&
+      !(
+        target.code.trim() ||
+        (target.mediaUrl || "").trim() ||
+        (target.url || "").trim() ||
+        (target.vastTagUrl || "").trim() ||
+        (target.vastUrl || "").trim()
+      );
+    const isEmpty = isEmptyNative || isEmptyOther;
+
+    if (isEmpty) {
       if (existingOverrideIndex !== -1) {
         const newOverrides = localOverrides.filter((_, i) => i !== existingOverrideIndex);
         setLocalOverrides(newOverrides);
@@ -290,31 +369,40 @@ export default function ArticleAdEditor({
     try {
       // Check if we already have an override for this position
       const existingOverride = localOverrides.find(
-        (o) => o.position === editingPosition.position
+        (o) => o.position === target.position
       );
 
       let adSnippetId: string;
+      const payloadBase = {
+        name: `${article.slug}-${target.position}-${Date.now()}`,
+        label: `${article.title} - ${target.position}`,
+        pageType: "article",
+        position: target.position,
+        type: target.type,
+        code: target.code,
+        mediaUrl: target.mediaUrl || target.url,
+        vastTagUrl: target.vastTagUrl || target.vastUrl,
+        clickThroughUrl:
+          target.templateType === "native_feed"
+            ? target.nativeContent?.clickThroughUrl || target.clickThroughUrl
+            : target.clickThroughUrl,
+        templateType: target.templateType,
+        creativeType: target.creativeType,
+        enabled: target.enabled,
+        status: target.status,
+        isArticleOverride: true,
+        ...(target.templateType === "native_feed" && target.nativeContent
+          ? { nativeContent: target.nativeContent }
+          : {}),
+        ...(target.trackingPixels ? { trackingPixels: target.trackingPixels } : {}),
+      };
 
       if (existingOverride) {
         // Update existing ad snippet
         const res = await fetch(`/api/ads/${existingOverride.adSnippetId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: `${article.slug}-${editingPosition.position}-${Date.now()}`,
-            label: `${article.title} - ${editingPosition.position}`,
-            pageType: "article",
-            position: editingPosition.position,
-            type: editingPosition.type,
-            code: editingPosition.code,
-            mediaUrl: editingPosition.mediaUrl || editingPosition.url,
-            vastTagUrl: editingPosition.vastTagUrl || editingPosition.vastUrl,
-            clickThroughUrl: editingPosition.clickThroughUrl,
-            templateType: editingPosition.templateType,
-            creativeType: editingPosition.creativeType,
-            enabled: editingPosition.enabled,
-            isArticleOverride: true,
-          }),
+          body: JSON.stringify(payloadBase),
         });
 
         if (!res.ok) throw new Error("Failed to update ad snippet");
@@ -327,21 +415,7 @@ export default function ArticleAdEditor({
         const res = await fetch("/api/ads", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: `${article.slug}-${editingPosition.position}-${Date.now()}`,
-            label: `${article.title} - ${editingPosition.position}`,
-            pageType: "article",
-            position: editingPosition.position,
-            type: editingPosition.type,
-            code: editingPosition.code,
-            mediaUrl: editingPosition.mediaUrl || editingPosition.url,
-            vastTagUrl: editingPosition.vastTagUrl || editingPosition.vastUrl,
-            clickThroughUrl: editingPosition.clickThroughUrl,
-            templateType: editingPosition.templateType,
-            creativeType: editingPosition.creativeType,
-            enabled: editingPosition.enabled,
-            isArticleOverride: true,
-          }),
+          body: JSON.stringify(payloadBase),
         });
 
         if (!res.ok) throw new Error("Failed to create ad snippet");
@@ -352,7 +426,7 @@ export default function ArticleAdEditor({
 
       // Update local overrides
       const newOverride: AdOverride = {
-        position: editingPosition.position,
+        position: target.position,
         adSnippetId,
         width: undefined,
         height: undefined,
@@ -368,7 +442,7 @@ export default function ArticleAdEditor({
 
       setLocalOverrides(updatedOverrides);
       onSave(updatedOverrides); // Instant sync
-      
+
       setEditingPosition(null);
       toast.success("Ad position saved and synced!");
     } catch (error) {
@@ -642,6 +716,7 @@ export default function ArticleAdEditor({
           adType={previewData.adType}
           position={previewData.position}
           title={`Preview — ${ARTICLE_POSITIONS.find((p) => p.id === previewData.position)?.name || previewData.position}`}
+          nativeContent={previewData.nativeContent}
           allowSizingAdjustment={true}
           onSaveAd={handleSaveFromPreview}
         />

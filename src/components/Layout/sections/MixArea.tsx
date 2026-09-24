@@ -9,6 +9,7 @@ import 'swiper/css/navigation';
 import { Icon } from '@/components/Layout/common/Icon';
 import { VideoModal } from '@/components/Layout/common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface MixAreaProps {
@@ -19,7 +20,6 @@ interface MixAreaProps {
 
 export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, posts = [] }) => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [currentVideoId] = useState('0r6C3z3TEKw');
 
   if (posts.length === 0) return null;
 
@@ -77,6 +77,9 @@ export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, 
                       </div>
                     </SwiperSlide>
                   ))}
+                  <SwiperSlide>
+                    <InFeedNativeAd pageType="homepage" position="in-feed-6" cardStyle="post-type9" dark={dark} />
+                  </SwiperSlide>
                 </Swiper>
                 <div className="owl-nav">
                   <div className="owl-prev mix-swiper-prev">
@@ -92,7 +95,7 @@ export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, 
         </div>
       </div>
       <div className="space-30" />
-      <VideoModal isOpen={videoModalOpen} videoId={currentVideoId} onClose={() => setVideoModalOpen(false)} />
+      <VideoModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface SportsNewsProps {
@@ -59,9 +60,10 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                        Read More
                      </Link>
                   </div>
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+                <InFeedNativeAd pageType="homepage" position="in-feed-13" cardStyle="post-type3" dark={dark} />
+              </div>
 
             {/* Right side list */}
             <div className="col-md-6">
@@ -107,6 +109,11 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                           </div>
                         </SwiperSlide>
                       ))}
+                      <SwiperSlide>
+                        <div className="single_post2_carousel">
+                          <InFeedNativeAd pageType="homepage" position="in-feed-8" cardStyle="widgets-small" dark={dark} />
+                        </div>
+                      </SwiperSlide>
                     </Swiper>
                     <div className="navBtns">
                       <div className="navBtn prevtBtn swiper-button-prev13">

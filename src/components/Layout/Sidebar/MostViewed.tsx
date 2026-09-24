@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface MostViewedProps {
@@ -89,10 +90,15 @@ export const MostViewed: React.FC<MostViewedProps> = ({
                     {dark ? <div className="border_white" /> : <div className="border_black" />}
                     <div className="space-15" />
                   </>
-                ) : null}
+                    ) : null}
               </div>
             </SwiperSlide>
           ))}
+          <SwiperSlide>
+            <div className="single_post2_carousel">
+              <InFeedNativeAd pageType="homepage" position="in-feed-5" cardStyle="type8" dark={dark} />
+            </div>
+          </SwiperSlide>
         </Swiper>
         <div className="navBtns">
           <div className="navBtn prevtBtn swiper-button-prev8">

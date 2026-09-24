@@ -751,6 +751,7 @@ export default function AdPreviewModal({
                     <NativeAdCard
                       ad={{ _id: "preview", nativeContent }}
                       variant={nativeContent.layout || (viewport === "desktop" ? "grid" : "list")}
+                      cardStyle={nativeContent.cardStyle}
                     />
                     <p className="mt-4 text-[10px] text-muted-foreground text-center italic">
                       Note: Native ads automatically adapt to the feed width and article styling.

@@ -1,15 +1,28 @@
 'use client';
 
 import { Icon } from './Icon';
+import VastVideoPlayer from '@/components/ui/VastVideoPlayer';
 
 interface VideoModalProps {
   isOpen: boolean;
-  videoId?: string;
   onClose: () => void;
+  contentUrl?: string;
+  vastUrl?: string;
+  poster?: string;
+  title?: string;
 }
 
-export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoId = '0r6C3z3TEKw', onClose }) => {
+export const VideoModal: React.FC<VideoModalProps> = ({
+  isOpen,
+  onClose,
+  contentUrl,
+  vastUrl,
+  poster,
+  title,
+}) => {
   if (!isOpen) return null;
+
+  const hasVideo = Boolean(contentUrl || vastUrl);
 
   return (
     <div className="video-modal-overlay" onClick={onClose}>
@@ -17,12 +30,21 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoId = '0r6C3
         <button className="video-modal-close" onClick={onClose} aria-label="Close modal">
           <Icon name="times" />
         </button>
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        {hasVideo ? (
+          <VastVideoPlayer
+            vastUrl={vastUrl}
+            contentUrl={contentUrl}
+            poster={poster}
+            position="video-modal"
+            autoplay
+            muted={false}
+            loop={false}
+          />
+        ) : (
+          <div className="video-modal-unavailable">
+            <p>{title || 'Video'} unavailable</p>
+          </div>
+        )}
       </div>
     </div>
   );

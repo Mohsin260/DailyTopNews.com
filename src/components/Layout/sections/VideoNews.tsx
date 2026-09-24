@@ -10,7 +10,33 @@ import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { VideoModal } from '@/components/Layout/common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
+
+const isVideoUrl = (url?: string) => {
+  if (!url) return false;
+  const cleanUrl = url.split('?')[0].toLowerCase();
+  return (
+    cleanUrl.endsWith('.mp4') ||
+    cleanUrl.endsWith('.webm') ||
+    cleanUrl.endsWith('.mov') ||
+    cleanUrl.endsWith('.m4v')
+  );
+};
+
+const getFeaturedVideo = (post?: Article) => {
+  if (!post) return { contentUrl: '', vastUrl: '', poster: '' };
+
+  const hero = post.articleMedia?.heroCoverMedia;
+  const videoAsset = (post.videoAsset ?? {}) as { cdnUrl?: string; poster?: string };
+
+  const contentUrl =
+    (isVideoUrl(hero?.url) ? hero?.url : '') || videoAsset.cdnUrl || '';
+  const vastUrl = hero?.vastTagUrl?.trim() || '';
+  const poster = hero?.poster || videoAsset.poster || '';
+
+  return { contentUrl, vastUrl, poster };
+};
 
 interface VideoNewsProps {
   className?: string;
@@ -22,7 +48,8 @@ interface VideoNewsProps {
 
 export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = false, featuredPost, posts = [], videoThumb = '/assets/video-post-thumb-Cx2wM747.jpg' }) => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [currentVideoId] = useState('0r6C3z3TEKw');
+  const { contentUrl, vastUrl, poster } = getFeaturedVideo(featuredPost);
+  const posterSrc = poster || featuredPost?.image || videoThumb;
 
   const popularPosts = posts.slice(0, 10);
 
@@ -72,7 +99,7 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                         setVideoModalOpen(true);
                       }}
                     >
-                      <img src={videoThumb} alt="video1" />
+                      <img src={posterSrc} alt={featuredPost?.title || 'video'} />
                     </Link>
                   </div>
                   <p onClick={() => setVideoModalOpen(true)} className="youtube_middle">
@@ -92,6 +119,9 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                     </h4>
                   </div>
                 )}
+              </div>
+              <div className="mt30">
+                <InFeedNativeAd pageType="homepage" position="in-feed-12" cardStyle="post-type11" dark={dark} />
               </div>
             </div>
 
@@ -131,6 +161,9 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                         </div>
                       </SwiperSlide>
                     ))}
+                    <SwiperSlide>
+                      <InFeedNativeAd pageType="homepage" position="in-feed-11" cardStyle="type10" dark={dark} />
+                    </SwiperSlide>
                   </Swiper>
                   <div className="navBtns">
                     <div className="navBtn prevtBtn swiper-button-prev10">
@@ -148,7 +181,10 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
       </div>
       <VideoModal
         isOpen={videoModalOpen}
-        videoId={currentVideoId}
+        contentUrl={contentUrl}
+        vastUrl={vastUrl}
+        poster={posterSrc}
+        title={featuredPost?.title}
         onClose={() => setVideoModalOpen(false)}
       />
     </div>

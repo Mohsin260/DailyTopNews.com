@@ -43,7 +43,42 @@
           "name": "Sidebar Rectangle",
           "description": "Entertainment sidebar, 300×250",
           "template": "HomeTemplate.tsx"
-        }
+        },
+        {
+          "id": "header-leaderboard",
+          "name": "Header Leaderboard Ad",
+          "description": "Above trending ticker in header",
+          "template": "LogoArea.tsx"
+        },
+        {
+          "id": "in-content-1",
+          "name": "In-Content Banner",
+          "description": "Banner after Trending News list column",
+          "template": "HomeTemplate.tsx"
+        },
+        {
+          "id": "video-section",
+          "name": "Video Section Ad",
+          "description": "Banner above the video section",
+          "template": "HomeTemplate.tsx"
+        },
+        { "id": "in-feed-1", "name": "Native In-Feed 1 — Trending Carousel", "description": "post-type5 slide", "template": "TrendingCarousel.tsx" },
+        { "id": "in-feed-2", "name": "Native In-Feed 2 — Gallery Related List", "description": "widgets-small-sep list", "template": "GallerySection.tsx" },
+        { "id": "in-feed-3", "name": "Native In-Feed 3 — Feature News Overlay", "description": "post-type7 overlay", "template": "FeatureNews.tsx" },
+        { "id": "in-feed-4", "name": "Native In-Feed 4 — Trending News List", "description": "widgets-small list", "template": "TrendingNews.tsx" },
+        { "id": "in-feed-5", "name": "Native In-Feed 5 — Most Viewed", "description": "type8 counter list", "template": "MostViewed.tsx" },
+        { "id": "in-feed-6", "name": "Native In-Feed 6 — Mix Area Overlay", "description": "post-type9 overlay", "template": "MixArea.tsx" },
+        { "id": "in-feed-7", "name": "Native In-Feed 7 — Entertainment Grid", "description": "post-type3 feature card", "template": "EntertainmentNews.tsx" },
+        { "id": "in-feed-8", "name": "Native In-Feed 8 — Sports List", "description": "widgets-small list", "template": "SportsNews.tsx" },
+        { "id": "in-feed-9", "name": "Native In-Feed 9 — Business Row", "description": "post-type12 split row", "template": "BusinessNews.tsx" },
+        { "id": "in-feed-10", "name": "Native In-Feed 10 — Most Share", "description": "widgets-type4 share list", "template": "MostShared.tsx" },
+        { "id": "in-feed-11", "name": "Native In-Feed 11 — Popular Numbered", "description": "type10 numbered list", "template": "VideoNews.tsx" },
+        { "id": "in-feed-12", "name": "Native In-Feed 12 — Video Featured", "description": "post-type11 below video hero", "template": "VideoNews.tsx" },
+        { "id": "in-feed-13", "name": "Native In-Feed 13 — Sports Feature", "description": "post-type3 sports featured card", "template": "SportsNews.tsx" },
+        { "id": "in-feed-14", "name": "Native In-Feed 14 — Gallery Hero Overlay", "description": "post-type6 gallery hero slide", "template": "GallerySection.tsx" },
+        { "id": "in-feed-15", "name": "Native In-Feed 15 — Trending Carousel", "description": "post-type3 trending carousel slide", "template": "TrendingNews.tsx" },
+        { "id": "in-feed-x", "name": "Native In-Feed X — Repeating", "description": "Repeating between major sections", "template": "HomeTemplate.tsx" },
+        { "id": "sidebar-infeed", "name": "Native Sidebar In-Feed", "description": "type8 sidebar native below Most Viewed", "template": "HomeTemplate.tsx" }
       ]
     },
     {
@@ -63,11 +98,40 @@
           "template": "ArticleTemplate.tsx"
         },
         {
-          "id": "atf-rectangle",
-          "name": "ATF Rectangle Ad (Highest Value)",
-          "description": "Highest value position",
+          "id": "in-content-1",
+          "name": "In-Content Banner 1",
+          "description": "Banner after body content",
           "template": "ArticleTemplate.tsx"
         },
+        {
+          "id": "in-content-2",
+          "name": "In-Content Banner 2",
+          "description": "Banner after key takeaways",
+          "template": "ArticleTemplate.tsx"
+        },
+        {
+          "id": "bottom-leaderboard",
+          "name": "Bottom Leaderboard Ad",
+          "description": "End of article content, before Related section",
+          "template": "ArticleTemplate.tsx"
+        },
+        {
+          "id": "above-footer",
+          "name": "Above Footer Leaderboard",
+          "description": "Below Our Latest News / Comments, above footer (banner area)",
+          "template": "ArticleTemplate.tsx"
+        },
+        {
+          "id": "sidebar-rectangle",
+          "name": "Sidebar Rectangle",
+          "description": "Sidebar 300×250 below sticky ad",
+          "template": "ArticleTemplate.tsx"
+        },
+        { "id": "article-native-1", "name": "Native In-Content 1", "description": "post-type3 after body", "template": "ArticleTemplate.tsx" },
+        { "id": "article-native-2", "name": "Native In-Content 2", "description": "post-type3 mid-article", "template": "ArticleTemplate.tsx" },
+        { "id": "article-related", "name": "Native Related / Latest Blog", "description": "post-type15 in Our Latest Blog", "template": "LatestBlogSection.tsx" },
+        { "id": "sidebar-infeed", "name": "Native Sidebar In-Feed", "description": "widgets-small-sep after Related tabs", "template": "ArticleTemplate.tsx" },
+        { "id": "in-feed-x", "name": "Native Sidebar Trending", "description": "post-type3 after Trending News widget", "template": "ArticleTemplate.tsx" },
         {
           "id": "sticky-footer",
           "name": "Sticky Footer Ad",
@@ -78,12 +142,6 @@
           "id": "sidebar-sticky",
           "name": "Sidebar Sticky",
           "description": "Desktop only, follows scroll",
-          "template": "ArticleTemplate.tsx"
-        },
-        {
-          "id": "sidebar-rectangle",
-          "name": "Sidebar Rectangle",
-          "description": "Sidebar 300×250 below sticky ad",
           "template": "ArticleTemplate.tsx"
         }
       ]

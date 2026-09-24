@@ -43,12 +43,13 @@ interface AdDefinition {
 // Use picsum.photos for placeholder images (realistic, random photos)
 const img = (id: number, w = 800, h = 500) => `https://picsum.photos/id/${id}/${w}/${h}`;
 
+// NewsPrk-matched card styles per homepage section position
 const ADS: AdDefinition[] = [
-  // ── in-feed-1: Main grid row 1 (news-grid) ──
+  // ── in-feed-1: Trending carousel (post-type5) ──
   {
     position: "in-feed-1",
     pageType: "homepage",
-    name: "In-Feed 1 — Main Grid Row 1",
+    name: "In-Feed 1 — Trending Carousel",
     nativeContent: {
       title: "10 Best Wireless Earbuds for Every Budget in 2026",
       excerpt: "We tested over 30 pairs to find the ones actually worth your money.",
@@ -60,14 +61,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#F59E0B",
       readTime: "5 min",
       author: "Sarah Chen",
-      cardStyle: "news-grid",
+      cardStyle: "post-type5",
     },
   },
-  // ── in-feed-2: Main grid row 2 (news-grid) ──
+  // ── in-feed-2: Gallery related list (widgets-small-sep) ──
   {
     position: "in-feed-2",
     pageType: "homepage",
-    name: "In-Feed 2 — Main Grid Row 2",
+    name: "In-Feed 2 — Gallery Related List",
     nativeContent: {
       title: "Why Everyone Is Switching to Standing Desks This Year",
       excerpt: "The health benefits are real — and the setups have never been more affordable.",
@@ -79,14 +80,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#10B981",
       readTime: "4 min",
       author: "Mike Torres",
-      cardStyle: "news-grid",
+      cardStyle: "widgets-small-sep",
     },
   },
-  // ── in-feed-3: Featured Carousel (carousel) ──
+  // ── in-feed-3: Feature News overlay (post-type7) ──
   {
     position: "in-feed-3",
     pageType: "homepage",
-    name: "In-Feed 3 — Featured Carousel",
+    name: "In-Feed 3 — Feature News Overlay",
     nativeContent: {
       title: "The Smart Home Setup That Saved Us $400 on Energy Bills",
       excerpt: "A complete guide to automating your home for maximum savings.",
@@ -98,14 +99,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#6366F1",
       readTime: "6 min",
       author: "Emily Park",
-      cardStyle: "carousel",
+      cardStyle: "post-type7",
     },
   },
-  // ── in-feed-4: Hero Slider (hero-side, center) ──
+  // ── in-feed-4: Trending News thumb list (widgets-small) ──
   {
     position: "in-feed-4",
     pageType: "homepage",
-    name: "In-Feed 4 — Hero Slider",
+    name: "In-Feed 4 — Trending News List",
     nativeContent: {
       title: "MacBook Air M4 Review: The Laptop Most People Should Buy",
       excerpt: "Apple's latest delivers incredible performance at a price that makes sense.",
@@ -117,14 +118,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#EF4444",
       readTime: "8 min",
       author: "James Liu",
-      cardStyle: "hero-side",
+      cardStyle: "widgets-small",
     },
   },
-  // ── in-feed-5: Top Stories Sidebar (sidebar-list) ──
+  // ── in-feed-5: Most Viewed (type8) ──
   {
     position: "in-feed-5",
     pageType: "homepage",
-    name: "In-Feed 5 — Top Stories Sidebar",
+    name: "In-Feed 5 — Most Viewed Sidebar",
     nativeContent: {
       title: "How This Credit Card Hack Saved Travelers Thousands",
       excerpt: "Points experts reveal the strategy airlines don't want you to know.",
@@ -134,16 +135,16 @@ const ADS: AdDefinition[] = [
       clickThroughUrl: "https://example.com/travel",
       category: "Finance",
       categoryColor: "#3B82F6",
-      readTime: "3 min",
+      readTime: "03",
       author: "Rachel Kim",
-      cardStyle: "sidebar-list",
+      cardStyle: "type8",
     },
   },
-  // ── in-feed-6: Most Viewed Sidebar (most-viewed) ──
+  // ── in-feed-6: Mix Area overlay (post-type9) ──
   {
     position: "in-feed-6",
     pageType: "homepage",
-    name: "In-Feed 6 — Most Viewed Sidebar",
+    name: "In-Feed 6 — Mix Area Overlay",
     nativeContent: {
       title: "The Protein Powder That Actually Tastes Good",
       excerpt: "We ranked the top 15 based on taste, mixability, and nutrition.",
@@ -155,14 +156,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#EC4899",
       readTime: "03",
       author: "David Okafor",
-      cardStyle: "most-viewed",
+      cardStyle: "post-type9",
     },
   },
-  // ── in-feed-7: Popular News Sidebar (sidebar-list) ──
+  // ── in-feed-7: Entertainment feature grid (post-type3) ──
   {
     position: "in-feed-7",
     pageType: "homepage",
-    name: "In-Feed 7 — Popular News Sidebar",
+    name: "In-Feed 7 — Entertainment Grid",
     nativeContent: {
       title: "AI Tools That Are Replacing Junior Developer Jobs",
       excerpt: "What the industry isn't telling you about the AI coding revolution.",
@@ -174,14 +175,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#8B5CF6",
       readTime: "7 min",
       author: "Priya Sharma",
-      cardStyle: "sidebar-list",
+      cardStyle: "post-type3",
     },
   },
-  // ── in-feed-8: Tech & Innovation Sidebar (sidebar-list) ──
+  // ── in-feed-8: Sports list (widgets-small) ──
   {
     position: "in-feed-8",
     pageType: "homepage",
-    name: "In-Feed 8 — Tech & Innovation Sidebar",
+    name: "In-Feed 8 — Sports Sidebar List",
     nativeContent: {
       title: "Solar Panels Are Now Cheaper Than Ever — Here's Why",
       excerpt: "New manufacturing breakthroughs are driving prices to historic lows.",
@@ -193,14 +194,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#22C55E",
       readTime: "5 min",
       author: "Anna Petrov",
-      cardStyle: "sidebar-list",
+      cardStyle: "widgets-small",
     },
   },
-  // ── in-feed-9: Editor's Picks Sidebar (sidebar-list) ──
+  // ── in-feed-9: Business split row (post-type12) ──
   {
     position: "in-feed-9",
     pageType: "homepage",
-    name: "In-Feed 9 — Editor's Picks Sidebar",
+    name: "In-Feed 9 — Business News Row",
     nativeContent: {
       title: "The Minimalist Wardrobe That Simplifies Your Morning",
       excerpt: "30 pieces, endless combinations — capsule wardrobes actually work.",
@@ -212,14 +213,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#F97316",
       readTime: "3 min",
       author: "Lisa Monroe",
-      cardStyle: "sidebar-list",
+      cardStyle: "post-type12",
     },
   },
-  // ── in-feed-10: Latest Articles Center (latest-articles) ──
+  // ── in-feed-10: Most Shared (widgets-type4) ──
   {
     position: "in-feed-10",
     pageType: "homepage",
-    name: "In-Feed 10 — Latest Articles Center",
+    name: "In-Feed 10 — Most Share Widget",
     nativeContent: {
       title: "Why Meal Kit Services Are Actually Saving Families Money",
       excerpt: "We compared grocery costs vs. meal kits for a family of four over 3 months.",
@@ -231,14 +232,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#EF4444",
       readTime: "5 min",
       author: "Carlos Mendez",
-      cardStyle: "latest-articles",
+      cardStyle: "widgets-type4",
     },
   },
-  // ── in-feed-11: Latest Reviews Sidebar (review-list) ──
+  // ── in-feed-11: Popular Posts numbered (type10) ──
   {
     position: "in-feed-11",
     pageType: "homepage",
-    name: "In-Feed 11 — Latest Reviews Sidebar",
+    name: "In-Feed 11 — Popular Posts Numbered",
     nativeContent: {
       title: "Dyson V15 Review: Is the Vacuum Worth the Hype?",
       excerpt: "After 6 months of daily use, here's our honest verdict.",
@@ -250,14 +251,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#EF4444",
       readTime: "6 min",
       author: "Tom Bradley",
-      cardStyle: "review-list",
+      cardStyle: "type10",
     },
   },
-  // ── in-feed-12: Featured Carousel Inline (carousel) ──
+  // ── in-feed-12: Video featured (post-type11) ──
   {
     position: "in-feed-12",
     pageType: "homepage",
-    name: "In-Feed 12 — Featured Carousel Inline",
+    name: "In-Feed 12 — Video Featured",
     nativeContent: {
       title: "The Noise-Canceling Headphones That Changed My Commute",
       excerpt: "Bose QuietComfort Ultra delivers silence where there was chaos.",
@@ -269,14 +270,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#6366F1",
       readTime: "4 min",
       author: "Nina Walsh",
-      cardStyle: "carousel",
+      cardStyle: "post-type11",
     },
   },
-  // ── in-feed-13: Hero Slider Right Side (hero-side) ──
+  // ── in-feed-13: Sports feature (post-type3) ──
   {
     position: "in-feed-13",
     pageType: "homepage",
-    name: "In-Feed 13 — Hero Right Side",
+    name: "In-Feed 13 — Sports Feature Card",
     nativeContent: {
       title: "This $30 Gadget Fixed My Bad Posture Permanently",
       excerpt: "Physical therapists are recommending it to thousands of patients.",
@@ -288,14 +289,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#EC4899",
       readTime: "3 min",
       author: "Dr. Kim Santos",
-      cardStyle: "hero-side",
+      cardStyle: "post-type3",
     },
   },
-  // ── in-feed-14: Hero Slider Center (hero-side) ──
+  // ── in-feed-14: Gallery hero overlay (post-type6) ──
   {
     position: "in-feed-14",
     pageType: "homepage",
-    name: "In-Feed 14 — Hero Center Slider",
+    name: "In-Feed 14 — Gallery Hero Overlay",
     nativeContent: {
       title: "Samsung Galaxy S26 Ultra: Everything We Know So Far",
       excerpt: "Leaked specs reveal a camera system that could dethrone the iPhone.",
@@ -307,14 +308,14 @@ const ADS: AdDefinition[] = [
       categoryColor: "#6366F1",
       readTime: "5 min",
       author: "Alex Nguyen",
-      cardStyle: "hero-side",
+      cardStyle: "post-type6",
     },
   },
-  // ── in-feed-15: Hero Slider Left Side (hero-side) ──
+  // ── in-feed-15: Trending carousel (post-type3) ──
   {
     position: "in-feed-15",
     pageType: "homepage",
-    name: "In-Feed 15 — Hero Left Side",
+    name: "In-Feed 15 — Trending Carousel Slide",
     nativeContent: {
       title: "The VPN That Actually Works With Netflix in 2026",
       excerpt: "We tested 20 VPNs and only 3 unblocked every streaming library.",
@@ -326,10 +327,10 @@ const ADS: AdDefinition[] = [
       categoryColor: "#6366F1",
       readTime: "4 min",
       author: "Jordan Blake",
-      cardStyle: "hero-side",
+      cardStyle: "post-type3",
     },
   },
-  // ── in-feed-x: Repeating in-feed ad (news-grid, homepage) ──
+  // ── in-feed-x: Repeating (post-type3, homepage) ──
   {
     position: "in-feed-x",
     pageType: "homepage",
@@ -345,26 +346,121 @@ const ADS: AdDefinition[] = [
       categoryColor: "#14B8A6",
       readTime: "3 min",
       author: "Karen Mitchell",
-      cardStyle: "news-grid",
+      cardStyle: "post-type3",
     },
   },
-  // ── in-feed-x: Repeating in-feed ad (news-grid, category) ──
+  // ── sidebar-infeed: homepage sidebar (type8, below Most Viewed) ──
   {
-    position: "in-feed-x",
-    pageType: "category",
-    name: "In-Feed X — Repeating Native (Category)",
+    position: "sidebar-infeed",
+    pageType: "homepage",
+    name: "Sidebar In-Feed — Homepage",
     nativeContent: {
-      title: "This $15 Kitchen Gadget Went Viral on TikTok",
-      excerpt: "The garlic chopper that sold out 3 times this year.",
-      image: img(425),
+      title: "The Desk Lamp That Eliminated My Eye Strain",
+      excerpt: "A lighting designer shares the one upgrade every home office needs.",
+      image: img(30),
       sponsorLabel: "Sponsored",
-      sponsorName: "KitchenHacks",
-      clickThroughUrl: "https://example.com/gadget",
-      category: "Kitchen",
+      sponsorName: "BrightDesk",
+      clickThroughUrl: "https://example.com/lamp",
+      category: "Home",
       categoryColor: "#F59E0B",
       readTime: "2 min",
-      author: "Tom Chen",
-      cardStyle: "news-grid",
+      author: "Nina Cole",
+      cardStyle: "type8",
+    },
+  },
+  // ── article-native-1: in-content after body ──
+  {
+    position: "article-native-1",
+    pageType: "article",
+    name: "Article Native 1 — After Body",
+    nativeContent: {
+      title: "The Standing Desk Mat Reviewers Can't Stop Buying",
+      excerpt: "Anti-fatigue support without the premium price tag.",
+      image: img(100),
+      sponsorLabel: "Sponsored",
+      sponsorName: "ComfortStep",
+      clickThroughUrl: "https://example.com/mat",
+      category: "Home Office",
+      categoryColor: "#3B82F6",
+      readTime: "4 min",
+      author: "Elena Ruiz",
+      cardStyle: "post-type3",
+    },
+  },
+  // ── article-native-2: in-content mid article ──
+  {
+    position: "article-native-2",
+    pageType: "article",
+    name: "Article Native 2 — Mid Content",
+    nativeContent: {
+      title: "How a $40 Monitor Riser Fixed My Neck Pain",
+      excerpt: "Ergonomists agree: elevation is the easiest desk upgrade.",
+      image: img(101),
+      sponsorLabel: "Sponsored",
+      sponsorName: "ErgoLift",
+      clickThroughUrl: "https://example.com/riser",
+      category: "Health",
+      categoryColor: "#10B981",
+      readTime: "3 min",
+      author: "Mark Fields",
+      cardStyle: "post-type3",
+    },
+  },
+  // ── article-related: Latest Blog section ──
+  {
+    position: "article-related",
+    pageType: "article",
+    name: "Article Related — Latest Blog",
+    nativeContent: {
+      title: "The Only Backpack You Need for 2026 Travel",
+      excerpt: "Carry-on legal, laptop friendly, and built to last a decade.",
+      image: img(102),
+      sponsorLabel: "Sponsored",
+      sponsorName: "NomadGear",
+      clickThroughUrl: "https://example.com/backpack",
+      category: "Travel",
+      categoryColor: "#8B5CF6",
+      readTime: "5 min",
+      author: "Sofia Lang",
+      cardStyle: "post-type15",
+    },
+  },
+  // ── sidebar-infeed: article sidebar after TabWidget (widgets-small-sep) ──
+  {
+    position: "sidebar-infeed",
+    pageType: "article",
+    name: "Sidebar In-Feed — Article",
+    nativeContent: {
+      title: "Quiet Mechanical Keyboards Worth the Upgrade",
+      excerpt: "Hot-swappable switches without the office noise.",
+      image: img(103),
+      sponsorLabel: "Sponsored",
+      sponsorName: "KeyForge",
+      clickThroughUrl: "https://example.com/keyboard",
+      category: "Tech",
+      categoryColor: "#6366F1",
+      readTime: "4 min",
+      author: "Chris Park",
+      cardStyle: "widgets-small-sep",
+    },
+  },
+  // ── in-feed-x: article sidebar Trending News widget (post-type3) ──
+  {
+    position: "in-feed-x",
+    pageType: "article",
+    name: "Sidebar Trending — Article",
+    nativeContent: {
+      title: "Why Everyone Is Canceling Their Gym Membership",
+      excerpt: "Home workout tech has finally caught up — and it's cheaper.",
+      image: img(80),
+      sponsorLabel: "Sponsored",
+      sponsorName: "HomeFit",
+      clickThroughUrl: "https://example.com/homefit",
+      category: "Fitness",
+      categoryColor: "#22C55E",
+      readTime: "4 min",
+      author: "Maya Brooks",
+      cardStyle: "post-type3",
     },
   },
 ];
@@ -383,22 +479,45 @@ async function connectToDB() {
 async function main() {
   await connectToDB();
 
-  // Find which positions already have native_feed ads
+  // Find which positions already have native_feed ads (any pageType)
   const existing = await AdSnippet.find({
-    pageType: "homepage",
     templateType: "native_feed",
   }).lean();
 
-  const existingPositions = new Set(existing.map((ad: any) => ad.position));
+  const existingKeys = new Set(
+    existing.map((ad: any) => `${ad.pageType}:${ad.position}`)
+  );
   console.log(`\n[seed-infeed] found ${existing.length} existing native_feed ads`);
-  console.log(`[seed-infeed] configured positions: ${[...existingPositions].join(", ") || "(none)"}`);
 
   let created = 0;
   let skipped = 0;
 
   for (const adDef of ADS) {
-    if (existingPositions.has(adDef.position)) {
-      console.log(`  ⏭  ${adDef.position} — already configured, skipping`);
+    const key = `${adDef.pageType}:${adDef.position}`;
+    if (existingKeys.has(key)) {
+      // Align cardStyle/layout with current section mapping if drifted
+      const existingAd: any = existing.find(
+        (ad: any) => ad.pageType === adDef.pageType && ad.position === adDef.position
+      );
+      const wanted = adDef.nativeContent.cardStyle;
+      const currentStyle = existingAd?.nativeContent?.cardStyle;
+      const wantedLayout = ["widgets-small", "widgets-small-sep", "type8", "type10", "widgets-type4", "post-type5", "post-type12"].includes(wanted)
+        ? "row"
+        : "column";
+      if (existingAd && (currentStyle !== wanted || existingAd.nativeContent?.layout !== wantedLayout)) {
+        await AdSnippet.updateOne(
+          { _id: existingAd._id },
+          {
+            $set: {
+              "nativeContent.cardStyle": wanted,
+              "nativeContent.layout": wantedLayout,
+            },
+          }
+        );
+        console.log(`  🔄 ${adDef.position} (${adDef.pageType}) — cardStyle ${currentStyle || "(none)"} → ${wanted}`);
+      } else {
+        console.log(`  ⏭  ${adDef.position} (${adDef.pageType}) — already configured, skipping`);
+      }
       skipped++;
       continue;
     }
@@ -427,7 +546,7 @@ async function main() {
         categoryColor: adDef.nativeContent.categoryColor,
         readTime: adDef.nativeContent.readTime,
         author: adDef.nativeContent.author,
-        layout: ["sidebar-list", "sidebar-featured", "review-list"].includes(adDef.nativeContent.cardStyle) ? "row" : "column",
+        layout: ["widgets-small", "widgets-small-sep", "type8", "type10", "widgets-type4", "post-type5", "post-type12"].includes(adDef.nativeContent.cardStyle) ? "row" : "column",
         cardStyle: adDef.nativeContent.cardStyle,
       },
       trackingPixels: { impression: "", click: "" },
@@ -446,8 +565,8 @@ async function main() {
   console.log(`\n[seed-infeed] done: ${created} created, ${skipped} skipped`);
 
   // Show final state
-  const finalCount = await AdSnippet.countDocuments({ pageType: "homepage", templateType: "native_feed" });
-  console.log(`[seed-infeed] total homepage native_feed ads: ${finalCount}`);
+  const finalCount = await AdSnippet.countDocuments({ templateType: "native_feed" });
+  console.log(`[seed-infeed] total native_feed ads: ${finalCount}`);
 
   await mongoose.disconnect();
 }

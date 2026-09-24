@@ -16,7 +16,14 @@ const adOverrideSchema = new Schema(
         "in-content-1",
         "in-content-2",
         "sidebar-sticky",
-        "bottom-leaderboard"
+        "sidebar-rectangle",
+        "bottom-leaderboard",
+        "above-footer",
+        "article-native-1",
+        "article-native-2",
+        "article-related",
+        "sidebar-infeed",
+        "in-feed-x",
       ],
     },
     adSnippetId: {

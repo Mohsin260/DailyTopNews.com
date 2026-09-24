@@ -33,6 +33,13 @@ import { uploadToSupabaseWithCancel } from "@/lib/uploaders/supabaseUploader";
 import { POSITION_SIZE_CONFIG } from "@/lib/constants/adSizes";
 import { validateFile } from "@/lib/utils/fileValidator";
 import { validateMediaForTemplate, detectMediaType } from "@/lib/constants/templateMediaRules";
+import {
+  NativeCardStyles,
+  NATIVE_CARD_STYLE_LABELS,
+  resolveNativeCardStyle,
+  HOMEPAGE_POSITION_CARD_STYLE,
+  ARTICLE_POSITION_CARD_STYLE,
+} from "@/lib/ads/nativeCardStyles";
 
 export interface NativeContentData {
   title: string;
@@ -46,8 +53,9 @@ export interface NativeContentData {
   categoryColor: string;
   readTime: string;
   author: string;
+  date?: string;
   layout: "column" | "row";
-  cardStyle: "news-grid" | "sidebar-list" | "sidebar-featured" | "latest-articles" | "hero-side" | "review-list" | "carousel";
+  cardStyle: string;
 }
 
 export interface TrackingPixelsData {
@@ -81,7 +89,7 @@ export interface EditingPosition {
 interface Props {
   editingPosition: EditingPosition;
   setEditingPosition: React.Dispatch<React.SetStateAction<EditingPosition | null>> | ((position: EditingPosition) => void);
-  onSave: () => void;
+  onSave: (position?: EditingPosition) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
@@ -393,7 +401,9 @@ export default function AdSnippetEditor({
   onCancel,
   isLoading,
 }: Props): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<"custom" | "native" | "media">("custom");
+  const [activeTab, setActiveTab] = useState<"custom" | "native" | "media">(() =>
+    editingPosition.templateType === "native_feed" ? "native" : "custom"
+  );
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [lastSetBy, setLastSetBy] = useState<"manual" | "upload" | "none">(() => {
@@ -424,11 +434,19 @@ export default function AdSnippetEditor({
     return "";
   });
 
-  // Native feed ad content state
+  // Native feed ad content state — cardStyle defaults to the section-matching suggestion
+  const suggestedCardStyle = (() => {
+    const map =
+      editingPosition.pageType === "article"
+        ? ARTICLE_POSITION_CARD_STYLE
+        : HOMEPAGE_POSITION_CARD_STYLE;
+    return map[editingPosition.position] || "post-type3";
+  })();
   const DEFAULT_NATIVE_CONTENT: NativeContentData = {
     title: "", excerpt: "", image: "", sponsorLabel: "Sponsored",
     sponsorName: "", sponsorLogo: "", clickThroughUrl: "",
-    category: "", categoryColor: "", readTime: "", author: "", layout: "column", cardStyle: "news-grid",
+    category: "", categoryColor: "", readTime: "", author: "", date: "", layout: "column",
+    cardStyle: suggestedCardStyle,
   };
   const [nativeContent, setNativeContent] = useState<NativeContentData>(
     editingPosition.nativeContent || DEFAULT_NATIVE_CONTENT
@@ -478,13 +496,23 @@ export default function AdSnippetEditor({
 
         // Native feed ads don't use code — they use nativeContent fields
         if (key === "native_feed") {
+          const baseNative =
+            prev.nativeContent ||
+            nativeContent ||
+            DEFAULT_NATIVE_CONTENT;
           return {
             ...prev,
             code: "",
             templateType: "native_feed",
             type: "html",
             customCode: false,
-            nativeContent: prev.nativeContent || nativeContent,
+            nativeContent: {
+              ...baseNative,
+              cardStyle:
+                baseNative.cardStyle && baseNative.cardStyle !== "post-type3"
+                  ? baseNative.cardStyle
+                  : suggestedCardStyle,
+            },
             trackingPixels: prev.trackingPixels || trackingPixels,
           };
         }
@@ -519,7 +547,8 @@ export default function AdSnippetEditor({
   const handleTemplateSelect = (key: TemplateKey) => {
     setSelectedTemplate(key);
     applyTemplate(key, mediaUrl, clickUrl);
-    setActiveTab("custom"); // Jump to Custom Code so user sees the generated code
+    // Native ads are edited on the Native Content tab; everything else on Custom Code
+    setActiveTab(key === "native_feed" ? "native" : "custom");
     toast.success(`${PREDEFINED_TEMPLATES.find((t) => t.key === key)?.name} template applied!`);
   };
 
@@ -994,6 +1023,18 @@ export default function AdSnippetEditor({
                   </div>
                 </div>
 
+                {/* Date (meta line) */}
+                <div className="border-t pt-4">
+                  <label className="text-sm font-medium mb-2 block">Meta Date <span className="text-xs text-muted-foreground">(second meta link — matches article date style)</span></label>
+                  <Input
+                    value={nativeContent.date || ""}
+                    onChange={(e) => updateNativeField("date", e.target.value)}
+                    placeholder="March 26, 2020"
+                    maxLength={50}
+                    className="focus-visible:ring-orange-500"
+                  />
+                </div>
+
                 {/* Layout */}
                 <div className="border-t pt-4">
                   <label className="text-sm font-medium mb-2 block">Card Layout</label>
@@ -1040,18 +1081,15 @@ export default function AdSnippetEditor({
                   <label className="text-sm font-medium mb-2 block">Card Style</label>
                   <p className="text-xs text-muted-foreground mb-2">Choose the style that matches the article cards in this section</p>
                   <select
-                    value={nativeContent.cardStyle || "news-grid"}
+                    value={nativeContent.cardStyle || "post-type3"}
                     onChange={(e) => updateNativeField("cardStyle", e.target.value)}
                     className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm"
                   >
-                    <option value="news-grid">News Grid (compact image + title)</option>
-                    <option value="sidebar-list">Sidebar List (text only, no image)</option>
-                    <option value="sidebar-featured">Sidebar Featured (180px image + title + excerpt)</option>
-                    <option value="latest-articles">Latest Articles (image left, text right)</option>
-                    <option value="hero-side">Hero Side Card (full-bleed image overlay)</option>
-                    <option value="review-list">Review List (80x60 thumb + stars)</option>
-                    <option value="carousel">Featured Carousel (80x60 thumb + category + author)</option>
-                    <option value="most-viewed">Most Viewed (number + title)</option>
+                    {NativeCardStyles.map((style) => (
+                      <option key={style} value={style}>
+                        {NATIVE_CARD_STYLE_LABELS[style]}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1433,14 +1471,15 @@ export default function AdSnippetEditor({
                 return;
               }
               // Sync native content to editingPosition before save
-              setEditingPosition({
+              const finalPos: EditingPosition = {
                 ...editingPosition,
                 nativeContent,
                 trackingPixels,
                 templateType: "native_feed",
                 code: editingPosition.code || "",
-              });
-              onSave();
+              };
+              setEditingPosition(finalPos);
+              onSave(finalPos);
               return;
             }
 
@@ -1537,7 +1576,14 @@ export default function AdSnippetEditor({
                   return; // DO NOT SAVE
                 }
               }
-              onSave();
+              const finalPos: EditingPosition = {
+                ...editingPosition,
+                mediaUrl,
+                url: mediaUrl || editingPosition.url,
+                clickThroughUrl: clickUrl || editingPosition.clickThroughUrl,
+              };
+              setEditingPosition(finalPos);
+              onSave(finalPos);
             };
 
             await validateAndSave();

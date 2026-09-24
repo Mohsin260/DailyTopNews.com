@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import { Heading } from '@/components/Layout/common/Heading';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
+import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article } from '@/types';
 
 interface FeatureNewsProps {
@@ -66,6 +67,9 @@ export const FeatureNews: React.FC<FeatureNewsProps> = ({ className = '', posts 
                     </div>
                   </SwiperSlide>
                 ))}
+                <SwiperSlide>
+                  <InFeedNativeAd pageType="homepage" position="in-feed-3" cardStyle="post-type7" />
+                </SwiperSlide>
               </Swiper>
               <div className="navBtns">
                 <div className="navBtn prevtBtn fn-swiper-prev">

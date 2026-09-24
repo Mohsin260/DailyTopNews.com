@@ -1,674 +1,525 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
+import { Icon } from "@/components/Layout/common/Icon";
+import {
+  resolveNativeCardStyle,
+  type NativeCardStyle,
+} from "@/lib/ads/nativeCardStyles";
 
 interface NativeContent {
-    title: string;
-    excerpt: string;
-    image: string;
-    sponsorLabel: string;
-    sponsorName: string;
-    sponsorLogo?: string;
-    clickThroughUrl: string;
-    category?: string;
-    categoryColor?: string;
-    readTime?: string;
-    author?: string;
-    layout?: "column" | "row";
-    /** Controls which card style to render — matches the surrounding article cards */
-    cardStyle?: "news-grid" | "sidebar-list" | "sidebar-featured" | "latest-articles" | "hero-side" | "review-list" | "carousel" | "article-list" | "article-small" | "top-stories-thumb" | "category-grid" | "category-featured";
+  title: string;
+  excerpt: string;
+  image: string;
+  sponsorLabel: string;
+  sponsorName: string;
+  sponsorLogo?: string;
+  clickThroughUrl: string;
+  category?: string;
+  categoryColor?: string;
+  readTime?: string;
+  author?: string;
+  date?: string;
+  layout?: "column" | "row";
+  cardStyle?: string;
 }
 
 interface NativeAdData {
-    _id: string;
-    nativeContent: NativeContent;
-    vastTagUrl?: string;
-    vastUrl?: string;
-    trackingPixels?: {
-        impression?: string;
-        click?: string;
-    };
+  _id: string;
+  nativeContent: NativeContent;
+  vastTagUrl?: string;
+  vastUrl?: string;
+  trackingPixels?: {
+    impression?: string;
+    click?: string;
+  };
 }
 
 interface Props {
-    ad: NativeAdData;
-    variant?: "grid" | "list";
-    /** Force a specific card style — overrides ad.nativeContent.cardStyle */
-    cardStyle?: "news-grid" | "sidebar-list" | "sidebar-featured" | "latest-articles" | "hero-side" | "review-list" | "carousel" | "most-viewed" | "article-list" | "article-small" | "top-stories-thumb" | "category-grid" | "category-featured";
-    position?: string;
-    pageType?: string;
-    /** Override the display number for most-viewed style */
-    adNumber?: number;
-}
-
-// ── Card style configs ───────────────────────────────────────────
-const CARD_STYLES = {
-    /** News Grid: compact image + title (matches NewsGridItem in HomeTemplate) */
-    "news-grid": {
-        imageHeight: "clamp(120px, 22vw, 160px)",
-        imageMb: "mb-2",
-        imageRounded: true,
-        imageRoundedValue: "var(--round-5)",
-        titleSize: "15px",
-        titleLineHeight: "18px",
-        showCategory: false,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Sidebar text list: no image, title + category + excerpt (matches TopStories text items) */
-    "sidebar-list": {
-        imageHeight: "0",
-        imageMb: "mb-0",
-        imageRounded: false,
-        titleSize: "18px",
-        titleLineHeight: "24px",
-        showCategory: true,
-        showExcerpt: true,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Sidebar featured: 180px image + title + excerpt (matches Tech & Innovation / Editor's Picks) */
-    "sidebar-featured": {
-        imageHeight: "180px",
-        imageMb: "mb-3",
-        imageRounded: false,
-        titleSize: "15px",
-        titleLineHeight: "20px",
-        showCategory: false,
-        showExcerpt: true,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Latest Articles: 40% width image left, text right (matches HomeTemplate Latest Articles section) */
-    "latest-articles": {
-        imageHeight: "clamp(140px, 35vw, 200px)",
-        imageMb: "mb-0",
-        imageRounded: false,
-        imageWidth: "40%",
-        titleSize: "15px",
-        titleLineHeight: "20px",
-        showCategory: true,
-        showExcerpt: true,
-        showAuthor: true,
-        showDate: true,
-        showReadTime: false,
-    },
-    /** Hero side card: 16:10 aspect, rounded-sm (matches HeroSideCard) */
-    "hero-side": {
-        imageHeight: "100%",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "2px",
-        imageAspect: "16/10",
-        titleSize: "17px",
-        titleLineHeight: "24px",
-        showCategory: true,
-        showExcerpt: true,
-        showAuthor: true,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Review list: 80x60 thumb (matches HomeTemplate Review sidebar) */
-    "review-list": {
-        imageHeight: "60px",
-        imageWidth: "80px",
-        imageMb: "mb-0",
-        imageRounded: false,
-        titleSize: "15px",
-        titleLineHeight: "20px",
-        showCategory: false,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Carousel: 80x60 thumb in table layout (matches FeaturedCarousel) */
-    "carousel": {
-        imageHeight: "60px",
-        imageWidth: "80px",
-        imageMb: "mb-0",
-        imageRounded: false,
-        titleSize: "15px",
-        titleLineHeight: "20px",
-        showCategory: true,
-        showExcerpt: false,
-        showAuthor: true,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Most Viewed: number + title, no image (matches Most Viewed sidebar list) */
-    "most-viewed": {
-        imageHeight: "0",
-        imageMb: "mb-0",
-        imageRounded: false,
-        titleSize: "16px",
-        titleLineHeight: "22px",
-        showCategory: false,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Article list card: 130px wide, 4:3 aspect, 5px rounded (matches ArticleCard variant="list") */
-    "article-list": {
-        imageWidth: "130px",
-        imageHeight: "97.5px",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "var(--round-5)",
-        imageAspect: "4/3",
-        titleSize: "15px",
-        titleLineHeight: "20px",
-        showCategory: true,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: true,
-        showReadTime: false,
-    },
-    /** Article small card: 80x80 square, 5px rounded (matches ArticleCard variant="small") */
-    "article-small": {
-        imageWidth: "80px",
-        imageHeight: "80px",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "var(--round-5)",
-        imageAspect: "1",
-        titleSize: "14px",
-        titleLineHeight: "18px",
-        showCategory: false,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** Top Stories thumb: 64x48, 4px rounded (matches TopStoriesSidebar popular tab) */
-    "top-stories-thumb": {
-        imageWidth: "64px",
-        imageHeight: "48px",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "4px",
-        titleSize: "14px",
-        titleLineHeight: "18px",
-        showCategory: false,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** CategoryBlock grid: responsive height, 4px rounded (matches CategoryBlock grid items) */
-    "category-grid": {
-        imageHeight: "clamp(140px, 28vw, 160px)",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "4px",
-        titleSize: "14px",
-        titleLineHeight: "18px",
-        showCategory: true,
-        showExcerpt: false,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-    /** CategoryBlock featured: responsive height, 4px rounded (matches CategoryBlock featured image) */
-    "category-featured": {
-        imageHeight: "clamp(200px, 40vw, 300px)",
-        imageMb: "mb-0",
-        imageRounded: true,
-        imageRoundedValue: "4px",
-        titleSize: "16px",
-        titleLineHeight: "22px",
-        showCategory: true,
-        showExcerpt: true,
-        showAuthor: false,
-        showDate: false,
-        showReadTime: false,
-    },
-} as const;
-
-type CardStyleKey = keyof typeof CARD_STYLES;
-
-interface CardStyleConfig {
-    imageHeight?: string;
-    imageWidth?: string;
-    imageMb?: string;
-    imageRounded?: boolean;
-    imageRoundedValue?: string;
-    imageAspect?: string;
-    titleSize?: string;
-    titleLineHeight?: string;
-    showCategory?: boolean;
-    showExcerpt?: boolean;
-    showAuthor?: boolean;
-    showDate?: boolean;
-    showReadTime?: boolean;
+  ad: NativeAdData;
+  variant?: "grid" | "list";
+  cardStyle?: string;
+  position?: string;
+  pageType?: string;
+  adNumber?: number;
+  /** Optional wrapper className injected by parent layout (col-md, carousel slide, etc.) */
+  className?: string;
+  dark?: boolean;
 }
 
 /**
- * NativeAdCard — renders a native ad that matches the surrounding article cards.
- * 
- * The `cardStyle` field on nativeContent controls which card style to use:
- * - "news-grid": compact grid (NewsGridItem style)
- * - "sidebar-list": text-only list (TopStories style)
- * - "sidebar-featured": featured image + text (Tech & Innovation / Editor's Picks style)
- * - "latest-articles": list with image left, text right
- * - "hero-side": compact grid for hero side cards
- * 
- * Falls back to "grid" / "list" variants for backward compatibility.
+ * NativeAdCard — sponsored card rendered with the same NewsPrk markup/classes
+ * as real article cards so it blends into every feed section.
  */
-export default function NativeAdCard({ ad, variant: variantProp, cardStyle: cardStyleOverride, position, pageType, adNumber }: Props) {
-    const { nativeContent: nc, trackingPixels } = ad;
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [impressionTracked, setImpressionTracked] = useState(false);
+export default function NativeAdCard({
+  ad,
+  variant: variantProp,
+  cardStyle: cardStyleOverride,
+  position,
+  pageType,
+  adNumber,
+  className = "",
+  dark = false,
+}: Props) {
+  const { nativeContent: nc, trackingPixels } = ad;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [impressionTracked, setImpressionTracked] = useState(false);
 
-    // Determine card style: prop override > nativeContent.cardStyle > variant fallback
-    const cardStyle: CardStyleKey = cardStyleOverride || nc.cardStyle || (nc.layout === "row" ? "latest-articles" : "news-grid");
-    const style: CardStyleConfig = CARD_STYLES[cardStyle] || CARD_STYLES["news-grid"];
+  const cardStyle: NativeCardStyle = resolveNativeCardStyle(
+    cardStyleOverride || nc.cardStyle || (nc.layout === "row" ? "widgets-small" : "post-type3")
+  );
 
-    // ── Impression tracking ──────────────────────────────────────────
-    useEffect(() => {
-        if (!ad._id || impressionTracked || !containerRef.current) return;
+  // ── Impression tracking (50% visible) ──────────────────────────────
+  useEffect(() => {
+    if (!ad._id || impressionTracked || !containerRef.current) return;
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !impressionTracked) {
-                        setImpressionTracked(true);
-                        fetch(`/api/ads/${ad._id}/analytics`, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ event: "impression" }),
-                        }).catch(() => {});
-                        if (trackingPixels?.impression) {
-                            const img = new window.Image();
-                            img.src = trackingPixels.impression;
-                        }
-                    }
-                });
-            },
-            { threshold: 0.5 }
-        );
-        observer.observe(containerRef.current);
-        return () => observer.disconnect();
-    }, [ad._id, impressionTracked, trackingPixels?.impression]);
-
-    // ── Click handler ────────────────────────────────────────────────
-    const handleClick = useCallback((e: React.MouseEvent) => {
-        e.preventDefault();
-        if (ad._id) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !impressionTracked) {
+            setImpressionTracked(true);
             fetch(`/api/ads/${ad._id}/analytics`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ event: "click" }),
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ event: "impression" }),
             }).catch(() => {});
-        }
-        if (trackingPixels?.click) {
-            const img = new window.Image();
-            img.src = trackingPixels.click;
-        }
-        if (nc.clickThroughUrl) {
-            window.open(nc.clickThroughUrl, "_blank", "noopener,noreferrer");
-        }
-    }, [ad._id, nc.clickThroughUrl, trackingPixels?.click]);
-
-    if (!nc.title && !nc.image) return null;
-
-    const imgRounded = style.imageRounded ? `rounded-[${style.imageRoundedValue || "var(--round-5)"}]` : "";
-
-    // ── "carousel" style: 80x60 table layout (matches FeaturedCarousel) ──
-    if (cardStyle === "carousel") {
-        return (
-            <div
-                ref={containerRef}
-                className="group cursor-pointer"
-                style={{ display: "table", width: "100%", padding: "0", textAlign: "left" }}
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                <div style={{ display: "table-cell", width: "80px", maxWidth: "100px", verticalAlign: "top", position: "relative" }}>
-                    <div className="block relative overflow-hidden">
-                        {nc.image ? (
-                            <img
-                                src={nc.image}
-                                alt={nc.title || "Sponsored content"}
-                                style={{ width: "80px", height: "60px", objectFit: "cover", display: "block" }}
-                                className="transition-transform duration-300 hover:opacity-80"
-                            />
-                        ) : (
-                            <div style={{ width: "80px", height: "60px", backgroundColor: "#333" }} />
-                        )}
-                        <div
-                            className="absolute bottom-0 end-0 flex items-center justify-center"
-                            style={{ backgroundColor: "#EF4444", color: "#fff", height: "24px", width: "28px", fontSize: "12px" }}
-                        >
-                            <span style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase" }}>Ad</span>
-                        </div>
-                    </div>
-                </div>
-                <div style={{ display: "table-cell", verticalAlign: "top", padding: "0 0 0 15px" }}>
-                    {nc.category && style.showCategory && (
-                        <span
-                            className="inline-block"
-                            style={{
-                                backgroundColor: nc.categoryColor || "#ef4444",
-                                color: "#fff",
-                                fontSize: "11px",
-                                padding: "0px 6px",
-                                lineHeight: "16px",
-                                letterSpacing: "0.5px",
-                                textTransform: "uppercase",
-                                marginBottom: "6px",
-                                fontWeight: 600,
-                            }}
-                        >
-                            {nc.category}
-                        </span>
-                    )}
-                    <h5 style={{ marginTop: 0, lineHeight: style.titleLineHeight, fontSize: style.titleSize, fontWeight: 400, color: "var(--heading-color, #fff)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                        {nc.title}
-                    </h5>
-                    <div className="authar-info" style={{ fontSize: "12px", color: "var(--meta-fcolor, #888)", marginTop: "5px" }}>
-                        {(nc.author || nc.sponsorName) && style.showAuthor && (
-                            <span>{nc.author || nc.sponsorName}</span>
-                        )}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // ── "hero-side" style: full-bleed image, no rounded, no margin ──
-    if (cardStyle === "hero-side") {
-        return (
-            <div
-                ref={containerRef}
-                className="group relative overflow-hidden cursor-pointer"
-                style={{ width: "100%", height: "100%", backgroundColor: "#111" }}
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                {nc.image ? (
-                    <img
-                        src={nc.image}
-                        alt={nc.title || "Sponsored content"}
-                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        className="transition-transform duration-500 group-hover:scale-105"
-                    />
-                ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900" />
-                )}
-                <div
-                    className="absolute bottom-0 start-0 end-0 z-10"
-                    style={{
-                        padding: "15px",
-                        backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.7) 100%)",
-                        pointerEvents: "none",
-                    }}
-                >
-                    <div style={{ pointerEvents: "auto" }}>
-                        {nc.category && style.showCategory && (
-                            <span
-                                className="inline-block"
-                                style={{
-                                    backgroundColor: nc.categoryColor || "#EF4444",
-                                    color: "#fff",
-                                    fontSize: "11px",
-                                    padding: "0px 6px",
-                                    lineHeight: "16px",
-                                    letterSpacing: "0.5px",
-                                    textTransform: "uppercase",
-                                    marginBottom: "5px",
-                                    fontWeight: 600,
-                                }}
-                            >
-                                {nc.category}
-                            </span>
-                        )}
-                        <h2 style={{ color: "#fff", fontWeight: 500, fontSize: style.titleSize, lineHeight: style.titleLineHeight, textShadow: "1px 1px 1px rgba(0,0,0,.3)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", marginTop: "4px", marginBottom: 0 }}>
-                            {nc.title}
-                        </h2>
-                        {nc.excerpt && style.showExcerpt && (
-                            <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: "18px", margin: "6px 0 0", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                                {nc.excerpt}
-                            </p>
-                        )}
-                        <ul style={{ listStyle: "none", padding: 0, margin: "6px 0 0", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                            {(nc.author || nc.sponsorName) && style.showAuthor && (
-                                <li style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>
-                                    By <span style={{ fontWeight: 700, color: "#fff" }}>{nc.author || nc.sponsorName}</span>
-                                </li>
-                            )}
-                            <li style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", backgroundColor: "rgba(0,0,0,0.4)", padding: "1px 6px", borderRadius: "3px" }}>
-                                Ad
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // ── "review-list" style: 80x60 thumb + title + stars ───────────
-    if (cardStyle === "review-list") {
-        return (
-            <div
-                ref={containerRef}
-                className="group flex gap-3 pb-3 cursor-pointer"
-                style={{ borderBottom: "1px solid var(--flex-gray-15, rgba(255,255,255,0.1))" }}
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                <div className="shrink-0 relative overflow-hidden" style={{ width: "80px", height: "60px" }}>
-                    {nc.image ? (
-                        <img src={nc.image} alt={nc.title || "Sponsored content"} className="w-full h-full object-cover" />
-                    ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900" />
-                    )}
-                    <div className="absolute bottom-2 end-0 flex items-center justify-center" style={{ backgroundColor: "#EB0254", color: "#fff", height: "20px", width: "24px", fontSize: "10px" }}>
-                        Ad
-                    </div>
-                </div>
-                <div className="min-w-0">
-                    <h6 className="font-bold leading-snug mb-1" style={{ fontSize: style.titleSize, color: "var(--heading-color, #fff)" }}>
-                        {nc.title}
-                    </h6>
-                    <div className="flex items-center gap-1" style={{ fontSize: "11px", color: "var(--meta-fcolor, #888)" }}>
-                        {[1,2,3,4,5].map(s => (
-                            <i key={s} className="fas fa-star" style={{ color: s <= 4 ? "#f5a623" : "#555", fontSize: "10px" }} />
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // ── "latest-articles" style: image left, text right ─────────────
-    if (cardStyle === "latest-articles") {
-        return (
-            <div
-                ref={containerRef}
-                className="group flex flex-row gap-4 mb-4 pb-4 cursor-pointer"
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                <div className="shrink-0 relative" style={{ flex: "0 0 40%" }}>
-                    {nc.image ? (
-                        <img
-                            src={nc.image}
-                            alt={nc.title || "Sponsored content"}
-                            className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            style={{ height: style.imageHeight }}
-                        />
-                    ) : (
-                        <div className="w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900" style={{ height: style.imageHeight }} />
-                    )}
-                    <div className="absolute flex items-center justify-center rounded-full z-1" style={{ backgroundColor: "#eb0254", color: "#fff", height: "30px", width: "30px", fontSize: "13px", top: "-15px", left: "20px" }}>
-                        <i className="fa-solid fa-bolt-lightning" />
-                    </div>
-                </div>
-                <div className="min-w-0" style={{ flex: "1 1 65%" }}>
-                    {nc.category && style.showCategory && (
-                        <span className="inline-block mb-1" style={{ backgroundColor: nc.categoryColor || "#eb0254", color: "#fff", fontSize: "12px", padding: "0px 8px", lineHeight: "18px", textTransform: "uppercase" }}>
-                            {nc.category}
-                        </span>
-                    )}
-                    <h4 className="font-normal md:font-bold leading-tight mb-1" style={{ fontSize: style.titleSize, lineHeight: style.titleLineHeight, color: "var(--heading-color, #fff)" }}>
-                        {nc.title}
-                    </h4>
-                    <div className="flex items-center gap-2 mb-2" style={{ fontSize: "12px", color: "var(--meta-fcolor, #888)" }}>
-                        {(nc.author || nc.sponsorName) && style.showAuthor && (
-                            <span>By <span style={{ fontWeight: 700, color: "var(--heading-color, #fff)" }}>{nc.author || nc.sponsorName}</span></span>
-                        )}
-                    </div>
-                    <span style={{ color: "#71717a", fontSize: "10px", fontWeight: 400, textTransform: "uppercase" }}>Sponsored</span>
-                    {nc.excerpt && style.showExcerpt && (
-                        <p className="text-sm line-clamp-2 hidden sm:block" style={{ color: "var(--excerpt-color, #bbb)" }}>{nc.excerpt}</p>
-                    )}
-                </div>
-            </div>
-        );
-    }
-
-    // ── "sidebar-featured" style: full-width image + title + excerpt ─
-    if (cardStyle === "sidebar-featured") {
-        return (
-            <div
-                ref={containerRef}
-                className="mb-3 pb-3 cursor-pointer"
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                {nc.image && (
-                    <div className="block mb-3">
-                        <img src={nc.image} alt={nc.title || "Sponsored content"} className="w-full object-cover" style={{ height: style.imageHeight }} />
-                    </div>
-                )}
-                <h5 className="font-bold leading-snug mb-1" style={{ fontSize: style.titleSize, lineHeight: style.titleLineHeight, color: "var(--heading-color, #fff)" }}>
-                    {nc.title}
-                </h5>
-                {nc.excerpt && style.showExcerpt && (
-                    <p className="text-xs" style={{ color: "var(--meta-fcolor, #888)", fontSize: "12px" }}>{nc.excerpt}</p>
-                )}
-            </div>
-        );
-    }
-
-    // ── "sidebar-list" style: text only, no image ────────────────────
-    if (cardStyle === "sidebar-list") {
-        return (
-            <div
-                ref={containerRef}
-                className="post-grid cursor-pointer"
-                style={{ padding: "14px 0", borderBottom: "1px solid var(--flex-gray-15, rgba(255,255,255,0.1))" }}
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-            >
-                <div className="posts-inner" style={{ padding: 0 }}>
-                    <h6 className="posts-title" style={{ fontFamily: "Roboto, sans-serif", fontSize: style.titleSize, lineHeight: style.titleLineHeight, fontWeight: 500, color: "var(--heading-color, #fff)", marginBottom: "5px" }}>
-                        {nc.title}
-                    </h6>
-                    <div className="flex items-center gap-2" style={{ fontSize: "12px", color: "var(--meta-fcolor, #888)", marginBottom: "5px" }}>
-                        {nc.category && style.showCategory && (
-                            <span style={{ backgroundColor: nc.categoryColor || "#4c66a3", color: "#fff", fontSize: "14px", padding: "0px 8px", lineHeight: "20px", textTransform: "uppercase", fontWeight: 600 }}>{nc.category}</span>
-                        )}
-                        <span style={{ color: "#71717a", fontSize: "10px", fontWeight: 400, textTransform: "uppercase" }}>Sponsored</span>
-                    </div>
-                    {nc.excerpt && style.showExcerpt && (
-                        <p style={{ fontFamily: '"Source Sans Pro", sans-serif', fontWeight: 400, fontSize: "15px", color: "var(--excerpt-color, #bbb)", lineHeight: "20px", margin: 0, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                            {nc.excerpt}
-                        </p>
-                    )}
-                </div>
-            </div>
-        );
-    }
-
-    // ── "most-viewed" style: number + title (renders inside template's <li>) ──
-    if (cardStyle === "most-viewed") {
-        const displayNumber = adNumber != null ? String(adNumber).padStart(2, "0") : (nc.readTime || "04");
-        return (
-            <div
-                ref={containerRef}
-                className="cursor-pointer"
-                onClick={handleClick}
-                role="link"
-                tabIndex={0}
-                aria-label={`Sponsored: ${nc.title}`}
-                style={{ display: "flex", alignItems: "flex-start", width: "100%" }}
-            >
-                <span className="count" style={{ flexShrink: 0, width: "20%", color: "var(--meta-fcolor, #888)", fontSize: "40px", paddingInlineEnd: "20px", lineHeight: "24px", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 600 }}>
-                    {displayNumber}
-                </span>
-                <span className="text" style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "16px", paddingInlineStart: "20px", borderInlineStart: "1px solid var(--flex-gray-15, rgba(255,255,255,0.1))", fontWeight: 600, lineHeight: "22px", color: "var(--heading-color, #fff)" }}>
-                    {nc.title}
-                    <span style={{ display: "block", fontSize: "10px", color: "#71717a", fontWeight: 400, textTransform: "uppercase", marginTop: "4px" }}>Sponsored</span>
-                </span>
-            </div>
-        );
-    }
-
-    // ── Default: "news-grid" style ──────────────────────────────────
-    return (
-        <div
-            ref={containerRef}
-            className="group cursor-pointer"
-            onClick={handleClick}
-            role="link"
-            tabIndex={0}
-            aria-label={`Sponsored: ${nc.title}`}
-        >
-            {nc.image && (
-                <div
-                    className={`relative overflow-hidden ${imgRounded} mb-2`}
-                    style={{
-                        width: style.imageWidth || "100%",
-                        aspectRatio: style.imageAspect || undefined,
-                    }}
-                >
-                    <img
-                        src={nc.image}
-                        alt={nc.title || "Sponsored content"}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        style={{ height: style.imageAspect ? "100%" : style.imageHeight }}
-                    />
-                    <div className="absolute bottom-0 end-0 flex items-center justify-center" style={{ backgroundColor: "#EF4444", color: "#fff", height: "24px", width: "28px", fontSize: "12px" }}>
-                        <span className="text-[8px] font-bold uppercase">Ad</span>
-                    </div>
-                </div>
-            )}
-            <h5
-                className="font-bold leading-snug mb-1"
-                style={{
-                    fontSize: style.titleSize,
-                    lineHeight: style.titleLineHeight,
-                    color: "var(--heading-color, #fff)",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                }}
-            >
-                {nc.title}
-            </h5>
-            <div className="flex items-center gap-2" style={{ fontSize: "12px", color: "var(--meta-fcolor, #888)" }}>
-                <span style={{ color: "#71717a", fontSize: "10px", fontWeight: 400, textTransform: "uppercase" }}>Sponsored</span>
-            </div>
-        </div>
+            if (trackingPixels?.impression) {
+              const img = new window.Image();
+              img.src = trackingPixels.impression;
+            }
+          }
+        });
+      },
+      { threshold: 0.5 }
     );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [ad._id, impressionTracked, trackingPixels?.impression]);
+
+  // ── Click handler ──────────────────────────────────────────────────
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (ad._id) {
+        fetch(`/api/ads/${ad._id}/analytics`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event: "click" }),
+        }).catch(() => {});
+      }
+      if (trackingPixels?.click) {
+        const img = new window.Image();
+        img.src = trackingPixels.click;
+      }
+      if (nc.clickThroughUrl) {
+        window.open(nc.clickThroughUrl, "_blank", "noopener,noreferrer");
+      }
+    },
+    [ad._id, nc.clickThroughUrl, trackingPixels?.click]
+  );
+
+  if (!nc.title && !nc.image) return null;
+
+  const href = nc.clickThroughUrl || "#";
+  const category = nc.category || "Sponsored";
+  const dateLabel = nc.date || nc.sponsorLabel || "Sponsored";
+  const sponsoredLabel = nc.sponsorLabel || "Sponsored";
+  const excerpt = nc.excerpt || "";
+  const title = nc.title || "";
+  const image = nc.image;
+  const counter = adNumber != null ? String(adNumber) : nc.readTime || "01";
+
+  const metaDate = (
+    <Link href={href} onClick={handleClick}>
+      {dateLabel}
+    </Link>
+  );
+  const metaCategory = (
+    <Link href={href} onClick={handleClick}>
+      {category}
+    </Link>
+  );
+  const titleLink = (
+    <Link href={href} onClick={handleClick}>
+      {title}
+    </Link>
+  );
+
+  const rootProps = {
+    ref: containerRef,
+    className: `native-ad-card ${className}`.trim(),
+    onClick: handleClick,
+    role: "link" as const,
+    tabIndex: 0,
+    "aria-label": `Sponsored: ${title}`,
+    "data-ad-position": position,
+    "data-ad-page": pageType,
+    "data-card-style": cardStyle,
+    "data-sponsor": sponsoredLabel,
+  };
+
+  // ── post-type5: Trending carousel slide (80×70 + excerpt) ─────────
+  if (cardStyle === "post-type5") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post widgets_small post_type5">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+          </div>
+          <div className="single_post_text">
+            <h4>{titleLink}</h4>
+            <p>{excerpt}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type6: Gallery hero overlay ───────────────────────────────
+  if (cardStyle === "post-type6") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type6">
+          <div className="post_img gradient1">
+            {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            <div className="single_post_text">
+              <div className="meta meta_separator1">
+                {metaCategory}
+                {metaDate}
+              </div>
+              <h4>{titleLink}</h4>
+              {excerpt ? (
+                <>
+                  <div className="space-10" />
+                  <p className="post-p">{excerpt}</p>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type7: Feature News fixed overlay ─────────────────────────
+  if (cardStyle === "post-type7") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type6 post_type7">
+          <div className="post_img gradient1">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
+          </div>
+          <div className="single_post_text">
+            <div className="meta5">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type9: Mix Area large overlay ─────────────────────────────
+  if (cardStyle === "post-type9") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type6 post_type9">
+          <div className="post_img gradient1">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+            <span className="tranding">
+              <Icon name="bolt" />
+            </span>
+          </div>
+          <div className="single_post_text">
+            <div className="meta">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type11: Video featured (img + grey panel) ─────────────────
+  if (cardStyle === "post-type11") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type3 post_type11">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+          </div>
+          <div className={`single_post_text padding30 ${dark ? "dark-2" : "fourth_bg"}`}>
+            <div className="meta3">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type12: Business split row ────────────────────────────────
+  if (cardStyle === "post-type12") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type3 post_type12 mb30">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+          </div>
+          <div className="single_post_text">
+            <div className="meta3">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+            {excerpt ? (
+              <>
+                <div className="space-10" />
+                <p className="post-p">{excerpt}</p>
+              </>
+            ) : null}
+            <div className="space-20" />
+            <a href={href} onClick={handleClick} className="readmore">
+              Read more
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── post-type15: Latest blog rounded card ──────────────────────────
+  if (cardStyle === "post-type15") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post post_type3 mb30 post_type15 border-radious5">
+          <div className="post_img border-radious5">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+            <span className="tranding border_tranding">
+              <Icon name="bolt" />
+            </span>
+          </div>
+          <div className="single_post_text padding20 white_bg">
+            <Link href={href} onClick={handleClick}>
+              {title}
+            </Link>
+            {excerpt ? (
+              <>
+                <div className="space-10" />
+                <p className="post-p">{excerpt}</p>
+              </>
+            ) : null}
+            <div className="space-20" />
+            <div className="meta3">
+              {metaCategory}
+              {metaDate}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── type8: Most Viewed (thumb + ghost counter) ─────────────────────
+  if (cardStyle === "type8") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post widgets_small type8">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+            <span className="tranding">
+              <Icon name="bolt" />
+            </span>
+          </div>
+          <div className="single_post_text">
+            <div className="meta2">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+          <div className="type8_count">
+            <h2>{counter}</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── type10: Popular numbered (tranding_border badge) ───────────────
+  if (cardStyle === "type10") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post type10 widgets_small mb15">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+            <span className="tranding tranding_border">{counter}</span>
+          </div>
+          <div className="single_post_text">
+            <h4>{titleLink}</h4>
+            <div className="meta4">{metaCategory}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── widgets-type4: Most Shared (number circle + share counts) ──────
+  if (cardStyle === "widgets-type4") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post widgets_small widgets_type4">
+          <div className="post_img number">
+            <h2>{counter}</h2>
+          </div>
+          <div className="single_post_text">
+            <div className="meta2">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+            <ul className="inline socail_share">
+              <li>
+                <a href={href} onClick={handleClick}>
+                  <Icon name="twitter" /> 2.2K
+                </a>
+              </li>
+              <li>
+                <a href={href} onClick={handleClick}>
+                  <Icon name="facebook-f" /> 2.2K
+                </a>
+              </li>
+            </ul>
+            <div className="space-15" />
+            {dark ? <div className="border_white" /> : <div className="border_black" />}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── widgets-small-sep: Related list (thumb + meta_separator1) ──────
+  if (cardStyle === "widgets-small-sep") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post widgets_small">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+          </div>
+          <div className="single_post_text">
+            <div className="meta2 meta_separator1">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+        </div>
+        <div className="space-15" />
+        <div className="border_white" />
+        <div className="space-15" />
+      </div>
+    );
+  }
+
+  // ── post-type3 (default) & widgets-small ───────────────────────────
+  if (cardStyle === "widgets-small") {
+    return (
+      <div {...rootProps}>
+        <div className="single_post widgets_small">
+          <div className="post_img">
+            <div className="img_wrap">
+              <a href={href} onClick={handleClick}>
+                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+              </a>
+            </div>
+            <span className="tranding">
+              <Icon name="bolt" />
+            </span>
+          </div>
+          <div className="single_post_text">
+            <div className="meta2">
+              {metaCategory}
+              {metaDate}
+            </div>
+            <h4>{titleLink}</h4>
+          </div>
+        </div>
+        <div className="space-15" />
+        {dark ? <div className="border_white" /> : <div className="border_black" />}
+        <div className="space-15" />
+      </div>
+    );
+  }
+
+  // ── post-type3: standard feature card ──────────────────────────────
+  return (
+    <div {...rootProps}>
+      <div className="single_post post_type3 mb30">
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
+          </div>
+          <span className="tranding">
+            <Icon name="bolt" />
+          </span>
+        </div>
+        <div className="single_post_text">
+          <div className="meta3">
+            {metaCategory}
+            {metaDate}
+          </div>
+          <h4>{titleLink}</h4>
+          {excerpt ? (
+            <>
+              <div className="space-10" />
+              <p className="post-p">{excerpt}</p>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
 }
