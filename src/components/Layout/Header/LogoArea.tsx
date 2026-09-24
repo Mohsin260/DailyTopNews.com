@@ -16,9 +16,8 @@ export const LogoArea: React.FC<LogoAreaProps> = ({ className = '', dark = false
         <div className="row">
           <div className="col-lg-4 align-self-center">
             <div className="logo">
-              <Link href="/" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '20px' }}>
-                <img src={dark ? logoDark : logoLight} alt="logo" style={{ width: '50px' }} />
-                <h1 style={{ fontFamily: '-moz-initial', fontSize: '40px' }}>DailyTopNews</h1>
+              <Link href="/">
+                <img src={dark ? logoDark : logoLight} alt="logo" />
               </Link>
             </div>
           </div>

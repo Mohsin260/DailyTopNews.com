@@ -15,19 +15,19 @@ const twitterFeeds = [
   {
     title:
       'Cyber Monday Sale, Save 33% on Jannah theme during our year-end Sale, Purchase a new license for your next project',
-    linkText: '@newspark #TECHNOLOGY https://dribbble.com/subash_chandra',
+    linkText: '@dailytopnews #TECHNOLOGY https://dribbble.com/subash_chandra',
     date: 'March 26, 2020',
   },
   {
     title:
       'Cyber Monday Sale, Save 33% on Jannah theme during our year-end Sale, Purchase a new license for your next project',
-    linkText: '@newspark #TECHNOLOGY https://dribbble.com/subash_chandra',
+    linkText: '@dailytopnews #TECHNOLOGY https://dribbble.com/subash_chandra',
     date: 'March 26, 2020',
   },
   {
     title:
       'Cyber Monday Sale, Save 33% on Jannah theme during our year-end Sale, Purchase a new license for your next project',
-    linkText: '@newspark #TECHNOLOGY https://dribbble.com/subash_chandra',
+    linkText: '@dailytopnews #TECHNOLOGY https://dribbble.com/subash_chandra',
     date: 'March 26, 2020',
   },
 ];
@@ -332,7 +332,7 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
               <div className="space-40" />
 
               <div className="footer_contact">
-                <h3 className="widget-title2">Newspark news services</h3>
+                <h3 className="widget-title2">dailytopnews news services</h3>
                 <div className="single_fcontact">
                   <div className="fcicon">
                     <img src={mobileIcon} alt="mobile" />
@@ -349,7 +349,7 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                   <div className="fcicon">
                     <img src={footerContactIconBase64} alt="contact" />
                   </div>
-                  <Link href="/">Contact Newspark news</Link>
+                  <Link href="/">Contact dailytopnews news</Link>
                 </div>
               </div>
             </div>

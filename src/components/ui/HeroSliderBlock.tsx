@@ -90,7 +90,10 @@ function SliderPost({ article, categories, height, fill }: { article?: Article; 
               fontWeight: 600,
             }}
           >
-            {cat?.label || article.category}
+            {(() => {
+              const raw = cat?.label || article.category;
+              return raw.charAt(0).toUpperCase() + raw.slice(1);
+            })()}
           </span>
           <h2 style={{ color: "#fff", fontWeight: 500, fontSize: height > 300 ? "17px" : "14px", lineHeight: height > 300 ? "24px" : "18px", textShadow: "1px 1px 1px rgba(0,0,0,.3)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", marginTop: "4px", marginBottom: 0 }}>
             <Link href={`/posts/${article.slug}`} style={{ color: "#fff" }} className="hover:text-[#EF4444] transition-colors">

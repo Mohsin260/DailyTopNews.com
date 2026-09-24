@@ -44,7 +44,7 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                   </div>
                   <div className="single_post_text">
                     <div className="meta3">
-                      <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.category}</Link>
+                       <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.categoryLabel || featuredPost.category}</Link>
                       <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.date}</Link>
                     </div>
                     <h4>
@@ -75,7 +75,7 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                         prevEl: '.swiper-button-prev13',
                       }}
                       slidesPerView={1}
-                      grid={{ rows: 6 }}
+                      grid={{ rows: 5 }}
                     >
                       {posts.map((item, idx) => (
                         <SwiperSlide key={idx}>
@@ -93,7 +93,7 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                               </div>
                               <div className="single_post_text">
                                 <div className="meta2">
-                                  <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                                   <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                                   <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                                 </div>
                                 <h4>

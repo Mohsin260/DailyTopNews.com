@@ -75,18 +75,14 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                       <img src={videoThumb} alt="video1" />
                     </Link>
                   </div>
-                  <p
-                    onClick={() => setVideoModalOpen(true)}
-                    className="youtube_middle"
-                    style={{ cursor: 'pointer' }}
-                  >
+                  <p onClick={() => setVideoModalOpen(true)} className="youtube_middle">
                     <Icon name="youtube-play" />
                   </p>
                 </div>
                 {featuredPost && (
                   <div className={`single_post_text padding30 ${dark ? 'dark-2' : 'fourth_bg'}`}>
                     <div className="meta3">
-                      <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.category}</Link>
+                      <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.categoryLabel || featuredPost.category}</Link>
                       <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>{featuredPost.date}</Link>
                     </div>
                     <h4>
@@ -129,7 +125,7 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                               <Link href={`/post/${getArticleSlug(post.title)}`}>{post.title}</Link>
                             </h4>
                             <div className="meta4">
-                              <Link href={`/post/${getArticleSlug(post.title)}`}>{post.category}</Link>
+                               <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
                             </div>
                           </div>
                         </div>

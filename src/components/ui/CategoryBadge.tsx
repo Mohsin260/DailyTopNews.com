@@ -20,7 +20,8 @@ export default function CategoryBadge({
     className = "",
 }: Props) {
     const slug = article?.category ?? categoryProp ?? "news";
-    const label = article?.categoryLabel ?? labelProp ?? slug;
+    const rawLabel = article?.categoryLabel ?? labelProp ?? slug;
+    const label = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
 
     // Use direct static JSON to ensure colors load consistently without relying on props mapping
     const cat = categoryData.find((c) => c.slug === slug) || categories?.find((c) => c.slug === slug);

@@ -56,7 +56,7 @@ export const FeatureNews: React.FC<FeatureNewsProps> = ({ className = '', posts 
                       </div>
                       <div className="single_post_text">
                         <div className="meta5">
-                          <Link href={`/post/${getArticleSlug(post.title)}`}>{post.category}</Link>
+                          <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
                           <Link href={`/post/${getArticleSlug(post.title)}`}>{post.date}</Link>
                         </div>
                         <h4>

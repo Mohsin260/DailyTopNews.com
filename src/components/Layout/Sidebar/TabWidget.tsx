@@ -76,7 +76,7 @@ export const TabWidget: React.FC<TabWidgetProps> = ({ className = '', dark = fal
                   </div>
                   <div className="single_post_text">
                     <div className="meta2 meta_separator1">
-                      <Link href="#">{item.category}</Link>
+                      <Link href="#">{item.categoryLabel || item.category}</Link>
                       <Link href="#">{item.date}</Link>
                     </div>
                     <h4>

@@ -13,8 +13,8 @@ export const BannerWidget: React.FC<BannerWidgetProps> = ({
     <AdSlot
       pageType={pageType}
       position="sidebar-rectangle"
-      width="300px"
-      height="250px"
+      width="350px"
+      height="280px"
       responsive
       fullWidth
       wrapperClassName={`banner2 mb30 ${className}`}

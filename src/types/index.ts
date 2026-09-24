@@ -5,6 +5,7 @@ export interface PostItem {
   body?: string;
   image?: string;
   category?: string;
+  categoryLabel?: string;
   date?: string;
   icon?: string;
 }

@@ -46,7 +46,7 @@ export const TrendingCarousel: React.FC<TrendingCarouselProps> = ({ className = 
                         <div className="post_img">
                           <div className="img_wrap">
                             <Link href={`/post/${getArticleSlug(item.title)}`}>
-                              <img src={item.image} alt="slider5" style={{ minHeight: '91px' }} />
+                              <img src={item.image} alt="slider5" />
                             </Link>
                           </div>
                         </div>
@@ -54,7 +54,7 @@ export const TrendingCarousel: React.FC<TrendingCarouselProps> = ({ className = 
                           <h4>
                             <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
                           </h4>
-                          <p className='text-truncate' style={{ width: '220px' }}>{item.excerpt}</p>
+                          <p>{item.excerpt}</p>
                         </div>
                       </div>
                     </SwiperSlide>

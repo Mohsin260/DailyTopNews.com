@@ -61,14 +61,13 @@ export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, 
                           <span
                             onClick={() => setVideoModalOpen(true)}
                             className={`tranding ${idx % 2 ? 'left' : ''}`}
-                            style={{ cursor: 'pointer' }}
                           >
                             <Icon name="bolt" />
                           </span>
                         </div>
                         <div className="single_post_text">
                           <div className="meta">
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                             <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                           </div>
                           <h4>

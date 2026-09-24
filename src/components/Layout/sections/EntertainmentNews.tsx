@@ -21,7 +21,7 @@ export const EntertainmentNews: React.FC<EntertainmentNewsProps> = ({ entertainm
             </div>
             <div className="single_post_text">
               <div className="meta3">
-                <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category || 'TECHNOLOGY'}</Link>
+                <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category || 'Technology'}</Link>
                 <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
               </div>
               <h4>

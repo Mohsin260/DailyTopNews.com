@@ -41,7 +41,7 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
                   <p className="post-p">{item.excerpt}</p>
                   <div className="space-20" />
                   <div className="meta3">
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                     <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                   </div>
                 </div>

@@ -110,17 +110,13 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                         <div className="single_post post_type6 xs-mb30">
                           <div className="post_img gradient1">
                             <img src={post.image} alt={post.title} />
-                            <span
-                              onClick={() => setVideoModalOpen(true)}
-                              className="tranding"
-                              style={{ cursor: 'pointer' }}
-                            >
+                            <span onClick={() => setVideoModalOpen(true)} className="tranding">
                               <Icon name="play" />
                             </span>
                           </div>
                           <div className="single_post_text">
                             <div className="meta meta_separator1">
-                              <Link href={`/category/${(post.category || 'technology').toLowerCase()}`}>{post.category}</Link>
+                               <Link href={`/category/${(post.category || 'technology').toLowerCase()}`}>{post.category}</Link>
                               <Link href="#">{post.date}</Link>
                             </div>
                             <h4>
@@ -196,7 +192,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                               </div>
                               <div className="single_post_text">
                                 <div className="meta2 meta_separator1">
-                                  <Link href="#">{item.category}</Link>
+                                   <Link href="#">{item.categoryLabel || item.category}</Link>
                                   <Link href="#">{item.date}</Link>
                                 </div>
                                 <h4>

@@ -47,7 +47,6 @@ export const UpcomingMatches: React.FC<UpcomingMatchesProps> = ({ dark = false }
                 className="CircularProgressbar CircularProgressbarSt"
                 viewBox="0 0 100 100"
                 data-test-id="CircularProgressbar"
-                style={{ width: '100%', height: '100%' }}
               >
                 <path
                   className="CircularProgressbar-trail"

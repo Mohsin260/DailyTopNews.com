@@ -40,7 +40,7 @@ export const BusinessNews: React.FC<BusinessNewsProps> = ({
                   </div>
                   <div className="single_post_text">
                     <div className="meta3">
-                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category || 'uiux.subash'}</Link>
+                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category || 'Business'}</Link>
                       <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date || 'March 26, 2020'}</Link>
                     </div>
                     <h4>

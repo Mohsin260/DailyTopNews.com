@@ -17,7 +17,7 @@ export default async function HomePage() {
   };
 
   const trendingPosts = pick(12);
-  const featuredPosts = pick(4);
+  const featuredPosts = pick(6);
   const entertainmentPosts = pick(4);
   const businessPosts = pick(4);
   const sportsPosts = pick(7);

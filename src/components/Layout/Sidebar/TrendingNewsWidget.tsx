@@ -31,7 +31,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({ dark = f
           </div>
           <div className="single_post_text">
             <div className="meta3">
-              <Link href="#">{featuredPost.category}</Link>
+              <Link href="#">{featuredPost.categoryLabel || featuredPost.category}</Link>
               <Link href="#">{featuredPost.date}</Link>
             </div>
             <h4>
@@ -64,7 +64,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({ dark = f
             </div>
             <div className="single_post_text">
               <div className="meta2">
-                <Link href="#">{item.category}</Link>
+                <Link href="#">{item.categoryLabel || item.category}</Link>
                 <Link href="#">{item.date}</Link>
               </div>
               <h4>

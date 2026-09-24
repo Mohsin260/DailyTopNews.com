@@ -48,7 +48,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   const videoNewsFeatured = latestPosts.slice(0, 1);
   const videoNewsSidebar = latestPosts.slice(0, 10);
   const sportsFeatured = sportsPosts.slice(0, 1);
-  const sportsSidebar = sportsPosts.slice(0, 6);
+  const sportsSidebar = sportsPosts.slice(0, 5);
+  const businessCards = businessPosts.slice(0, 3);
 
   return (
     <>
@@ -147,7 +148,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 fullWidth
                 wrapperClassName="banner_area mt50 mb60 xs-mt60"
               />
-              <BusinessNews businessNews={businessPosts} />
+              <BusinessNews businessNews={businessCards} />
             </div>
             <div className="col-lg-4">
               <div className="row">

@@ -17,7 +17,10 @@ export default function FeaturedCarousel({ articles, categories }: Props) {
     return document.documentElement.dir === "rtl";
   }, []);
   const getCategoryColor = (slug: string) => categories.find(c => c.slug === slug)?.color || "#EF4444";
-  const getCategoryLabel = (slug: string) => categories.find(c => c.slug === slug)?.label || slug;
+  const getCategoryLabel = (slug: string) => {
+    const raw = categories.find(c => c.slug === slug)?.label || slug;
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  };
 
   const isVideoUrl = (url?: string) => {
     if (!url) return false;

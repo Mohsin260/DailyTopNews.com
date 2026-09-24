@@ -51,7 +51,7 @@ export const TrendingNews: React.FC<TrendingNewsProps> = ({ dark = false, carous
                 </div>
                 <div className="single_post_text">
                   <div className="meta3">
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                     <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                   </div>
                   <h4>
@@ -92,7 +92,7 @@ export const TrendingNews: React.FC<TrendingNewsProps> = ({ dark = false, carous
                 </div>
                 <div className="single_post_text">
                   <div className="meta2">
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                     <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                   </div>
                   <h4>
@@ -121,7 +121,7 @@ export const TrendingNews: React.FC<TrendingNewsProps> = ({ dark = false, carous
                 </div>
                 <div className="single_post_text">
                   <div className="meta2">
-                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.category}</Link>
+                    <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
                     <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
                   </div>
                   <h4>

@@ -23,6 +23,183 @@
   object-fit: cover;
 }
 
+/* Interactive play/bolt badges (newsprk.css .tranding 54px rule has no cursor) */
+.post_gallary_area .tranding,
+.mix_area .tranding,
+.single_post .tranding {
+  cursor: pointer;
+}
+
+/* Feature News: fixed 320px portrait cards like reference (our images are 16:9) */
+.feature_carousel .post_type7 {
+  height: 320px;
+}
+.feature_carousel .post_type7 .post_img,
+.feature_carousel .post_type7 .post_img > a,
+.feature_carousel .post_type7 .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.feature_carousel .post_type7 .single_post_text h4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 42px;
+}
+.feature_carousel .post_type7 .single_post_text h4 a {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Trending carousel: fixed 70px rows like reference (clamp title to 2 lines, excerpt to 1) */
+.carousel_posts1 .post_type5 .single_post_text h4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 42px;
+}
+.carousel_posts1 .post_type5 .single_post_text h4 a {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.carousel_posts1 .post_type5 .single_post_text p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-height: 21px;
+}
+
+/* widgets_small thumbs: img_wrap must fill .post_img so img height:100% resolves against 77/64px, not intrinsic 16:9 */
+.widgets_small .post_img .img_wrap {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.widgets_small .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+/* type8 (Most Viewed) uses 80x64 — same fill requirement */
+.widgets_small.type8 .post_img .img_wrap,
+.widgets_small.type8 .post_img img {
+  height: 100%;
+  width: 100%;
+}
+/* Clamp widgets_small titles to 2 lines like reference (prevents 91px / 63px overflow cards) */
+.widgets_small .single_post_text h4,
+.widgets_small .single_post_text h4 a {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 42px;
+}
+
+/* Trending News carousel main image: match ref aspect ~1.4:1 (355x253.6); our images are 16:9 */
+.trancarousel .single_post.post_type3 .post_img {
+  aspect-ratio: 355 / 253.5625;
+}
+.trancarousel .single_post.post_type3 .post_img .img_wrap,
+.trancarousel .single_post.post_type3 .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Mix carousel: ref slide/image is 540x420 (9:7); our 16:9 images render 540x303.75 */
+.mix_carousel .single_post.post_type6 .post_img {
+  aspect-ratio: 540 / 420;
+}
+.mix_carousel .single_post.post_type6 .post_img .img_wrap,
+.mix_carousel .single_post.post_type6 .post_img .img_wrap a,
+.mix_carousel .single_post.post_type6 .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.mix_carousel .single_post.post_type6 {
+  height: auto;
+}
+
+/* Entertainment News grid cards: ref thumbs are 350x250 (7:5); our 16:9 render 350x196.9 */
+.entertrainments .entertrainment_item .single_post.post_type3 .post_img {
+  aspect-ratio: 350 / 250;
+}
+.entertrainments .entertrainment_item .single_post.post_type3 .post_img .img_wrap,
+.entertrainments .entertrainment_item .single_post.post_type3 .post_img .img_wrap a,
+.entertrainments .entertrainment_item .single_post.post_type3 .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Sports News featured: ref image 350x250 (7:5); our 16:9 renders 350x196.9 */
+.sports .single_post.post_type3:not(.widgets_small) .post_img {
+  aspect-ratio: 350 / 250;
+}
+.sports .single_post.post_type3:not(.widgets_small) .post_img .img_wrap,
+.sports .single_post.post_type3:not(.widgets_small) .post_img a,
+.sports .single_post.post_type3:not(.widgets_small) .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+/* Sports side thumbs: intermediate <a> must fill so img height:100% resolves against 77px */
+.sports .widgets_small .post_img .img_wrap a {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.sports .widgets_small .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Business News (post_type12): ref image 350x250; our 16:9 renders 350x197 */
+.businerss_news .single_post.post_type12 .post_img {
+  aspect-ratio: 350 / 250;
+}
+.businerss_news .single_post.post_type12 .post_img .img_wrap,
+.businerss_news .single_post.post_type12 .post_img a,
+.businerss_news .single_post.post_type12 .post_img img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Category labels: always capitalize on article-card meta rows (meta/meta2/meta3/meta4/meta5) */
+.single_post_text .meta a,
+.single_post_text .meta2 a,
+.single_post_text .meta3 a,
+.single_post_text .meta4 a,
+.single_post_text .meta5 a,
+.meta a,
+.meta2 a,
+.meta3 a,
+.meta4 a,
+.meta5 a,
+.p-category,
+.p-category span {
+  text-transform: capitalize;
+}
+
 /* AdSlot layout (website routes do not load Tailwind — keep ad UI self-contained) */
 :root {
   --flex-gray-7: #f1f5f9;
