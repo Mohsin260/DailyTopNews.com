@@ -3,8 +3,8 @@ import { MenuItem } from '../types';
 // Static site configuration — logos, banners, navigation menus
 // All article/category data comes from JSON files → DB via lib/api.ts
 
-export const logoLight = '/assets/logo-sXs-noO5.png';
-export const logoDark = '/assets/logo-2-sokDn6Z8.png';
+export const logoLight = '/assets/dailytopnews_logo_light.png';
+export const logoDark = '/assets/dailytopnews_logo_dark.png';
 export const bannerTop = '/assets/banner-1-C4drpRxY.png';
 export const bannerSidebar = '/assets/banner-2-zRgCfOgB.jpg';
 export const bannerMiddle = '/assets/banner-1-C4drpRxY.png';
