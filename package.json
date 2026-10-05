@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev",
     "dev:en": "cross-env NEXT_PUBLIC_LOCALE=en next dev --port 3000",
     "dev:es": "cross-env NEXT_PUBLIC_LOCALE=es next dev --port 3001",
     "dev:ar": "cross-env NEXT_PUBLIC_LOCALE=ar next dev --port 3002",

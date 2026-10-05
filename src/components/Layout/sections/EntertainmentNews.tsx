@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Fragment } from 'react';
 import { PostItem } from '@/types';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
@@ -12,8 +11,10 @@ export const EntertainmentNews: React.FC<EntertainmentNewsProps> = ({ entertainm
   return (
     <>
       {entertainments.map((item, idx) => (
-        <Fragment key={idx}>
-          <div className="col-lg-6">
+        <div className="col-lg-6" key={idx}>
+          {idx === 2 ? (
+            <InFeedNativeAd pageType="homepage" position="in-feed-7" cardStyle="post-type3" />
+          ) : (
             <div className="single_post post_type3 mb30">
               <div className="post_img">
                 <div className="img_wrap">
@@ -34,13 +35,8 @@ export const EntertainmentNews: React.FC<EntertainmentNewsProps> = ({ entertainm
                 <p className="post-p">{item.body}</p>
               </div>
             </div>
-          </div>
-          {idx === 1 && (
-            <div className="col-lg-6">
-              <InFeedNativeAd pageType="homepage" position="in-feed-7" cardStyle="post-type3" />
-            </div>
           )}
-        </Fragment>
+        </div>
       ))}
     </>
   );

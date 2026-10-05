@@ -184,22 +184,22 @@ export default function NativeAdCard({
   if (cardStyle === "post-type6") {
     return (
       <div {...rootProps}>
-        <div className="single_post post_type6">
+        <div className="single_post post_type6 xs-mb30">
           <div className="post_img gradient1">
             {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-            <div className="single_post_text">
-              <div className="meta meta_separator1">
-                {metaCategory}
-                {metaDate}
-              </div>
-              <h4>{titleLink}</h4>
-              {excerpt ? (
-                <>
-                  <div className="space-10" />
-                  <p className="post-p">{excerpt}</p>
-                </>
-              ) : null}
+          </div>
+          <div className="single_post_text">
+            <div className="meta meta_separator1">
+              {metaCategory}
+              {metaDate}
             </div>
+            <h4>{titleLink}</h4>
+            {excerpt ? (
+              <>
+                <div className="space-10" />
+                <p className="post-p">{excerpt}</p>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -262,10 +262,13 @@ export default function NativeAdCard({
         <div className="single_post post_type3 post_type11">
           <div className="post_img">
             <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
+              <a href={href} onClick={handleClick} className="play_btn">
                 {image ? <img src={image} alt={title || "Sponsored"} /> : null}
               </a>
             </div>
+            <p className="youtube_middle">
+              <Icon name="youtube-play" />
+            </p>
           </div>
           <div className={`single_post_text padding30 ${dark ? "dark-2" : "fourth_bg"}`}>
             <div className="meta3">

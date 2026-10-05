@@ -71,6 +71,7 @@ interface ArticleAdEditorProps {
 }
 
 // Article template positions — must match dashboard PAGE_CONFIG article tab
+// (ordered top-to-bottom exactly as rendered on ArticleTemplate)
 const ARTICLE_POSITIONS = [
   {
     id: "top-leaderboard",
@@ -83,9 +84,34 @@ const ARTICLE_POSITIONS = [
     description: "Highest value position"
   },
   {
-    id: "sticky-footer",
-    name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`,
-    description: "Persistent at bottom"
+    id: "article-native-1",
+    name: "Native In-Content 1",
+    description: "Native post_type3 card after body content"
+  },
+  {
+    id: "in-content-1",
+    name: "In-Content Banner 1",
+    description: "Banner slot after article body"
+  },
+  {
+    id: "article-native-2",
+    name: "Native In-Content 2",
+    description: "Native post_type3 card mid-article"
+  },
+  {
+    id: "in-content-2",
+    name: "In-Content Banner 2",
+    description: "Banner slot after key takeaways"
+  },
+  {
+    id: "sidebar-infeed",
+    name: "Native Sidebar In-Feed",
+    description: "Native widgets_small_sep card after Related tabs"
+  },
+  {
+    id: "in-feed-x",
+    name: "Native Sidebar Trending",
+    description: "Native post_type3 card after Trending News widget"
   },
   {
     id: "sidebar-sticky",
@@ -103,44 +129,19 @@ const ARTICLE_POSITIONS = [
     description: "End of article content, before Related section"
   },
   {
-    id: "above-footer",
-    name: `Above Footer Leaderboard (${POSITION_SIZE_CONFIG["above-footer"]?.label || "728×90"})`,
-    description: "Below Our Latest News / Comments, above footer (banner area)"
-  },
-  {
-    id: "in-content-1",
-    name: "In-Content Banner 1",
-    description: "Banner slot after article body"
-  },
-  {
-    id: "in-content-2",
-    name: "In-Content Banner 2",
-    description: "Banner slot after key takeaways"
-  },
-  {
-    id: "article-native-1",
-    name: "Native In-Content 1",
-    description: "Native post_type3 card after body content"
-  },
-  {
-    id: "article-native-2",
-    name: "Native In-Content 2",
-    description: "Native post_type3 card mid-article"
-  },
-  {
     id: "article-related",
     name: "Native Related / Latest Blog",
     description: "Native post_type15 card in Our Latest Blog"
   },
   {
-    id: "sidebar-infeed",
-    name: "Native Sidebar In-Feed",
-    description: "Native widgets_small_sep card after Related tabs"
+    id: "above-footer",
+    name: `Above Footer Leaderboard (${POSITION_SIZE_CONFIG["above-footer"]?.label || "728×90"})`,
+    description: "Below Our Latest News / Comments, above footer (banner area)"
   },
   {
-    id: "in-feed-x",
-    name: "Native Sidebar Trending",
-    description: "Native post_type3 card after Trending News widget"
+    id: "sticky-footer",
+    name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`,
+    description: "Persistent at bottom"
   },
 ];
 

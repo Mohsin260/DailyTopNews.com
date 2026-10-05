@@ -109,6 +109,16 @@
   height: 100%;
   width: 100%;
 }
+/* Real cards wrap the img in an inline <a> — img height:100% then resolves
+   against an auto-height anonymous block and collapses to the intrinsic ratio
+   (e.g. 80x45 inside the 80x70 thumb box, leaving a white strip). Make the
+   intermediate anchor fill .img_wrap so the height chain reaches .post_img,
+   matching what the ad cards already do. */
+.widgets_small .post_img .img_wrap a {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
 /* Clamp widgets_small titles to 2 lines like reference (prevents 91px / 63px overflow cards) */
 .widgets_small .single_post_text h4,
 .widgets_small .single_post_text h4 a {
@@ -212,6 +222,18 @@
 .p-category,
 .p-category span {
   text-transform: capitalize;
+}
+
+/* Section topic titles: base theme paints .widget-title #fff (built for dark
+   panels) — invisible on light section backgrounds. Default to dark ink and
+   keep white only on genuinely dark surfaces. */
+.widget-title {
+  color: #17222b;
+}
+.primay_bg .widget-title,
+.video_posts .widget-title,
+.heading.white .widget-title {
+  color: #fff;
 }
 
 /* AdSlot layout (website routes do not load Tailwind — keep ad UI self-contained) */
@@ -361,11 +383,36 @@
   background: rgba(255, 255, 255, 0.88);
   color: #111;
 }
-.native-ad-card .single_post {
-  height: 100%;
+/* post-type9 keeps the theme's bolt badge at top-right (post_type6 .tranding)
+   — move the sponsor pill left so they don't stack on top of each other */
+.native-ad-card[data-card-style="post-type9"]::after {
+  left: 8px;
+  right: auto;
 }
+/* Thumb-left cards (widgets_small family): text fills the right side —
+   keep the pill on that side, pinned to the bottom-right corner below the
+   title instead of covering it at the top. */
+.native-ad-card[data-card-style="post-type5"]::after,
+.native-ad-card[data-card-style="widgets-small"]::after,
+.native-ad-card[data-card-style="widgets-small-sep"]::after,
+.native-ad-card[data-card-style="type8"]::after,
+.native-ad-card[data-card-style="type10"]::after {
+  top: auto;
+  bottom: 6px;
+  left: auto;
+  right: 8px;
+}
+/* NOTE: do NOT set height:100% on .native-ad-card .single_post — it overrides
+   section rules like .feature_carousel .post_type7 { height:320px } (same
+   specificity, later source) and collapses the image box so the ad image
+   stops covering its container. Real cards are auto-height; keep parity. */
 .native-ad-card .single_post_text {
   width: 100%;
+}
+/* Business split row (post_type12): theme lays it out as 48% img / 49% text —
+   the width:100% above would push the text below the image and break the row. */
+.native-ad-card .post_type12 .single_post_text {
+  width: 49%;
 }
 .native-ad-card .post_img {
   overflow: hidden;
@@ -382,6 +429,11 @@
   height: 100%;
 }
 .native-ad-card .post_img .img_wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.native-ad-card .post_img > a {
   display: block;
   width: 100%;
   height: 100%;
@@ -416,8 +468,14 @@
 .native-ad-card[data-card-style="post-type9"] .post_img {
   aspect-ratio: 540 / 420;
 }
+/* post-type7: mirror .feature_carousel .post_type7 — fixed 320px card with the
+   image stretched to fill it (min-height alone leaves .post_img auto-height,
+   so the image renders at intrinsic ratio instead of covering the card). */
 .native-ad-card[data-card-style="post-type7"] .single_post.post_type7 {
-  min-height: 320px;
+  height: 320px;
+}
+.native-ad-card[data-card-style="post-type7"] .post_img {
+  height: 100%;
 }
 .native-ad-card[data-card-style="post-type12"] .post_img {
   aspect-ratio: 350 / 250;
@@ -435,6 +493,6 @@
 }
 .native-ad-card[data-card-style="type10"] .post_img {
   width: 100px;
-  height: 56px;
-  min-height: 56px;
+  height: 56.25px;
+  min-height: 56.25px;
 }

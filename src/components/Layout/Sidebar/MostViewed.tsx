@@ -18,31 +18,13 @@ interface MostViewedProps {
   posts?: Article[];
 }
 
-const Bt = (s: Article[], n: number) => {
-  const b: Article[] = [];
-  for (let i = 0; i < n; i++) b.push({ ...s[i % s.length] });
-  let a = 0;
-  let t = Math.floor(b.length / 2) - 1;
-  const r: Article[] = [];
-  b.forEach((it, idx) => {
-    if (idx % 2) {
-      t += 1;
-      r.push({ ...b[t] });
-    } else {
-      a += 1;
-      r.push({ ...b[a] });
-    }
-  });
-  return r.map((it, idx) => ({ ...it, count: (idx % 2 ? 7 + (idx - 1) / 2 : idx / 2 + 1) as number }));
-};
-
 export const MostViewed: React.FC<MostViewedProps> = ({
   no_margin = false,
   title = 'Most View',
   dark = false,
   posts = [],
 }) => {
-  const items = posts.length > 0 ? Bt(posts, 12) : [];
+  const items = posts.slice(0, 12).map((it, idx) => ({ ...it, count: idx + 1 }));
 
   if (items.length === 0) return null;
 

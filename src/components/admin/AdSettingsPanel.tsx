@@ -29,8 +29,8 @@ const PAGE_CONFIG: {
     positions: [
       { id: "top-leaderboard", name: "Top Leaderboard", description: "Above the fold" },
       { id: "atf-rectangle", name: "ATF Rectangle", description: "Highest value position" },
-      { id: "sticky-footer", name: "Sticky Footer", description: "Persistent at bottom" },
       { id: "sidebar-sticky", name: "Sidebar Sticky", description: "Desktop only, follows scroll" },
+      { id: "sticky-footer", name: "Sticky Footer", description: "Persistent at bottom" },
     ],
   },
   {

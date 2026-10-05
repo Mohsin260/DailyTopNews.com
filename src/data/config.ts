@@ -51,12 +51,13 @@ export const menuData: MenuItem[] = [
     linkText: 'Home',
     child: true,
     icon: 'angle-down',
-    submenu: [
-      { id: 11, link: '/', linkText: 'Home 1' },
-      { id: 12, link: '/dark', linkText: 'Home Dark' },
-      { id: 13, new: true, link: '/home-two', linkText: 'Home 2' },
-      { id: 14, link: '/home-three', linkText: 'Home 3' },
-    ],
+    link: '/'
+    // submenu: [
+    //   { id: 11, link: '/', linkText: 'Home 1' },
+    //   { id: 12, link: '/dark', linkText: 'Home Dark' },
+    //   { id: 13, new: true, link: '/home-two', linkText: 'Home 2' },
+    //   { id: 14, link: '/home-three', linkText: 'Home 3' },
+    // ],
   },
   {
     id: 2,
