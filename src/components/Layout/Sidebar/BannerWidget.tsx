@@ -17,7 +17,7 @@ export const BannerWidget: React.FC<BannerWidgetProps> = ({
       height="280px"
       responsive
       fullWidth
-      wrapperClassName={`banner2 mb30 ${className}`}
+      wrapperClassName={`banner2 ${className}`}
     />
   );
 };
