@@ -96,7 +96,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-70" />
+      <div className="space-15" />
     </>
   );
 };

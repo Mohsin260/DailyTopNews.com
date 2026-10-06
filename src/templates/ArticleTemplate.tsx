@@ -68,8 +68,6 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               height="90px"
               responsive
               fullWidth
-              beforeSpaceClass="space-30"
-              afterSpaceClass="space-30"
             />
 
             <div className="single_post_heading">
@@ -86,8 +84,8 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               height="280px"
               responsive
               fullWidth
-              beforeSpaceClass="space-40"
-              afterSpaceClass="space-40"
+              beforeSpaceClass="space-10"
+              afterSpaceClass="space-10"
             />
             <ArticleMediaBlock
               media={article.articleMedia?.heroCoverMedia}
@@ -163,7 +161,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               height="90px"
               responsive
               fullWidth
-              beforeSpaceClass="space-40"
+              beforeSpaceClass="space-15"
             />
 
             {(article.keyTakeawaysContent || article.articleMedia?.keyTakeawaysMedia?.url) && (
@@ -195,7 +193,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               height="90px"
               responsive
               fullWidth
-              beforeSpaceClass="space-40"
+              beforeSpaceClass="space-15"
             />
 
             {(article.finalThoughtsContent || article.articleMedia?.finalThoughtsMedia?.url) && (
@@ -302,6 +300,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               responsive
               fullWidth
               beforeSpaceClass="space-30"
+              afterSpaceClass="space-15"
             />
             <AdSlot
               pageType="article"
@@ -317,7 +316,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
             <NewsletterWidget />
           </div>
         </div>
-        <div className="space-40" />
+        <div className="space-15" />
         <div className="row">
           <div className="col-12">
             <AdSlot
@@ -338,7 +337,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
       <div className="space-60" />
       <CommentsSection dark={true} />
       <div className="space-60" />
-      <div className="parimay_bg padding5050">
+      <div className="parimay_bg padding2020">
         <div className="container">
           <div className="row">
             <div className="col-lg-8 m-auto">

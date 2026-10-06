@@ -289,13 +289,12 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Sticky sidebar ad only — does not affect other homepage layout */
+/* Sidebar sticky slot — static (in-flow). The 300×600 ad sits directly above
+   the 350×280 sidebar-rectangle ad; making it position:sticky made it slide
+   over the rectangle banner below it while scrolling (two ads overlapping). */
 [data-ad-position="sidebar-sticky"] {
-  position: sticky;
-  top: 96px;
-  z-index: 5;
   height: auto !important;
-  max-height: calc(100vh - 120px);
+  max-height: none;
 }
 
 /* Sticky footer ad — fixed to viewport bottom (slides up from below).

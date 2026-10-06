@@ -65,8 +65,6 @@ export const HomePage: React.FC<HomePageProps> = ({
               height="90px"
               responsive
               fullWidth
-              beforeSpaceClass="space-30"
-              afterSpaceClass="space-30"
             />
           </div>
         </div>
@@ -160,7 +158,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 height="90px"
                 responsive
                 fullWidth
-                wrapperClassName="banner_area mt50 mb60 xs-mt60"
+                wrapperClassName="mb20"
               />
               <BusinessNews businessNews={businessCards} />
             </div>
@@ -186,7 +184,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-70" />
+      <div className="space-15" />
       {/* Bottom leaderboard: above the footer */}
       <div className="container">
         <div className="row">
@@ -202,7 +200,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-70" />
+      <div className="space-15" />
     </>
   );
 };
