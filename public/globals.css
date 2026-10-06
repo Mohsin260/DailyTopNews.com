@@ -455,3 +455,17 @@
   color: #888;
   font-weight: 500;
 }
+/* Our Latest Blog (post_type15) — the feed's images are 16:9 (800×450), but
+   .post_img has no theme box, so card height followed each image's natural
+   ratio (an 800×500 ad creative rendered taller than its neighbours). Lock
+   every thumb — real and native — to the same 16:9 box with cover-crop;
+   display:block also removes the inline descender gap on real thumbs, so the
+   ad card height matches the surrounding article cards exactly. Declared
+   after the .native-ad-card fill chain so height:auto wins over height:100%. */
+.post_type15 .post_img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
