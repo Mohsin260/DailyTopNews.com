@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import AdSlot from "./AdSlot";
 import NativeAdCard from "./NativeAdCard";
 import {
@@ -8,6 +7,7 @@ import {
   HOMEPAGE_POSITION_CARD_STYLE,
   ARTICLE_POSITION_CARD_STYLE,
 } from "@/lib/ads/nativeCardStyles";
+import { useNativeFeed } from "@/lib/ads/useNativeFeed";
 import type { PageType, AdPosition } from "@/lib/models/AdSnippet";
 
 interface Props {
@@ -15,15 +15,24 @@ interface Props {
   position: AdPosition;
   adNumber?: number;
   variant?: "grid" | "list";
-  /** Optional section fallback when the ad has no stored cardStyle */
+  /**
+   * Surrounding feed's card style. This ALWAYS wins over the ad's stored
+   * cardStyle so the sponsored card adopts the exact sizing/layout/aspect
+   * ratio of the article cards it sits between.
+   */
   cardStyle?: string;
   className?: string;
   dark?: boolean;
+  /** Render the trailing border/spacer pair used by list feeds (false when the host cell renders its own). */
+  separators?: boolean;
+  /** Match whether the surrounding feed's cards show the bolt badge. */
+  bolt?: boolean;
 }
 
 /**
- * In-Feed Native Ad — fetches a native_feed AdSnippet for (pageType, position)
- * and renders it with the NewsPrk card style matching the surrounding section.
+ * InFeedNativeAd — slot renderer for one configured ad position. Reads from the
+ * shared per-page useNativeFeed store (one request per page) and renders with
+ * the NewsPrk card style of the surrounding feed.
  * Non-native ads fall back to AdSlot banner rendering.
  */
 export default function InFeedNativeAd({
@@ -34,63 +43,45 @@ export default function InFeedNativeAd({
   cardStyle,
   className,
   dark,
+  separators = true,
+  bolt = true,
 }: Props) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["ads", pageType, position],
-    queryFn: async () => {
-      const res = await fetch(
-        `/api/ads?pageType=${pageType}&position=${position}&activeOnly=true`,
-        { cache: "no-store" }
-      );
-      if (!res.ok) return { items: [] };
-      return res.json() as Promise<{ items: any[] }>;
-    },
-    staleTime: 0,
-    gcTime: 0,
-  });
+  const { getAd, ready, adsEnabled } = useNativeFeed(pageType);
+  const ad = getAd(position);
 
-  const ad = data?.items?.find(
-    (a: any) =>
-      a.pageType === pageType && a.position === position && a.enabled !== false
-  );
-  const adsGloballyDisabled = (data as any)?.adsEnabled === false;
-  const hasAd = !!ad && !adsGloballyDisabled;
-
-  if (isLoading) return null;
-  if (!hasAd) return null;
-
-  // Suggested style for this slot when ad/editor didn't pin one
-  const positionDefault =
-    pageType === "article"
-      ? ARTICLE_POSITION_CARD_STYLE[position]
-      : HOMEPAGE_POSITION_CARD_STYLE[position];
+  if (!ready || !adsEnabled || !ad || ad.enabled === false) return null;
 
   if (ad.templateType === "native_feed" && ad.nativeContent) {
     const nc = ad.nativeContent;
     if (!nc.title && !nc.image) return null;
 
-    // Dashboard/nativeContent.cardStyle wins → call-site section fallback → position default
-    const resolved = resolveNativeCardStyle(nc.cardStyle || cardStyle || positionDefault);
+    // Call-site section style → dashboard/nativeContent.cardStyle → position default
+    const positionDefault =
+      pageType === "article"
+        ? ARTICLE_POSITION_CARD_STYLE[position]
+        : HOMEPAGE_POSITION_CARD_STYLE[position];
+    const resolved = resolveNativeCardStyle(cardStyle || nc.cardStyle || positionDefault);
 
     return (
       <NativeAdCard
         ad={{
           _id: ad._id,
           nativeContent: {
-            title: nc.title || "",
-            excerpt: nc.excerpt || "",
-            image: nc.image || "",
-            sponsorLabel: nc.sponsorLabel || "Sponsored",
-            sponsorName: nc.sponsorName || "",
-            sponsorLogo: nc.sponsorLogo || "",
-            clickThroughUrl: nc.clickThroughUrl || ad.clickThroughUrl || "",
-            category: nc.category || "",
-            categoryColor: nc.categoryColor || "",
-            readTime: nc.readTime || "",
-            author: nc.author || "",
-            date: nc.date || "",
-            layout: nc.layout || "column",
-            cardStyle: nc.cardStyle || "",
+            title: (nc.title as string) || "",
+            excerpt: (nc.excerpt as string) || "",
+            image: (nc.image as string) || "",
+            sponsorLabel: (nc.sponsorLabel as string) || "Sponsored",
+            sponsorName: (nc.sponsorName as string) || "",
+            sponsorLogo: (nc.sponsorLogo as string) || "",
+            clickThroughUrl:
+              (nc.clickThroughUrl as string) || ad.clickThroughUrl || "",
+            category: (nc.category as string) || "",
+            categoryColor: (nc.categoryColor as string) || "",
+            readTime: (nc.readTime as string) || "",
+            author: (nc.author as string) || "",
+            date: (nc.date as string) || "",
+            layout: (nc.layout as "column" | "row") || "column",
+            cardStyle: (nc.cardStyle as string) || "",
           },
           vastTagUrl: ad.vastTagUrl,
           vastUrl: ad.vastUrl,
@@ -103,17 +94,19 @@ export default function InFeedNativeAd({
         adNumber={adNumber}
         className={className}
         dark={dark}
+        separators={separators}
+        bolt={bolt}
       />
     );
   }
 
   // Non-native fallback (banner/video/html)
   const nonNativeHasContent = !!(
-    (ad.code || "").trim() ||
-    (ad.mediaUrl || "").trim() ||
-    (ad.url || "").trim() ||
-    (ad.vastUrl || "").trim() ||
-    (ad.vastTagUrl || "").trim()
+    ((ad.code || "") as string).trim() ||
+    ((ad.mediaUrl || "") as string).trim() ||
+    ((ad.url || "") as string).trim() ||
+    ((ad.vastUrl || "") as string).trim() ||
+    ((ad.vastTagUrl || "") as string).trim()
   );
   if (!nonNativeHasContent) return null;
 

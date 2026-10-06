@@ -9,6 +9,7 @@ import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlots } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface SportsNewsProps {
@@ -18,6 +19,11 @@ interface SportsNewsProps {
 }
 
 export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPost, posts = [] }) => {
+  // Both native positions (in-feed-8 + the slot moved here from below the
+  // featured card) live inside the right-hand list, each displacing a
+  // different random card — the featured column stays ad-free and in-feed.
+  const listAdSlots = useNativeAdSlots('homepage', ['in-feed-8', 'in-feed-13'], posts.length);
+
   if (!featuredPost && posts.length === 0) return null;
 
   return (
@@ -62,7 +68,6 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                   </div>
                   </div>
                 )}
-                <InFeedNativeAd pageType="homepage" position="in-feed-13" cardStyle="post-type3" dark={dark} />
               </div>
 
             {/* Right side list */}
@@ -79,41 +84,50 @@ export const SportsNews: React.FC<SportsNewsProps> = ({ dark = false, featuredPo
                       slidesPerView={1}
                       grid={{ rows: 5 }}
                     >
-                      {posts.map((item, idx) => (
-                        <SwiperSlide key={idx}>
-                          <div className="single_post2_carousel">
-                            <div className="single_post widgets_small">
-                              <div className="post_img">
-                                <div className="img_wrap">
-                                  <Link href={`/post/${getArticleSlug(item.title)}`}>
-                                    <img src={item.image} alt="thumb" />
-                                  </Link>
-                                </div>
-                                <span className="tranding">
-                                  <Icon name="bolt" />
-                                </span>
-                              </div>
-                              <div className="single_post_text">
-                                <div className="meta2">
-                                   <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
-                                  <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
-                                </div>
-                                <h4>
-                                  <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
-                                </h4>
-                              </div>
+                      {posts.map((item, idx) => {
+                        const adSlot = listAdSlots.find((s) => s.hasAd && s.index === idx);
+                        return (
+                          <SwiperSlide key={idx}>
+                            <div className="single_post2_carousel">
+                              {adSlot ? (
+                                <InFeedNativeAd
+                                  pageType="homepage"
+                                  position={adSlot.position as 'in-feed-8' | 'in-feed-13'}
+                                  cardStyle="widgets-small"
+                                  dark={dark}
+                                />
+                              ) : (
+                                <>
+                                  <div className="single_post widgets_small">
+                                    <div className="post_img">
+                                      <div className="img_wrap">
+                                        <Link href={`/post/${getArticleSlug(item.title)}`}>
+                                          <img src={item.image} alt="thumb" />
+                                        </Link>
+                                      </div>
+                                      <span className="tranding">
+                                        <Icon name="bolt" />
+                                      </span>
+                                    </div>
+                                    <div className="single_post_text">
+                                      <div className="meta2">
+                                         <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
+                                        <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                                      </div>
+                                      <h4>
+                                        <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                                      </h4>
+                                    </div>
+                                  </div>
+                                  <div className="space-15" />
+                                  {dark ? <div className="border_white" /> : <div className="border_black" />}
+                                  <div className="space-15" />
+                                </>
+                              )}
                             </div>
-                            <div className="space-15" />
-                            {dark ? <div className="border_white" /> : <div className="border_black" />}
-                            <div className="space-15" />
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                      <SwiperSlide>
-                        <div className="single_post2_carousel">
-                          <InFeedNativeAd pageType="homepage" position="in-feed-8" cardStyle="widgets-small" dark={dark} />
-                        </div>
-                      </SwiperSlide>
+                          </SwiperSlide>
+                        );
+                      })}
                     </Swiper>
                     <div className="navBtns">
                       <div className="navBtn prevtBtn swiper-button-prev13">

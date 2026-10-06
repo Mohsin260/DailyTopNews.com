@@ -12,6 +12,7 @@ import { Icon } from '../common/Icon';
 import { VideoModal } from '../common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface GallerySectionProps {
@@ -52,6 +53,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [activeTab, setActiveTab] = useState<'1' | '2' | '3'>('1');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+  // Hero and related-list ads each displace one random card — no extra slides.
+  const heroAdSlot = useNativeAdSlot('homepage', 'in-feed-14', posts.length);
 
   const galleryPosts = posts.length > 0
     ? posts.map((a) => ({
@@ -84,6 +87,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
     : activeTab === '2' ? tabPosts.slice().reverse()
     : tabPosts;
 
+  const tabAdSlot = useNativeAdSlot('homepage', 'in-feed-2', currentTabPosts.length);
+
   return (
     <div className={`post_gallary_area mb40 ${className}`}>
       <div className="container">
@@ -108,32 +113,37 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                   >
                     {galleryPosts.map((post, idx) => (
                       <SwiperSlide key={idx}>
-                        <div className="single_post post_type6 xs-mb30">
-                          <div className="post_img gradient1">
-                            <img src={post.image} alt={post.title} />
-                            <span onClick={() => setVideoModalOpen(true)} className="tranding">
-                              <Icon name="play" />
-                            </span>
-                          </div>
-                          <div className="single_post_text">
-                            <div className="meta meta_separator1">
-                               <Link href={`/category/${(post.category || 'technology').toLowerCase()}`}>{post.category}</Link>
-                              <Link href="#">{post.date}</Link>
+                        {heroAdSlot.hasAd && idx === heroAdSlot.index ? (
+                          <InFeedNativeAd
+                            pageType="homepage"
+                            position="in-feed-14"
+                            cardStyle="post-type6"
+                          />
+                        ) : (
+                          <div className="single_post post_type6 xs-mb30">
+                            <div className="post_img gradient1">
+                              <img src={post.image} alt={post.title} />
+                              <span onClick={() => setVideoModalOpen(true)} className="tranding">
+                                <Icon name="play" />
+                              </span>
                             </div>
-                            <h4>
-                              <Link href={`/post/${post.slug || getArticleSlug(post.title)}`}>
-                                {post.title}
-                              </Link>
-                            </h4>
-                            <div className="space-10" />
-                            <p className="post-p">{post.body}</p>
+                            <div className="single_post_text">
+                              <div className="meta meta_separator1">
+                                 <Link href={`/category/${(post.category || 'technology').toLowerCase()}`}>{post.category}</Link>
+                                <Link href="#">{post.date}</Link>
+                              </div>
+                              <h4>
+                                <Link href={`/post/${post.slug || getArticleSlug(post.title)}`}>
+                                  {post.title}
+                                </Link>
+                              </h4>
+                              <div className="space-10" />
+                              <p className="post-p">{post.body}</p>
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </SwiperSlide>
                     ))}
-                    <SwiperSlide>
-                      <InFeedNativeAd pageType="homepage" position="in-feed-14" cardStyle="post-type6" />
-                    </SwiperSlide>
                   </Swiper>
                 </div>
 
@@ -186,30 +196,41 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ className = '', 
                       <div className="widget tab_widgets">
                         {currentTabPosts.map((item: any, idx: number) => (
                           <div key={idx}>
-                            <div className="single_post widgets_small">
-                              <div className="post_img">
-                                <div className="img_wrap">
-                                  <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
-                                    <img src={item.image} alt="thumb" />
-                                  </Link>
+                            {tabAdSlot.hasAd && idx === tabAdSlot.index ? (
+                              <InFeedNativeAd
+                                pageType="homepage"
+                                position="in-feed-2"
+                                cardStyle="widgets-small-sep"
+                                /* this list hardcodes border_white separators */
+                                dark
+                              />
+                            ) : (
+                              <>
+                                <div className="single_post widgets_small">
+                                  <div className="post_img">
+                                    <div className="img_wrap">
+                                      <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
+                                        <img src={item.image} alt="thumb" />
+                                      </Link>
+                                    </div>
+                                  </div>
+                                  <div className="single_post_text">
+                                    <div className="meta2 meta_separator1">
+                                       <Link href="#">{item.categoryLabel || item.category}</Link>
+                                      <Link href="#">{item.date}</Link>
+                                    </div>
+                                    <h4>
+                                      <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.title}</Link>
+                                    </h4>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="single_post_text">
-                                <div className="meta2 meta_separator1">
-                                   <Link href="#">{item.categoryLabel || item.category}</Link>
-                                  <Link href="#">{item.date}</Link>
-                                </div>
-                                <h4>
-                                  <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.title}</Link>
-                                </h4>
-                              </div>
-                            </div>
-                            <div className="space-15" />
-                            <div className="border_white" />
-                            <div className="space-15" />
+                                <div className="space-15" />
+                                <div className="border_white" />
+                                <div className="space-15" />
+                              </>
+                            )}
                           </div>
                         ))}
-                        <InFeedNativeAd pageType="homepage" position="in-feed-2" cardStyle="widgets-small-sep" />
                       </div>
                     </div>
                   </div>

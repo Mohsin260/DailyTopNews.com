@@ -10,6 +10,7 @@ import { Icon } from '@/components/Layout/common/Icon';
 import { VideoModal } from '@/components/Layout/common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface MixAreaProps {
@@ -20,6 +21,8 @@ interface MixAreaProps {
 
 export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, posts = [] }) => {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+  // Ad replaces one random slide so the carousel length stays constant.
+  const adSlot = useNativeAdSlot('homepage', 'in-feed-6', posts.length);
 
   if (posts.length === 0) return null;
 
@@ -48,38 +51,44 @@ export const MixArea: React.FC<MixAreaProps> = ({ className = '', dark = false, 
                 >
                   {posts.map((item, idx) => (
                     <SwiperSlide key={idx}>
-                      <div className="single_post post_type6 post_type9">
-                        <div className="post_img gradient1">
-                          <div className="img_wrap">
-                            <Link className="play_btn" href="#" onClick={(e) => {
-                              e.preventDefault();
-                              setVideoModalOpen(true);
-                            }}>
-                              <img src={item.image} alt="news" />
-                            </Link>
+                      {adSlot.hasAd && idx === adSlot.index ? (
+                        <InFeedNativeAd
+                          pageType="homepage"
+                          position="in-feed-6"
+                          cardStyle="post-type9"
+                          dark={dark}
+                        />
+                      ) : (
+                        <div className="single_post post_type6 post_type9">
+                          <div className="post_img gradient1">
+                            <div className="img_wrap">
+                              <Link className="play_btn" href="#" onClick={(e) => {
+                                e.preventDefault();
+                                setVideoModalOpen(true);
+                              }}>
+                                <img src={item.image} alt="news" />
+                              </Link>
+                            </div>
+                            <span
+                              onClick={() => setVideoModalOpen(true)}
+                              className={`tranding ${idx % 2 ? 'left' : ''}`}
+                            >
+                              <Icon name="bolt" />
+                            </span>
                           </div>
-                          <span
-                            onClick={() => setVideoModalOpen(true)}
-                            className={`tranding ${idx % 2 ? 'left' : ''}`}
-                          >
-                            <Icon name="bolt" />
-                          </span>
-                        </div>
-                        <div className="single_post_text">
-                          <div className="meta">
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                          <div className="single_post_text">
+                            <div className="meta">
+                              <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
+                              <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                            </div>
+                            <h4>
+                              <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                            </h4>
                           </div>
-                          <h4>
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
-                          </h4>
                         </div>
-                      </div>
+                      )}
                     </SwiperSlide>
                   ))}
-                  <SwiperSlide>
-                    <InFeedNativeAd pageType="homepage" position="in-feed-6" cardStyle="post-type9" dark={dark} />
-                  </SwiperSlide>
                 </Swiper>
                 <div className="owl-nav">
                   <div className="owl-prev mix-swiper-prev">

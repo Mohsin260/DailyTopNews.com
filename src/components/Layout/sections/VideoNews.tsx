@@ -11,6 +11,7 @@ import { Icon } from '@/components/Layout/common/Icon';
 import { VideoModal } from '@/components/Layout/common/VideoModal';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlots } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 const isVideoUrl = (url?: string) => {
@@ -53,8 +54,6 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
 
   const popularPosts = posts.slice(0, 10);
 
-  if (popularPosts.length === 0 && !featuredPost) return null;
-
   const popularGrid = (() => {
     if (popularPosts.length === 0) return [];
     let a = 0;
@@ -74,6 +73,17 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
       id: idx % 2 ? Math.floor(popularPosts.length / 2) + (idx - 1) / 2 + 1 : idx / 2 + 1,
     }));
   })();
+
+  // Both configured native positions (in-feed-11 + the slot moved here from
+  // below the hero) live inside the Popular Posts feed, each displacing a
+  // different random slide — total slide count never changes.
+  const popularAdSlots = useNativeAdSlots(
+    'homepage',
+    ['in-feed-11', 'in-feed-12'],
+    popularGrid.length
+  );
+
+  if (popularPosts.length === 0 && !featuredPost) return null;
 
   return (
     <div className={`video_posts ${className}`}>
@@ -120,9 +130,6 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                   </div>
                 )}
               </div>
-              <div className="mt30">
-                <InFeedNativeAd pageType="homepage" position="in-feed-12" cardStyle="post-type11" dark={dark} />
-              </div>
             </div>
 
             {/* Popular Posts */}
@@ -139,31 +146,41 @@ export const VideoNews: React.FC<VideoNewsProps> = ({ className = '', dark = fal
                     slidesPerView={1}
                     grid={{ rows: 6 }}
                   >
-                    {popularGrid.map((post, idx) => (
-                      <SwiperSlide key={idx}>
-                        <div className="single_post type10 widgets_small mb15">
-                          <div className="post_img">
-                            <div className="img_wrap">
-                              <Link href={`/post/${getArticleSlug(post.title)}`}>
-                                <img src={post.image} alt="thumb" />
-                              </Link>
+                    {popularGrid.map((post, idx) => {
+                      const adSlot = popularAdSlots.find((s) => s.hasAd && s.index === idx);
+                      return (
+                        <SwiperSlide key={idx}>
+                          {adSlot ? (
+                            <InFeedNativeAd
+                              pageType="homepage"
+                              position={adSlot.position as 'in-feed-11' | 'in-feed-12'}
+                              cardStyle="type10"
+                              adNumber={post.id}
+                              dark={dark}
+                            />
+                          ) : (
+                            <div className="single_post type10 widgets_small mb15">
+                              <div className="post_img">
+                                <div className="img_wrap">
+                                  <Link href={`/post/${getArticleSlug(post.title)}`}>
+                                    <img src={post.image} alt="thumb" />
+                                  </Link>
+                                </div>
+                                <span className="tranding tranding_border">{post.id}</span>
+                              </div>
+                              <div className="single_post_text">
+                                <h4>
+                                  <Link href={`/post/${getArticleSlug(post.title)}`}>{post.title}</Link>
+                                </h4>
+                                <div className="meta4">
+                                   <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
+                                </div>
+                              </div>
                             </div>
-                            <span className="tranding tranding_border">{post.id}</span>
-                          </div>
-                          <div className="single_post_text">
-                            <h4>
-                              <Link href={`/post/${getArticleSlug(post.title)}`}>{post.title}</Link>
-                            </h4>
-                            <div className="meta4">
-                               <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                    <SwiperSlide>
-                      <InFeedNativeAd pageType="homepage" position="in-feed-11" cardStyle="type10" dark={dark} />
-                    </SwiperSlide>
+                          )}
+                        </SwiperSlide>
+                      );
+                    })}
                   </Swiper>
                   <div className="navBtns">
                     <div className="navBtn prevtBtn swiper-button-prev10">

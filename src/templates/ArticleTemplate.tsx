@@ -9,7 +9,7 @@ import NewsletterWidget from '@/components/Layout/Sidebar/NewsletterWidget';
 import TabWidget from '@/components/Layout/Sidebar/TabWidget';
 import TrendingNewsWidget from '@/components/Layout/Sidebar/TrendingNewsWidget';
 import LatestBlogSection from '@/components/Layout/Post/LatestBlogSection';
-import CommentsSection from '@/components/Layout/Post/CommentsSection';
+// import CommentsSection from '@/components/Layout/Post/CommentsSection';
 import AdSlot from '@/components/ui/AdSlot';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import ArticleMediaBlock from '@/components/Layout/Post/ArticleMediaBlock';
@@ -151,6 +151,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               pageType="article"
               position="article-native-1"
               cardStyle="post-type3"
+              className="mb30"
             />
 
             <AdSlot
@@ -183,6 +184,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               pageType="article"
               position="article-native-2"
               cardStyle="post-type3"
+              className="mb30"
             />
 
             <AdSlot
@@ -278,18 +280,16 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
           </div>
 
             <div className="col-md-6 col-lg-4">
-            <TabWidget posts={sidebarPosts} />
-            <InFeedNativeAd
-              pageType="article"
-              position="sidebar-infeed"
-              cardStyle="widgets-small-sep"
+            {/* The old standalone sidebar-infeed / in-feed-x native blocks moved
+                INTO the widget lists below so no native ad sits outside a feed. */}
+            <TabWidget
+              posts={sidebarPosts}
+              adSlot={{ pageType: 'article', position: 'sidebar-infeed' }}
             />
             <FollowUs title="Follow Us" />
-            <TrendingNewsWidget posts={sidebarPosts} />
-            <InFeedNativeAd
-              pageType="article"
-              position="in-feed-x"
-              cardStyle="post-type3"
+            <TrendingNewsWidget
+              posts={sidebarPosts}
+              adSlot={{ pageType: 'article', position: 'in-feed-x' }}
             />
             <AdSlot
               pageType="article"
@@ -299,7 +299,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
               height="600px"
               responsive
               fullWidth
-              beforeSpaceClass="space-30"
+              // beforeSpaceClass="space-30"
               afterSpaceClass="space-15"
             />
             <AdSlot
@@ -332,11 +332,8 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
         </div>
       </div>
 
-      <div className="space-60" />
       <LatestBlogSection dark={true} posts={latestPosts} />
-      <div className="space-60" />
-      <CommentsSection dark={true} />
-      <div className="space-60" />
+      {/* <CommentsSection dark={true} /> */}
       <div className="parimay_bg padding2020">
         <div className="container">
           <div className="row">
@@ -356,7 +353,6 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
           </div>
         </div>
       </div>
-      <div className="space-30" />
     </div>
   );
 };

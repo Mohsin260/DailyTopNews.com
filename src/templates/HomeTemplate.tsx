@@ -15,7 +15,6 @@ import NewsletterWidget from '@/components/Layout/Sidebar/NewsletterWidget';
 import CategoriesWidget from '@/components/Layout/Sidebar/CategoriesWidget';
 import BannerWidget from '@/components/Layout/Sidebar/BannerWidget';
 import AdSlot from '@/components/ui/AdSlot';
-import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
 import type { Article, Category } from '@/types';
 
 interface HomePageProps {
@@ -93,19 +92,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="col-md-12 col-lg-4">
             <FollowUs title="Follow Us" />
             <MostViewed dark={dark} posts={mostViewedPosts} />
-            <InFeedNativeAd
-              pageType="homepage"
-              position="sidebar-infeed"
-              cardStyle="type8"
-              dark={dark}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
-            <InFeedNativeAd pageType="homepage" position="in-feed-x" cardStyle="post-type3" />
           </div>
         </div>
       </div>

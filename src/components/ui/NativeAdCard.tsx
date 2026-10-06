@@ -43,14 +43,21 @@ interface Props {
   position?: string;
   pageType?: string;
   adNumber?: number;
-  /** Optional wrapper className injected by parent layout (col-md, carousel slide, etc.) */
+  /** Extra classes injected by the host cell (e.g. mb30 to match neighbours). */
   className?: string;
   dark?: boolean;
+  /** Render the trailing border/spacer pair used by list feeds (false when the host cell renders its own). */
+  separators?: boolean;
+  /** Show the theme's bolt badge (some post-type3 feeds use it, others don't). */
+  bolt?: boolean;
 }
 
 /**
- * NativeAdCard — sponsored card rendered with the same NewsPrk markup/classes
- * as real article cards so it blends into every feed section.
+ * NativeAdCard — sponsored card whose ROOT element IS the NewsPrk
+ * `.single_post` card (same classes, same DOM depth as real article cards).
+ * Because it renders inside the same feed containers, every section sizing /
+ * aspect-ratio rule applies to it unchanged — the ad adopts the surrounding
+ * feed's image size, ratio and alignment exactly.
  */
 export default function NativeAdCard({
   ad,
@@ -61,6 +68,8 @@ export default function NativeAdCard({
   adNumber,
   className = "",
   dark = false,
+  separators = true,
+  bolt = true,
 }: Props) {
   const { nativeContent: nc, trackingPixels } = ad;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,6 +109,9 @@ export default function NativeAdCard({
   // ── Click handler ──────────────────────────────────────────────────
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
+      // Inner anchors already handled the click and it bubbled here — don't
+      // track/open twice.
+      if (e.defaultPrevented) return;
       e.preventDefault();
       if (ad._id) {
         fetch(`/api/ads/${ad._id}/analytics`, {
@@ -146,35 +158,53 @@ export default function NativeAdCard({
     </Link>
   );
 
-  const rootProps = {
-    ref: containerRef,
-    className: `native-ad-card ${className}`.trim(),
-    onClick: handleClick,
-    role: "link" as const,
-    tabIndex: 0,
-    "aria-label": `Sponsored: ${title}`,
-    "data-ad-position": position,
-    "data-ad-page": pageType,
-    "data-card-style": cardStyle,
-    "data-sponsor": sponsoredLabel,
+  // The meta links fall back to the word "Sponsored" when category/date are
+  // empty — when such an <a>Sponsored</a> link renders in this card style the
+  // black ::after pill would duplicate it, so flag the root to hide the pill.
+  const rootProps = (showCategory = true, showDate = true) => {
+    const hasSponsoredLink =
+      (showCategory && category === "Sponsored") ||
+      (showDate && dateLabel === "Sponsored");
+    return {
+      ref: containerRef,
+      onClick: handleClick,
+      role: "link" as const,
+      tabIndex: 0,
+      "aria-label": `Sponsored: ${title}`,
+      "data-ad-position": position,
+      "data-ad-page": pageType,
+      "data-card-style": cardStyle,
+      "data-sponsor": sponsoredLabel,
+      ...(hasSponsoredLink ? { "data-sponsor-link": "" } : {}),
+    };
   };
+
+  /** Real-card classes + native marker + host cell classes, on ONE element. */
+  const rootClass = (classes: string) =>
+    `native-ad-card ${classes} ${className}`.trim();
+
+  const listSeparators = separators ? (
+    <>
+      <div className="space-15" />
+      {dark ? <div className="border_white" /> : <div className="border_black" />}
+      <div className="space-15" />
+    </>
+  ) : null;
 
   // ── post-type5: Trending carousel slide (80×70 + excerpt) ─────────
   if (cardStyle === "post-type5") {
     return (
-      <div {...rootProps}>
-        <div className="single_post widgets_small post_type5">
-          <div className="post_img">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
+      <div {...rootProps(false, false)} className={rootClass("single_post widgets_small post_type5")}>
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className="single_post_text">
-            <h4>{titleLink}</h4>
-            <p>{excerpt}</p>
-          </div>
+        </div>
+        <div className="single_post_text">
+          <h4>{titleLink}</h4>
+          <p>{excerpt}</p>
         </div>
       </div>
     );
@@ -183,24 +213,22 @@ export default function NativeAdCard({
   // ── post-type6: Gallery hero overlay ───────────────────────────────
   if (cardStyle === "post-type6") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type6 xs-mb30">
-          <div className="post_img gradient1">
-            {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+      <div {...rootProps()} className={rootClass("single_post post_type6 xs-mb30")}>
+        <div className="post_img gradient1">
+          {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+        </div>
+        <div className="single_post_text">
+          <div className="meta meta_separator1">
+            {metaCategory}
+            {metaDate}
           </div>
-          <div className="single_post_text">
-            <div className="meta meta_separator1">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
-            {excerpt ? (
-              <>
-                <div className="space-10" />
-                <p className="post-p">{excerpt}</p>
-              </>
-            ) : null}
-          </div>
+          <h4>{titleLink}</h4>
+          {excerpt ? (
+            <>
+              <div className="space-10" />
+              <p className="post-p">{excerpt}</p>
+            </>
+          ) : null}
         </div>
       </div>
     );
@@ -209,20 +237,18 @@ export default function NativeAdCard({
   // ── post-type7: Feature News fixed overlay ─────────────────────────
   if (cardStyle === "post-type7") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type6 post_type7">
-          <div className="post_img gradient1">
-            <a href={href} onClick={handleClick}>
-              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-            </a>
+      <div {...rootProps()} className={rootClass("single_post post_type6 post_type7")}>
+        <div className="post_img gradient1">
+          <a href={href} onClick={handleClick}>
+            {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+          </a>
+        </div>
+        <div className="single_post_text">
+          <div className="meta5">
+            {metaCategory}
+            {metaDate}
           </div>
-          <div className="single_post_text">
-            <div className="meta5">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
-          </div>
+          <h4>{titleLink}</h4>
         </div>
       </div>
     );
@@ -231,25 +257,23 @@ export default function NativeAdCard({
   // ── post-type9: Mix Area large overlay ─────────────────────────────
   if (cardStyle === "post-type9") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type6 post_type9">
-          <div className="post_img gradient1">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-            <span className="tranding">
-              <Icon name="bolt" />
-            </span>
+      <div {...rootProps()} className={rootClass("single_post post_type6 post_type9")}>
+        <div className="post_img gradient1">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className="single_post_text">
-            <div className="meta">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
+          <span className="tranding">
+            <Icon name="bolt" />
+          </span>
+        </div>
+        <div className="single_post_text">
+          <div className="meta">
+            {metaCategory}
+            {metaDate}
           </div>
+          <h4>{titleLink}</h4>
         </div>
       </div>
     );
@@ -258,25 +282,23 @@ export default function NativeAdCard({
   // ── post-type11: Video featured (img + grey panel) ─────────────────
   if (cardStyle === "post-type11") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type3 post_type11">
-          <div className="post_img">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick} className="play_btn">
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-            <p className="youtube_middle">
-              <Icon name="youtube-play" />
-            </p>
+      <div {...rootProps()} className={rootClass("single_post post_type3 post_type11")}>
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick} className="play_btn">
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className={`single_post_text padding30 ${dark ? "dark-2" : "fourth_bg"}`}>
-            <div className="meta3">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
+          <p className="youtube_middle">
+            <Icon name="youtube-play" />
+          </p>
+        </div>
+        <div className={`single_post_text padding30 ${dark ? "dark-2" : "fourth_bg"}`}>
+          <div className="meta3">
+            {metaCategory}
+            {metaDate}
           </div>
+          <h4>{titleLink}</h4>
         </div>
       </div>
     );
@@ -285,32 +307,30 @@ export default function NativeAdCard({
   // ── post-type12: Business split row ────────────────────────────────
   if (cardStyle === "post-type12") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type3 post_type12 mb30">
-          <div className="post_img">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-          </div>
-          <div className="single_post_text">
-            <div className="meta3">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
-            {excerpt ? (
-              <>
-                <div className="space-10" />
-                <p className="post-p">{excerpt}</p>
-              </>
-            ) : null}
-            <div className="space-20" />
-            <a href={href} onClick={handleClick} className="readmore">
-              Read more
+      <div {...rootProps()} className={rootClass("single_post post_type3 post_type12 mb30")}>
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
             </a>
           </div>
+        </div>
+        <div className="single_post_text">
+          <div className="meta3">
+            {metaCategory}
+            {metaDate}
+          </div>
+          <h4>{titleLink}</h4>
+          {excerpt ? (
+            <>
+              <div className="space-10" />
+              <p className="post-p">{excerpt}</p>
+            </>
+          ) : null}
+          <div className="space-20" />
+          <a href={href} onClick={handleClick} className="readmore">
+            Read more
+          </a>
         </div>
       </div>
     );
@@ -319,33 +339,31 @@ export default function NativeAdCard({
   // ── post-type15: Latest blog rounded card ──────────────────────────
   if (cardStyle === "post-type15") {
     return (
-      <div {...rootProps}>
-        <div className="single_post post_type3 mb30 post_type15 border-radious5">
-          <div className="post_img border-radious5">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-            <span className="tranding border_tranding">
-              <Icon name="bolt" />
-            </span>
+      <div {...rootProps()} className={rootClass("single_post post_type3 mb30 post_type15 border-radious5")}>
+        <div className="post_img border-radious5">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className="single_post_text padding20 white_bg">
-            <Link href={href} onClick={handleClick}>
-              {title}
-            </Link>
-            {excerpt ? (
-              <>
-                <div className="space-10" />
-                <p className="post-p">{excerpt}</p>
-              </>
-            ) : null}
-            <div className="space-20" />
-            <div className="meta3">
-              {metaCategory}
-              {metaDate}
-            </div>
+          <span className="tranding border_tranding">
+            <Icon name="bolt" />
+          </span>
+        </div>
+        <div className="single_post_text padding20 white_bg">
+          <Link href={href} onClick={handleClick}>
+            {title}
+          </Link>
+          {excerpt ? (
+            <>
+              <div className="space-10" />
+              <p className="post-p">{excerpt}</p>
+            </>
+          ) : null}
+          <div className="space-20" />
+          <div className="meta3">
+            {metaCategory}
+            {metaDate}
           </div>
         </div>
       </div>
@@ -355,28 +373,26 @@ export default function NativeAdCard({
   // ── type8: Most Viewed (thumb + ghost counter) ─────────────────────
   if (cardStyle === "type8") {
     return (
-      <div {...rootProps}>
-        <div className="single_post widgets_small type8">
-          <div className="post_img">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-            <span className="tranding">
-              <Icon name="bolt" />
-            </span>
+      <div {...rootProps()} className={rootClass("single_post widgets_small type8")}>
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className="single_post_text">
-            <div className="meta2">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
+          <span className="tranding">
+            <Icon name="bolt" />
+          </span>
+        </div>
+        <div className="single_post_text">
+          <div className="meta2">
+            {metaCategory}
+            {metaDate}
           </div>
-          <div className="type8_count">
-            <h2>{counter}</h2>
-          </div>
+          <h4>{titleLink}</h4>
+        </div>
+        <div className="type8_count">
+          <h2>{counter}</h2>
         </div>
       </div>
     );
@@ -385,20 +401,18 @@ export default function NativeAdCard({
   // ── type10: Popular numbered (tranding_border badge) ───────────────
   if (cardStyle === "type10") {
     return (
-      <div {...rootProps}>
-        <div className="single_post type10 widgets_small mb15">
-          <div className="post_img">
-            <div className="img_wrap">
-              <a href={href} onClick={handleClick}>
-                {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-              </a>
-            </div>
-            <span className="tranding tranding_border">{counter}</span>
+      <div {...rootProps(true, false)} className={rootClass("single_post type10 widgets_small mb15")}>
+        <div className="post_img">
+          <div className="img_wrap">
+            <a href={href} onClick={handleClick}>
+              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+            </a>
           </div>
-          <div className="single_post_text">
-            <h4>{titleLink}</h4>
-            <div className="meta4">{metaCategory}</div>
-          </div>
+          <span className="tranding tranding_border">{counter}</span>
+        </div>
+        <div className="single_post_text">
+          <h4>{titleLink}</h4>
+          <div className="meta4">{metaCategory}</div>
         </div>
       </div>
     );
@@ -407,32 +421,30 @@ export default function NativeAdCard({
   // ── widgets-type4: Most Shared (number circle + share counts) ──────
   if (cardStyle === "widgets-type4") {
     return (
-      <div {...rootProps}>
-        <div className="single_post widgets_small widgets_type4">
-          <div className="post_img number">
-            <h2>{counter}</h2>
+      <div {...rootProps()} className={rootClass("single_post widgets_small widgets_type4")}>
+        <div className="post_img number">
+          <h2>{counter}</h2>
+        </div>
+        <div className="single_post_text">
+          <div className="meta2">
+            {metaCategory}
+            {metaDate}
           </div>
-          <div className="single_post_text">
-            <div className="meta2">
-              {metaCategory}
-              {metaDate}
-            </div>
-            <h4>{titleLink}</h4>
-            <ul className="inline socail_share">
-              <li>
-                <a href={href} onClick={handleClick}>
-                  <Icon name="twitter" /> 2.2K
-                </a>
-              </li>
-              <li>
-                <a href={href} onClick={handleClick}>
-                  <Icon name="facebook-f" /> 2.2K
-                </a>
-              </li>
-            </ul>
-            <div className="space-15" />
-            {dark ? <div className="border_white" /> : <div className="border_black" />}
-          </div>
+          <h4>{titleLink}</h4>
+          <ul className="inline socail_share">
+            <li>
+              <a href={href} onClick={handleClick}>
+                <Icon name="twitter" /> 2.2K
+              </a>
+            </li>
+            <li>
+              <a href={href} onClick={handleClick}>
+                <Icon name="facebook-f" /> 2.2K
+              </a>
+            </li>
+          </ul>
+          <div className="space-15" />
+          {dark ? <div className="border_white" /> : <div className="border_black" />}
         </div>
       </div>
     );
@@ -441,8 +453,8 @@ export default function NativeAdCard({
   // ── widgets-small-sep: Related list (thumb + meta_separator1) ──────
   if (cardStyle === "widgets-small-sep") {
     return (
-      <div {...rootProps}>
-        <div className="single_post widgets_small">
+      <>
+        <div {...rootProps()} className={rootClass("single_post widgets_small")}>
           <div className="post_img">
             <div className="img_wrap">
               <a href={href} onClick={handleClick}>
@@ -458,18 +470,22 @@ export default function NativeAdCard({
             <h4>{titleLink}</h4>
           </div>
         </div>
-        <div className="space-15" />
-        <div className="border_white" />
-        <div className="space-15" />
-      </div>
+        {separators ? (
+          <>
+            <div className="space-15" />
+            {dark ? <div className="border_white" /> : <div className="border_black" />}
+            <div className="space-15" />
+          </>
+        ) : null}
+      </>
     );
   }
 
-  // ── post-type3 (default) & widgets-small ───────────────────────────
+  // ── widgets-small: Thumb list ──────────────────────────────────────
   if (cardStyle === "widgets-small") {
     return (
-      <div {...rootProps}>
-        <div className="single_post widgets_small">
+      <>
+        <div {...rootProps()} className={rootClass("single_post widgets_small")}>
           <div className="post_img">
             <div className="img_wrap">
               <a href={href} onClick={handleClick}>
@@ -488,40 +504,38 @@ export default function NativeAdCard({
             <h4>{titleLink}</h4>
           </div>
         </div>
-        <div className="space-15" />
-        {dark ? <div className="border_white" /> : <div className="border_black" />}
-        <div className="space-15" />
-      </div>
+        {listSeparators}
+      </>
     );
   }
 
-  // ── post-type3: standard feature card ──────────────────────────────
+  // ── post-type3: standard feature card (default) ────────────────────
   return (
-    <div {...rootProps}>
-      <div className="single_post post_type3 mb30">
-        <div className="post_img">
-          <div className="img_wrap">
-            <a href={href} onClick={handleClick}>
-              {image ? <img src={image} alt={title || "Sponsored"} /> : null}
-            </a>
-          </div>
+    <div {...rootProps()} className={rootClass("single_post post_type3")}>
+      <div className="post_img">
+        <div className="img_wrap">
+          <a href={href} onClick={handleClick}>
+            {image ? <img src={image} alt={title || "Sponsored"} /> : null}
+          </a>
+        </div>
+        {bolt ? (
           <span className="tranding">
             <Icon name="bolt" />
           </span>
+        ) : null}
+      </div>
+      <div className="single_post_text">
+        <div className="meta3">
+          {metaCategory}
+          {metaDate}
         </div>
-        <div className="single_post_text">
-          <div className="meta3">
-            {metaCategory}
-            {metaDate}
-          </div>
-          <h4>{titleLink}</h4>
-          {excerpt ? (
-            <>
-              <div className="space-10" />
-              <p className="post-p">{excerpt}</p>
-            </>
-          ) : null}
-        </div>
+        <h4>{titleLink}</h4>
+        {excerpt ? (
+          <>
+            <div className="space-10" />
+            <p className="post-p">{excerpt}</p>
+          </>
+        ) : null}
       </div>
     </div>
   );

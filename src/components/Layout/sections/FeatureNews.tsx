@@ -9,6 +9,7 @@ import { Heading } from '@/components/Layout/common/Heading';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface FeatureNewsProps {
@@ -17,6 +18,9 @@ interface FeatureNewsProps {
 }
 
 export const FeatureNews: React.FC<FeatureNewsProps> = ({ className = '', posts = [] }) => {
+  // Ad displaces one random slide — feed length never grows.
+  const adSlot = useNativeAdSlot('homepage', 'in-feed-3', posts.length);
+
   if (posts.length === 0) return null;
 
   return (
@@ -49,27 +53,32 @@ export const FeatureNews: React.FC<FeatureNewsProps> = ({ className = '', posts 
               >
                 {posts.map((post, idx) => (
                   <SwiperSlide key={idx}>
-                    <div className="single_post post_type6 post_type7">
-                      <div className="post_img gradient1">
-                        <Link href={`/post/${getArticleSlug(post.title)}`}>
-                          <img src={post.image} alt="feature news" />
-                        </Link>
-                      </div>
-                      <div className="single_post_text">
-                        <div className="meta5">
-                          <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
-                          <Link href={`/post/${getArticleSlug(post.title)}`}>{post.date}</Link>
+                    {adSlot.hasAd && idx === adSlot.index ? (
+                      <InFeedNativeAd
+                        pageType="homepage"
+                        position="in-feed-3"
+                        cardStyle="post-type7"
+                      />
+                    ) : (
+                      <div className="single_post post_type6 post_type7">
+                        <div className="post_img gradient1">
+                          <Link href={`/post/${getArticleSlug(post.title)}`}>
+                            <img src={post.image} alt="feature news" />
+                          </Link>
                         </div>
-                        <h4>
-                          <Link href={`/post/${getArticleSlug(post.title)}`}>{post.title}</Link>
-                        </h4>
+                        <div className="single_post_text">
+                          <div className="meta5">
+                            <Link href={`/post/${getArticleSlug(post.title)}`}>{post.categoryLabel || post.category}</Link>
+                            <Link href={`/post/${getArticleSlug(post.title)}`}>{post.date}</Link>
+                          </div>
+                          <h4>
+                            <Link href={`/post/${getArticleSlug(post.title)}`}>{post.title}</Link>
+                          </h4>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </SwiperSlide>
                 ))}
-                <SwiperSlide>
-                  <InFeedNativeAd pageType="homepage" position="in-feed-3" cardStyle="post-type7" />
-                </SwiperSlide>
               </Swiper>
               <div className="navBtns">
                 <div className="navBtn prevtBtn fn-swiper-prev">

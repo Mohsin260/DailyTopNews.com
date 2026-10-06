@@ -350,13 +350,18 @@
   opacity: 1;
 }
 
-/* ── Native in-feed ads ─────────────────────────────────────────── */
+/* ── Native in-feed ads ───────────────────────────────────────────
+   The ad ROOT element is the .single_post card itself (same classes and
+   same DOM depth as real article cards) and it renders inside the same
+   section containers, so every section sizing/aspect-ratio rule above
+   (gallery 730/500, feature 320px, trancarousel 355/253, mix 540/420,
+   entertainment/sports/business 350/250, widgets_small 100×77,
+   type8/type5 boxes…) applies to the ad automatically. The sponsored
+   card therefore adopts the surrounding feed's image size, ratio,
+   alignment and margins with zero hardcoding here. Only the sponsor
+   label, the image fill chain and meta casing live in this block. */
 .native-ad-card {
-  display: block;
-  width: 100%;
   cursor: pointer;
-  text-align: left;
-  position: relative;
 }
 .native-ad-card::after {
   content: attr(data-sponsor);
@@ -401,21 +406,18 @@
   left: auto;
   right: 8px;
 }
-/* NOTE: do NOT set height:100% on .native-ad-card .single_post — it overrides
-   section rules like .feature_carousel .post_type7 { height:320px } (same
-   specificity, later source) and collapses the image box so the ad image
-   stops covering its container. Real cards are auto-height; keep parity. */
-.native-ad-card .single_post_text {
-  width: 100%;
+/* The card's meta already renders an <a>Sponsored</a> link there (category or
+   date fell back to "Sponsored") — drop the duplicate black pill. Cards whose
+   style/meta never render that link keep the ::after label above. */
+.native-ad-card[data-sponsor-link]::after {
+  content: none;
 }
-/* Business split row (post_type12): theme lays it out as 48% img / 49% text —
-   the width:100% above would push the text below the image and break the row. */
-.native-ad-card .post_type12 .single_post_text {
-  width: 49%;
-}
-.native-ad-card .post_img {
-  overflow: hidden;
-}
+/* NOTE: do NOT force widths/heights on the ad root or its .single_post_text —
+   real cards take those from the theme/section rules and the ad must inherit
+   identically (parity is what makes it blend into the feed). */
+/* Image fill chain — lets section .post_img aspect-ratio/height rules reach
+   the ad image through img_wrap > a (mirrors the fill patches globals.css
+   applies to real anchor-wrapped thumbs). */
 .native-ad-card .post_img img {
   display: block;
   width: 100%;
@@ -452,46 +454,4 @@
   text-transform: uppercase;
   color: #888;
   font-weight: 500;
-}
-.native-ad-card.post-type5 .post_img,
-.native-ad-card[data-card-style="post-type5"] .post_img {
-  min-height: 70px;
-}
-/* Ensure aspect-ratio cards fill correctly for ads */
-.native-ad-card[data-card-style="post-type3"] .post_img {
-  aspect-ratio: 350 / 250;
-}
-.native-ad-card[data-card-style="post-type6"] .post_img {
-  aspect-ratio: 730 / 500;
-}
-.native-ad-card[data-card-style="post-type9"] .post_img {
-  aspect-ratio: 540 / 420;
-}
-/* post-type7: mirror .feature_carousel .post_type7 — fixed 320px card with the
-   image stretched to fill it (min-height alone leaves .post_img auto-height,
-   so the image renders at intrinsic ratio instead of covering the card). */
-.native-ad-card[data-card-style="post-type7"] .single_post.post_type7 {
-  height: 320px;
-}
-.native-ad-card[data-card-style="post-type7"] .post_img {
-  height: 100%;
-}
-.native-ad-card[data-card-style="post-type12"] .post_img {
-  aspect-ratio: 350 / 250;
-}
-.native-ad-card[data-card-style="widgets-small"] .post_img,
-.native-ad-card[data-card-style="widgets-small-sep"] .post_img {
-  width: 100px;
-  height: 77px;
-  min-height: 77px;
-}
-.native-ad-card[data-card-style="type8"] .post_img {
-  width: 80px;
-  height: 64px;
-  min-height: 64px;
-}
-.native-ad-card[data-card-style="type10"] .post_img {
-  width: 100px;
-  height: 56.25px;
-  min-height: 56.25px;
 }

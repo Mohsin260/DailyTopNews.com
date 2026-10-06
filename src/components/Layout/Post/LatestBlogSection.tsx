@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Fragment } from 'react';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface LatestBlogSectionProps {
@@ -13,6 +13,10 @@ interface LatestBlogSectionProps {
 }
 
 export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = false, posts = [] }) => {
+  // Ad displaces one random blog card (replaces the old fixed idx===1 slot) —
+  // grid cell count stays constant and the position re-rolls per page load.
+  const adSlot = useNativeAdSlot('article', 'article-related', posts.length);
+
   if (posts.length === 0) return null;
 
   return (
@@ -27,8 +31,10 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
         </div>
         <div className="row justify-content-center">
           {posts.map((item, idx) => (
-            <Fragment key={idx}>
-              <div className="col-md-6 col-lg-4">
+            <div className="col-md-6 col-lg-4" key={idx}>
+              {adSlot.hasAd && idx === adSlot.index ? (
+                <InFeedNativeAd pageType="article" position="article-related" cardStyle="post-type15" />
+              ) : (
                 <div className="single_post post_type3 mb30 post_type15 border-radious5">
                   <div className="post_img border-radious5">
                     <div className="img_wrap">
@@ -49,13 +55,8 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
                     </div>
                   </div>
                 </div>
-              </div>
-              {idx === 1 && (
-                <div className="col-md-6 col-lg-4">
-                  <InFeedNativeAd pageType="article" position="article-related" cardStyle="post-type15" />
-                </div>
               )}
-            </Fragment>
+            </div>
           ))}
         </div>
       </div>

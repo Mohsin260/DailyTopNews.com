@@ -7,6 +7,7 @@ import { Navigation } from 'swiper/modules';
 import { Icon } from '../common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface TrendingCarouselProps {
@@ -15,6 +16,10 @@ interface TrendingCarouselProps {
 }
 
 export const TrendingCarousel: React.FC<TrendingCarouselProps> = ({ className = '', posts = [] }) => {
+  // The native ad replaces one random slide every page load — slide count stays
+  // equal to the article count (one article is displaced, never an extra slide).
+  const adSlot = useNativeAdSlot('homepage', 'in-feed-1', posts.length);
+
   if (posts.length === 0) return null;
 
   return (
@@ -43,26 +48,31 @@ export const TrendingCarousel: React.FC<TrendingCarouselProps> = ({ className = 
                 >
                   {posts.map((item, idx) => (
                     <SwiperSlide key={idx}>
-                      <div className="single_post widgets_small post_type5">
-                        <div className="post_img">
-                          <div className="img_wrap">
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>
-                              <img src={item.image} alt="slider5" />
-                            </Link>
+                      {adSlot.hasAd && idx === adSlot.index ? (
+                        <InFeedNativeAd
+                          pageType="homepage"
+                          position="in-feed-1"
+                          cardStyle="post-type5"
+                        />
+                      ) : (
+                        <div className="single_post widgets_small post_type5">
+                          <div className="post_img">
+                            <div className="img_wrap">
+                              <Link href={`/post/${getArticleSlug(item.title)}`}>
+                                <img src={item.image} alt="slider5" />
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="single_post_text">
+                            <h4>
+                              <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                            </h4>
+                            <p>{item.excerpt}</p>
                           </div>
                         </div>
-                        <div className="single_post_text">
-                          <h4>
-                            <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
-                          </h4>
-                          <p>{item.excerpt}</p>
-                        </div>
-                      </div>
+                      )}
                     </SwiperSlide>
                   ))}
-                  <SwiperSlide>
-                    <InFeedNativeAd pageType="homepage" position="in-feed-1" cardStyle="post-type5" />
-                  </SwiperSlide>
                 </Swiper>
                 <div className="owl-nav">
                   <div className="owl-prev swiper-button-prev11">

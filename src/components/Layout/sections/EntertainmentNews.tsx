@@ -1,19 +1,33 @@
+'use client';
+
 import Link from 'next/link';
 import { PostItem } from '@/types';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 
 interface EntertainmentNewsProps {
   entertainments: PostItem[];
 }
 
 export const EntertainmentNews: React.FC<EntertainmentNewsProps> = ({ entertainments }) => {
+  // When the slot is configured, one random article card is displaced by the
+  // ad — grid cell count stays constant and the ad blends in at a new spot
+  // on every page load.
+  const adSlot = useNativeAdSlot('homepage', 'in-feed-7', entertainments.length);
+
   return (
     <>
       {entertainments.map((item, idx) => (
         <div className="col-lg-6" key={idx}>
-          {idx === 2 ? (
-            <InFeedNativeAd pageType="homepage" position="in-feed-7" cardStyle="post-type3" />
+          {adSlot.hasAd && idx === adSlot.index ? (
+            <InFeedNativeAd
+              pageType="homepage"
+              position="in-feed-7"
+              cardStyle="post-type3"
+              className="mb30"
+              bolt={false}
+            />
           ) : (
             <div className="single_post post_type3 mb30">
               <div className="post_img">

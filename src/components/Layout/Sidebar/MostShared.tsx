@@ -9,6 +9,7 @@ import 'swiper/css/grid';
 import { Icon } from '@/components/Layout/common/Icon';
 import { getArticleSlug } from '@/utils/articleUtils';
 import InFeedNativeAd from '@/components/ui/InFeedNativeAd';
+import { useNativeAdSlot } from '@/lib/ads/useNativeFeed';
 import type { Article } from '@/types';
 
 interface MostSharedProps {
@@ -45,6 +46,9 @@ export const MostShared: React.FC<MostSharedProps> = ({
 }) => {
   const items = posts.length > 0 ? Bt(posts, 10) : [];
 
+  // Ad displaces one random row instead of adding an extra slide.
+  const adSlot = useNativeAdSlot('homepage', 'in-feed-10', items.length);
+
   if (items.length === 0) return null;
 
   return (
@@ -63,43 +67,48 @@ export const MostShared: React.FC<MostSharedProps> = ({
           {items.map((item, idx) => (
             <SwiperSlide key={idx}>
               <div className="carousel_items">
-                <div className="single_post widgets_small widgets_type4">
-                  <div className="post_img number">
-                    <h2>{item.id}</h2>
-                  </div>
-                  <div className="single_post_text">
-                    <div className="meta2">
-                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
-                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                {adSlot.hasAd && idx === adSlot.index ? (
+                  <InFeedNativeAd
+                    pageType="homepage"
+                    position="in-feed-10"
+                    cardStyle="widgets-type4"
+                    adNumber={item.id}
+                    dark={dark}
+                  />
+                ) : (
+                  <div className="single_post widgets_small widgets_type4">
+                    <div className="post_img number">
+                      <h2>{item.id}</h2>
                     </div>
-                    <h4>
-                      <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
-                    </h4>
-                    <ul className="inline socail_share">
-                      <li>
-                        <Link href="#">
-                          <Icon name="twitter" /> 2.2K
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#">
-                          <Icon name="facebook-f" /> 2.2K
-                        </Link>
-                      </li>
-                    </ul>
-                    <div className="space-15" />
-                    {dark ? <div className="border_white" /> : <div className="border_black" />}
+                    <div className="single_post_text">
+                      <div className="meta2">
+                        <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category}</Link>
+                        <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date}</Link>
+                      </div>
+                      <h4>
+                        <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                      </h4>
+                      <ul className="inline socail_share">
+                        <li>
+                          <Link href="#">
+                            <Icon name="twitter" /> 2.2K
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="#">
+                            <Icon name="facebook-f" /> 2.2K
+                          </Link>
+                        </li>
+                      </ul>
+                      <div className="space-15" />
+                      {dark ? <div className="border_white" /> : <div className="border_black" />}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="space-15" />
               </div>
             </SwiperSlide>
           ))}
-          <SwiperSlide>
-            <div className="carousel_items">
-              <InFeedNativeAd pageType="homepage" position="in-feed-10" cardStyle="widgets-type4" dark={dark} />
-            </div>
-          </SwiperSlide>
         </Swiper>
         <div className="navBtns">
           <div className="navBtn prevtBtn swiper-button-prev7">
