@@ -40,7 +40,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({
         <div className="single_post post_type3">
           <div className="post_img">
             <div className="img_wrap">
-              <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>
+              <Link href={`/post/${featuredPost.slug || getArticleSlug(featuredPost.title)}`}>
                 <img src={featuredPost.image} alt="trendbig1" />
               </Link>
             </div>
@@ -54,7 +54,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({
               <Link href="#">{featuredPost.date}</Link>
             </div>
             <h4>
-              <Link href={`/post/${getArticleSlug(featuredPost.title)}`}>
+              <Link href={`/post/${featuredPost.slug || getArticleSlug(featuredPost.title)}`}>
                 {featuredPost.title}
               </Link>
             </h4>
@@ -82,7 +82,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({
             <div className="single_post widgets_small">
               <div className="post_img">
                 <div className="img_wrap">
-                  <Link href={`/post/${getArticleSlug(item.title)}`}>
+                  <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
                     <img src={item.image} alt="thumb" />
                   </Link>
                 </div>
@@ -96,7 +96,7 @@ export const TrendingNewsWidget: React.FC<TrendingNewsWidgetProps> = ({
                   <Link href="#">{item.date}</Link>
                 </div>
                 <h4>
-                  <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                  <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.title}</Link>
                 </h4>
               </div>
             </div>

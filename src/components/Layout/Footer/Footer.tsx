@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { logoDark } from '@/data/config';
 import { footerSpeakerIconBase64, footerContactIconBase64 } from '@/data/base64Assets';
 import { Icon } from '@/components/Layout/common/Icon';
@@ -32,39 +33,28 @@ const twitterFeeds = [
   },
 ];
 
-const extraNews = [
-  {
-    category: 'TECHNOLOGY',
-    date: 'March 26, 2020',
-    title: 'Nancy zhang a chinese busy woman and dhaka',
-  },
-  {
-    category: 'TECHNOLOGY',
-    date: 'March 26, 2020',
-    title: 'Nancy zhang a chinese busy woman and dhaka',
-  },
-  {
-    category: 'TECHNOLOGY',
-    date: 'March 26, 2020',
-    title: 'Nancy zhang a chinese busy woman and dhaka',
-  },
-  {
-    category: 'TECHNOLOGY',
-    date: 'March 26, 2020',
-    title: 'Nancy zhang a chinese busy woman and dhaka',
-  },
-  {
-    category: 'TECHNOLOGY',
-    date: 'March 26, 2020',
-    title: 'Nancy zhang a chinese busy woman and dhaka',
-  },
-];
+type MoreNewsItem = {
+  slug: string;
+  title: string;
+  category?: string;
+  categoryLabel?: string;
+  date?: string;
+};
 
 const mobileIcon =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAZCAYAAAABmx/yAAAABHNCSVQICAgIfAhkiAAAAJNJREFUOE/tlMsRgkAQBftFoCGYgYZACBqBZAJEgEakZqIZmMGjxpIquc3KjWLP2zWf3deyXQM9sCV3nsBJtt9AK+mS4Wy3QBWgJSkDxR3bFXD7gMA9C35HOoxgVwDugPO8Vv+ecQWnDzX5AOtylrGcUEdhHusxyI8CMKS2nxXksFwj6Zqp+mu58GqocZMBgRdwHACNXreaci5tNAAAAABJRU5ErkJggg==';
 
 export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   const [email, setEmail] = useState('');
+
+  const { data: moreNews = [] } = useQuery<MoreNewsItem[]>({
+    queryKey: ['footer-more-news'],
+    queryFn: async () => {
+      const res = await fetch('/api/articles?limit=5&status=published');
+      const json = await res.json();
+      return (json.articles || json.items || []) as MoreNewsItem[];
+    },
+  });
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -318,12 +308,13 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
           <div className="col-lg-4">
             <div className="extra_newss border_white_left pl-4">
               <h3 className="widget-title2">More news</h3>
-              {extraNews.map((item, idx) => (
-                <div key={idx} className="single_extra_news border_white_bottom">
+              {moreNews.map((item, idx) => (
+                <div key={item.slug || idx} className="single_extra_news border_white_bottom">
                   <p>
-                    {item.category} <span> / {item.date}</span>
+                    {(item.categoryLabel || item.category || '').toUpperCase()}{' '}
+                    <span> / {item.date}</span>
                   </p>
-                  <Link href="/">{item.title}</Link>
+                  <Link href={`/post/${item.slug}`}>{item.title}</Link>
                   <span className="news_counter">{idx + 1}</span>
                 </div>
               ))}

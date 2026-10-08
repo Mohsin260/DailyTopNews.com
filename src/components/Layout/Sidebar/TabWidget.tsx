@@ -96,7 +96,7 @@ export const TabWidget: React.FC<TabWidgetProps> = ({
                     <div className="single_post widgets_small">
                       <div className="post_img">
                         <div className="img_wrap">
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
                             <img src={item.image} alt="thumb" />
                           </Link>
                         </div>
@@ -107,7 +107,7 @@ export const TabWidget: React.FC<TabWidgetProps> = ({
                           <Link href="#">{item.date}</Link>
                         </div>
                         <h4>
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>{item.title}</Link>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.title}</Link>
                         </h4>
                       </div>
                     </div>

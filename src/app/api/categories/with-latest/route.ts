@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import { SimpleCategory } from "@/lib/models/SimpleCategory";
 import { Article } from "@/lib/models/Article";
 import { DEPLOYMENT_LOCALE } from "@/lib/i18n";
+import { articleThumb } from "@/lib/articleThumb";
 
 export const dynamic = "force-dynamic";
 
@@ -42,10 +43,7 @@ export async function GET() {
                 slug: (latestArticle as any).slug,
                 excerpt: (latestArticle as any).excerpt,
                 content_type: (latestArticle as any).content_type || "article",
-                image:
-                  (latestArticle as any).articleMedia?.heroCoverMedia?.url ||
-                  (latestArticle as any).image ||
-                  "",
+                image: articleThumb(latestArticle as any) || "",
                 date: (latestArticle as any).date,
                 authorName: (latestArticle as any).authorName,
                 readTime: (latestArticle as any).readTime,

@@ -5,6 +5,7 @@ import { SimpleCategory } from "@/lib/models/SimpleCategory";
 import articlesJson from "@/data/articles.json";
 import categoriesJson from "@/data/categories.json";
 import { DEPLOYMENT_LOCALE, DEFAULT_LOCALE } from "@/lib/i18n";
+import { articleThumb } from "@/lib/articleThumb";
 
 const useDb = process.env.USE_DATABASE !== "false";
 
@@ -47,7 +48,7 @@ function mapArticle(article: any): Article {
     authorName: article.authorName,
     date: article.date,
     readTime: article.readTime,
-    image: heroMediaUrl,
+    image: articleThumb(article),
     featured: article.featured,
     tags: article.tags,
     views: article.views,
@@ -73,10 +74,11 @@ function fetchArticlesFromJSON(params?: {
   tag?: string;
   featured?: boolean;
   limit?: number;
+  page?: number;
   search?: string;
   sort?: string;
   locale?: string;
-}): Article[] {
+}): { articles: Article[]; total: number } {
   const locale = params?.locale || DEPLOYMENT_LOCALE;
   const allArticles = articlesJson as any[];
   let articles = allArticles
@@ -100,8 +102,11 @@ function fetchArticlesFromJSON(params?: {
     articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
-  if (params?.limit) articles = articles.slice(0, params.limit);
-  return articles;
+  const total = articles.length;
+  const limit = params?.limit || 1000;
+  const skip = params?.page && params.page > 1 ? (params.page - 1) * limit : 0;
+  articles = articles.slice(skip, skip + limit);
+  return { articles, total };
 }
 
 function fetchArticleBySlugFromJSON(slug: string): Article | null {
@@ -122,10 +127,11 @@ async function fetchArticlesFromDB(params?: {
   tag?: string;
   featured?: boolean;
   limit?: number;
+  page?: number;
   search?: string;
   sort?: string;
   locale?: string;
-}): Promise<Article[]> {
+}): Promise<{ articles: Article[]; total: number }> {
   try {
     await connectDB();
 
@@ -142,17 +148,25 @@ async function fetchArticlesFromDB(params?: {
       ];
     }
 
-    let sortOptions: any = { date: -1 };
+    // _id tie-break: articles share identical `date` values, and without a
+    // deterministic secondary key skip/limit pagination returns overlapping
+    // rows across pages.
+    let sortOptions: any = { date: -1, _id: -1 };
     if (params?.sort === 'views') {
-      sortOptions = { views: -1 };
+      sortOptions = { views: -1, date: -1, _id: -1 };
     }
 
+    const total = await ArticleModel.countDocuments(query);
+    const limit = params?.limit || 1000;
+    const skip = params?.page && params.page > 1 ? (params.page - 1) * limit : 0;
+
     const articles = await ArticleModel.find(query)
-      .limit(params?.limit || 1000)
+      .skip(skip)
+      .limit(limit)
       .sort(sortOptions)
       .lean();
 
-    return articles.map(mapArticle);
+    return { articles: articles.map(mapArticle), total };
   } catch (error) {
     console.error("Error fetching articles from DB:", error);
     return fetchArticlesFromJSON(params);
@@ -233,7 +247,7 @@ async function fetchCategoriesFromDB(): Promise<Category[]> {
     const latestImageMap = new Map<string, string>();
     for (const a of latestArticles as any[]) {
       if (!latestImageMap.has(a.category)) {
-        const url = a.articleMedia?.heroCoverMedia?.url || a.image || "";
+        const url = articleThumb(a);
         latestImageMap.set(a.category, url);
       }
     }
@@ -268,11 +282,28 @@ export async function fetchArticles(params?: {
   locale?: string;
 }): Promise<{ articles: Article[]; pagination?: any }> {
   if (!useDb) {
-    return { articles: fetchArticlesFromJSON(params) };
+    const { articles, total } = fetchArticlesFromJSON(params);
+    return { articles, pagination: buildPagination(total, params) };
   }
 
-  const articles = await fetchArticlesFromDB(params);
-  return { articles };
+  const { articles, total } = await fetchArticlesFromDB(params);
+  return { articles, pagination: buildPagination(total, params) };
+}
+
+function buildPagination(
+  total: number,
+  params?: { page?: number; limit?: number }
+) {
+  const limit = params?.limit || 1000;
+  const currentPage = Math.max(1, params?.page || 1);
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  return {
+    currentPage: Math.min(currentPage, totalPages),
+    totalPages,
+    totalCount: total,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1,
+  };
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {

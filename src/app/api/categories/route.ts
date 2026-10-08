@@ -4,6 +4,7 @@ import { SimpleCategory } from "@/lib/models/SimpleCategory";
 import { Article } from "@/lib/models/Article";
 import categoriesJson from "@/data/categories.json";
 import { DEPLOYMENT_LOCALE } from "@/lib/i18n";
+import { articleThumb } from "@/lib/articleThumb";
 
 export const dynamic = "force-dynamic";
 
@@ -43,9 +44,8 @@ export async function GET(request: Request) {
         ]);
 
         const latestImage =
-          (latestArticle as any)?.articleMedia?.heroCoverMedia?.url ||
+          articleThumb(latestArticle as any) ||
           (latestArticle as any)?.heroImage ||
-          (latestArticle as any)?.image ||
           "";
         
         return {

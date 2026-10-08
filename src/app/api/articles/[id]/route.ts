@@ -7,6 +7,7 @@ import { requirePermission } from "@/lib/auth/server";
 import { notifySubscribersOfNewArticle } from "@/lib/email/notify";
 import articlesJson from "@/data/articles.json";
 import { PostUpdateSchema } from "@/lib/validations/post";
+import { articleThumb } from "@/lib/articleThumb";
 
 const useDb = process.env.USE_DATABASE !== "false";
 
@@ -82,7 +83,7 @@ export async function GET(
       authorName: a.authorName,
       date: a.date,
       readTime: a.readTime,
-      image: a.articleMedia?.heroCoverMedia?.url || "",
+      image: articleThumb(a),
       featured: a.featured,
       tags: a.tags,
       views: a.views,

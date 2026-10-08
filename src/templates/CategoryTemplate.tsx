@@ -17,12 +17,36 @@ interface CategoryPageProps {
   categorySlug: string;
   articles: Article[];
   categories: Category[];
+  page?: number;
+  totalPages?: number;
+  totalCount?: number;
+}
+
+function getPageItems(current: number, total: number): (number | 'gap')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const nums = Array.from(
+    new Set([1, total, current - 1, current, current + 1].filter((n) => n >= 1 && n <= total))
+  ).sort((a, b) => a - b);
+  const items: (number | 'gap')[] = [];
+  let prev = 0;
+  for (const n of nums) {
+    if (n - prev > 1) items.push('gap');
+    items.push(n);
+    prev = n;
+  }
+  return items;
 }
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({
   title,
+  categorySlug,
   articles,
+  page = 1,
+  totalPages = 1,
 }) => {
+  const pageHref = (n: number) => `/category/${categorySlug}${n > 1 ? `?page=${n}` : ''}`;
+  const current = Math.min(Math.max(1, page), Math.max(1, totalPages));
+
   return (
     <>
       <Breadcrumb title={title} />
@@ -49,7 +73,8 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
                   <div className="col-12 align-self-center">
                     <div className="categories_title">
                       <h5>
-                        Category: <Link href="/">{title}</Link>
+                        Category:{' '}
+                        <Link href={`/category/${categorySlug}`}>{title}</Link>
                       </h5>
                     </div>
                   </div>
@@ -59,45 +84,72 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
                     <BusinessNews headerHide businessNews={articles} />
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-12">
-                    <div className="cpagination">
-                      <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                          <li className="page-item">
-                            <Link className="page-link" href="/" aria-label="Previous">
-                              <span aria-hidden="true">
-                                <Icon name="caret-left" />
-                              </span>
-                            </Link>
-                          </li>
-                          <li className="page-item">
-                            <Link className="page-link" href="/">
-                              1
-                            </Link>
-                          </li>
-                          <li className="page-item">
-                            <Link className="page-link" href="/">
-                              ..
-                            </Link>
-                          </li>
-                          <li className="page-item">
-                            <Link className="page-link" href="/">
-                              5
-                            </Link>
-                          </li>
-                          <li className="page-item">
-                            <Link className="page-link" href="/" aria-label="Next">
-                              <span aria-hidden="true">
-                                <Icon name="caret-right" />
-                              </span>
-                            </Link>
-                          </li>
-                        </ul>
-                      </nav>
+                {totalPages > 1 && (
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="cpagination">
+                        <nav aria-label="Category pages">
+                          <ul className="pagination">
+                            <li className={`page-item${current <= 1 ? ' disabled' : ''}`}>
+                              {current <= 1 ? (
+                                <span className="page-link" aria-label="Previous">
+                                  <span aria-hidden="true">
+                                    <Icon name="caret-left" />
+                                  </span>
+                                </span>
+                              ) : (
+                                <Link
+                                  className="page-link"
+                                  href={pageHref(current - 1)}
+                                  aria-label="Previous"
+                                >
+                                  <span aria-hidden="true">
+                                    <Icon name="caret-left" />
+                                  </span>
+                                </Link>
+                              )}
+                            </li>
+                            {getPageItems(current, totalPages).map((item, idx) =>
+                              typeof item === 'number' ? (
+                                <li
+                                  key={idx}
+                                  className={`page-item${item === current ? ' active' : ''}`}
+                                >
+                                  <Link className="page-link" href={pageHref(item)}>
+                                    {item}
+                                  </Link>
+                                </li>
+                              ) : (
+                                <li key={idx} className="page-item disabled">
+                                  <span className="page-link">..</span>
+                                </li>
+                              )
+                            )}
+                            <li className={`page-item${current >= totalPages ? ' disabled' : ''}`}>
+                              {current >= totalPages ? (
+                                <span className="page-link" aria-label="Next">
+                                  <span aria-hidden="true">
+                                    <Icon name="caret-right" />
+                                  </span>
+                                </span>
+                              ) : (
+                                <Link
+                                  className="page-link"
+                                  href={pageHref(current + 1)}
+                                  aria-label="Next"
+                                >
+                                  <span aria-hidden="true">
+                                    <Icon name="caret-right" />
+                                  </span>
+                                </Link>
+                              )}
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 

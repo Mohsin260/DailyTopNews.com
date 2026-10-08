@@ -50,18 +50,18 @@ export const BusinessNews: React.FC<BusinessNewsProps> = ({
                     <div className="single_post post_type3 post_type12 mb30">
                       <div className="post_img">
                         <div className="img_wrap">
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
                             <img src={item.image} alt="thumb" />
                           </Link>
                         </div>
                       </div>
                       <div className="single_post_text">
                         <div className="meta3">
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>{item.categoryLabel || item.category || 'Business'}</Link>
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>{item.date || 'March 26, 2020'}</Link>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.categoryLabel || item.category || 'Business'}</Link>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>{item.date || 'March 26, 2020'}</Link>
                         </div>
                         <h4>
-                          <Link href={`/post/${getArticleSlug(item.title)}`}>
+                          <Link href={`/post/${item.slug || getArticleSlug(item.title)}`}>
                             {item.title || 'Copa America: Luis Suarez from devastated US'}
                           </Link>
                         </h4>

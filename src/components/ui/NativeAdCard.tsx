@@ -134,19 +134,21 @@ export default function NativeAdCard({
   if (!nc.title && !nc.image) return null;
 
   const href = nc.clickThroughUrl || "#";
-  const category = nc.category || "Sponsored";
-  const dateLabel = nc.date || nc.sponsorLabel || "Sponsored";
   const sponsoredLabel = nc.sponsorLabel || "Sponsored";
+  const category = nc.category || sponsoredLabel;
+  // Disclosure lives ONLY in the ::after overlay ("category / sponsored") —
+  // the meta row shows just the category, like real article cards.
+  const dateLabel = nc.date || "";
   const excerpt = nc.excerpt || "";
   const title = nc.title || "";
   const image = nc.image;
   const counter = adNumber != null ? String(adNumber) : nc.readTime || "01";
 
-  const metaDate = (
+  const metaDate = dateLabel ? (
     <Link href={href} onClick={handleClick}>
       {dateLabel}
     </Link>
-  );
+  ) : null;
   const metaCategory = (
     <Link href={href} onClick={handleClick}>
       {category}
@@ -158,26 +160,18 @@ export default function NativeAdCard({
     </Link>
   );
 
-  // The meta links fall back to the word "Sponsored" when category/date are
-  // empty — when such an <a>Sponsored</a> link renders in this card style the
-  // black ::after pill would duplicate it, so flag the root to hide the pill.
-  const rootProps = (showCategory = true, showDate = true) => {
-    const hasSponsoredLink =
-      (showCategory && category === "Sponsored") ||
-      (showDate && dateLabel === "Sponsored");
-    return {
-      ref: containerRef,
-      onClick: handleClick,
-      role: "link" as const,
-      tabIndex: 0,
-      "aria-label": `Sponsored: ${title}`,
-      "data-ad-position": position,
-      "data-ad-page": pageType,
-      "data-card-style": cardStyle,
-      "data-sponsor": sponsoredLabel,
-      ...(hasSponsoredLink ? { "data-sponsor-link": "" } : {}),
-    };
-  };
+  const rootProps = () => ({
+    ref: containerRef,
+    onClick: handleClick,
+    role: "link" as const,
+    tabIndex: 0,
+    "aria-label": `Sponsored: ${title}`,
+    "data-ad-position": position,
+    "data-ad-page": pageType,
+    "data-card-style": cardStyle,
+    "data-sponsor": sponsoredLabel,
+    "data-ad-category": category,
+  });
 
   /** Real-card classes + native marker + host cell classes, on ONE element. */
   const rootClass = (classes: string) =>
@@ -194,7 +188,7 @@ export default function NativeAdCard({
   // ── post-type5: Trending carousel slide (80×70 + excerpt) ─────────
   if (cardStyle === "post-type5") {
     return (
-      <div {...rootProps(false, false)} className={rootClass("single_post widgets_small post_type5")}>
+      <div {...rootProps()} className={rootClass("single_post widgets_small post_type5")}>
         <div className="post_img">
           <div className="img_wrap">
             <a href={href} onClick={handleClick}>
@@ -401,7 +395,7 @@ export default function NativeAdCard({
   // ── type10: Popular numbered (tranding_border badge) ───────────────
   if (cardStyle === "type10") {
     return (
-      <div {...rootProps(true, false)} className={rootClass("single_post type10 widgets_small mb15")}>
+      <div {...rootProps()} className={rootClass("single_post type10 widgets_small mb15")}>
         <div className="post_img">
           <div className="img_wrap">
             <a href={href} onClick={handleClick}>

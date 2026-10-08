@@ -22,6 +22,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
   const [searchShow, setSearchShow] = useState(false);
   const [sideShow, setSideShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const [weather, setWeather] = useState<{ city: string; temp: string } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +34,84 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchJson = async (url: string, ms = 5000): Promise<any | null> => {
+      try {
+        const res = await Promise.race([
+          fetch(url),
+          new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Error('timeout')), ms)
+          ),
+        ]);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch {
+        return null;
+      }
+    };
+
+    const getBrowserCoords = (): Promise<{ lat: number; lon: number } | null> =>
+      new Promise((resolve) => {
+        if (typeof navigator === 'undefined' || !navigator.geolocation) {
+          resolve(null);
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+          () => resolve(null),
+          { timeout: 5000, maximumAge: 10 * 60 * 1000 }
+        );
+      });
+
+    (async () => {
+      let lat: number | null = null;
+      let lon: number | null = null;
+      let city: string | null = null;
+
+      const coords = await getBrowserCoords();
+      if (coords) {
+        lat = coords.lat;
+        lon = coords.lon;
+        const geo = await fetchJson(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+        );
+        city = geo?.city || geo?.locality || geo?.principalSubdivision || null;
+      }
+
+      if (lat == null || lon == null || !city) {
+        const ip = await fetchJson('https://ipwho.is/');
+        if (ip?.success && typeof ip.latitude === 'number' && typeof ip.longitude === 'number') {
+          lat = ip.latitude;
+          lon = ip.longitude;
+          city = city || ip.city || ip.locality || null;
+        }
+      }
+
+      if (cancelled) return;
+      if (lat == null || lon == null) {
+        setWeather({ city: 'Unavailable', temp: '--' });
+        return;
+      }
+
+      const forecast = await fetchJson(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`
+      );
+      const temp = forecast?.current?.temperature_2m;
+
+      if (cancelled) return;
+      setWeather({
+        city: city || 'Local',
+        temp: typeof temp === 'number' ? String(Math.round(temp)) : '--',
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -171,8 +250,8 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
                       <div className="temp_icon">
                         <img src={tempIcon} alt="temp icon" />
                       </div>
-                      <h3 className="temp_count">13</h3>
-                      <p>San Francisco</p>
+                      <h3 className="temp_count">{weather?.temp ?? '…'}</h3>
+                      <p>{weather?.city ?? 'Locating…'}</p>
                     </div>
                   </div>
                 </div>

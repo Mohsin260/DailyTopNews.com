@@ -358,58 +358,68 @@
    entertainment/sports/business 350/250, widgets_small 100×77,
    type8/type5 boxes…) applies to the ad automatically. The sponsored
    card therefore adopts the surrounding feed's image size, ratio,
-   alignment and margins with zero hardcoding here. Only the sponsor
-   label, the image fill chain and meta casing live in this block. */
+   alignment and margins with zero hardcoding here. Sponsor disclosure
+   lives in the card's meta row as plain "category / sponsored" links —
+   no background pill is drawn over the card. Only the image fill chain
+   and meta casing live in this block. */
 .native-ad-card {
   cursor: pointer;
 }
+/* Sponsor disclosure — plain-text ::after overlay, NO chip/background.
+   Reads "{category} / {sponsor}" from the root's data attributes. */
 .native-ad-card::after {
-  content: attr(data-sponsor);
+  content: attr(data-ad-category) " / " attr(data-sponsor);
   position: absolute;
   top: 8px;
   right: 8px;
   z-index: 3;
-  display: inline-block;
-  padding: 2px 6px;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.3;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   font-weight: 600;
   color: #fff;
-  background: rgba(0, 0, 0, 0.62);
-  border-radius: 3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
   pointer-events: none;
 }
-.native-ad-card[data-card-style="post-type6"]::after,
-.native-ad-card[data-card-style="post-type7"]::after,
-.native-ad-card[data-card-style="post-type9"]::after {
-  background: rgba(255, 255, 255, 0.88);
-  color: #111;
-}
-/* post-type9 keeps the theme's bolt badge at top-right (post_type6 .tranding)
-   — move the sponsor pill left so they don't stack on top of each other */
-.native-ad-card[data-card-style="post-type9"]::after {
-  left: 8px;
-  right: auto;
-}
-/* Thumb-left cards (widgets_small family): text fills the right side —
-   keep the pill on that side, pinned to the bottom-right corner below the
-   title instead of covering it at the top. */
+/* Thumb-left cards: the right column is the text panel — plain dark label
+   pinned bottom-right instead of white-on-image. */
 .native-ad-card[data-card-style="post-type5"]::after,
 .native-ad-card[data-card-style="widgets-small"]::after,
 .native-ad-card[data-card-style="widgets-small-sep"]::after,
 .native-ad-card[data-card-style="type8"]::after,
-.native-ad-card[data-card-style="type10"]::after {
+.native-ad-card[data-card-style="type10"]::after,
+.native-ad-card[data-card-style="widgets-type4"]::after,
+.native-ad-card[data-card-style="post-type12"]::after {
   top: auto;
   bottom: 6px;
-  left: auto;
   right: 8px;
+  left: auto;
+  color: #17222b;
+  opacity: 0.6;
+  text-shadow: none;
+  font-weight: 500;
 }
-/* The card's meta already renders an <a>Sponsored</a> link there (category or
-   date fell back to "Sponsored") — drop the duplicate black pill. Cards whose
-   style/meta never render that link keep the ::after label above. */
-.native-ad-card[data-sponsor-link]::after {
+.dark-theme .native-ad-card[data-card-style="post-type5"]::after,
+.dark-theme .native-ad-card[data-card-style="widgets-small"]::after,
+.dark-theme .native-ad-card[data-card-style="widgets-small-sep"]::after,
+.dark-theme .native-ad-card[data-card-style="type8"]::after,
+.dark-theme .native-ad-card[data-card-style="type10"]::after,
+.dark-theme .native-ad-card[data-card-style="widgets-type4"]::after,
+.dark-theme .native-ad-card[data-card-style="post-type12"]::after {
+  color: #fff;
+  opacity: 0.75;
+}
+/* Theme meta separators draw "/" before the LAST link — suppress it when the
+   meta has only one link (category only), so no orphan ::before slash shows. */
+.native-ad-card .meta a:only-child::before,
+.native-ad-card .meta2 a:only-child::before,
+.native-ad-card .meta3 a:only-child::before,
+.native-ad-card .meta5 a:only-child::before,
+.dark-theme .native-ad-card .meta a:only-child::before,
+.dark-theme .native-ad-card .meta2 a:only-child::before,
+.dark-theme .native-ad-card .meta3 a:only-child::before,
+.dark-theme .native-ad-card .meta5 a:only-child::before {
   content: none;
 }
 /* NOTE: do NOT force widths/heights on the ad root or its .single_post_text —
@@ -532,4 +542,153 @@
 }
 .dark-theme .category-card_body h4 {
   color: #f1f1f1;
+}
+
+/* ── About page (/about) ─────────────────────────────────────────── */
+.about-hero_tagline {
+  max-width: 640px;
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 17px;
+  line-height: 1.7;
+}
+.about_intro p {
+  margin-bottom: 16px;
+  color: #444;
+  font-size: 15.5px;
+  line-height: 1.9;
+}
+.about_intro p:last-child {
+  margin-bottom: 0;
+}
+.about_stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (min-width: 576px) {
+  .about_stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.about_stat {
+  padding: 22px 14px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background: #fff;
+  text-align: center;
+}
+.about_stat i {
+  display: block;
+  margin-bottom: 10px;
+  color: #1091ff;
+  font-size: 22px;
+}
+.about_stat strong {
+  display: block;
+  color: #17222b;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.about_stat span {
+  display: block;
+  margin-top: 4px;
+  color: #888;
+  font-size: 13px;
+}
+.about_values {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .about_values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.about_value {
+  padding: 24px 20px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background: #fff;
+}
+.about_value_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(16, 145, 255, 0.1);
+  color: #1091ff;
+  font-size: 18px;
+}
+.about_value h4 {
+  margin: 14px 0 8px;
+  color: #17222b;
+  font-size: 17px;
+  font-weight: 600;
+}
+.about_value p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.about_cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 34px 30px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+.about_cta h3 {
+  margin: 0 0 6px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+}
+.about_cta p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+}
+.about_cta_actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.about_cta_link {
+  color: #fff;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.about_cta_link:hover {
+  color: #1091ff;
+}
+.dark-theme .about_intro p {
+  color: #b9bec6;
+}
+.dark-theme .about_stat {
+  background: #16191d;
+  border-color: #2a2d33;
+}
+.dark-theme .about_stat strong {
+  color: #f1f1f1;
+}
+.dark-theme .about_value {
+  background: #16191d;
+  border-color: #2a2d33;
+}
+.dark-theme .about_value h4 {
+  color: #f1f1f1;
+}
+.dark-theme .about_value p {
+  color: #9aa0a8;
 }

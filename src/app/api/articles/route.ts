@@ -6,6 +6,7 @@ import { requirePermission } from "@/lib/auth/server";
 import { notifySubscribersOfNewArticle } from "@/lib/email/notify";
 import articlesJson from "@/data/articles.json";
 import { DEPLOYMENT_LOCALE } from "@/lib/i18n";
+import { articleThumb } from "@/lib/articleThumb";
 import { PostCreateSchema } from "@/lib/validations/post";
 
 export const dynamic = "force-dynamic";
@@ -63,7 +64,7 @@ function getArticlesFromJSON(filters: {
     authorName: a.authorName,
     date: a.date,
     readTime: a.readTime,
-    image: a.image || "",
+    image: articleThumb(a),
     featured: a.featured,
     tags: a.tags,
     views: a.views,
@@ -136,7 +137,7 @@ export async function GET(request: Request) {
         authorName: a.authorName,
         date: a.date,
         readTime: a.readTime,
-        image: a.articleMedia?.heroCoverMedia?.url || "",
+        image: articleThumb(a),
         featured: a.featured,
         tags: a.tags,
         views: a.views,
@@ -174,11 +175,11 @@ export async function GET(request: Request) {
     const totalCount = await Article.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);
 
-    let sortOptions: any = { date: -1 };
+    let sortOptions: any = { date: -1, _id: -1 };
     if (sort === 'views') {
-      sortOptions = { views: -1 };
+      sortOptions = { views: -1, date: -1, _id: -1 };
     } else if (sort === 'ads') {
-      sortOptions = { "adOverrides.0": -1, date: -1 };
+      sortOptions = { "adOverrides.0": -1, date: -1, _id: -1 };
     }
 
     let articles;
@@ -190,7 +191,7 @@ export async function GET(request: Request) {
             adCount: { $size: { $ifNull: ["$adOverrides", []] } }
           }
         },
-        { $sort: { adCount: -1, date: -1 } },
+        { $sort: { adCount: -1, date: -1, _id: -1 } },
         { $skip: skip },
         { $limit: limit }
       ]);
@@ -213,7 +214,7 @@ export async function GET(request: Request) {
       authorName: a.authorName,
       date: a.date,
       readTime: a.readTime,
-      image: a.articleMedia?.heroCoverMedia?.url || "",
+      image: articleThumb(a),
       featured: a.featured,
       tags: a.tags,
       views: a.views,
