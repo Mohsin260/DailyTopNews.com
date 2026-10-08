@@ -17,7 +17,7 @@ export const BannerWidget: React.FC<BannerWidgetProps> = ({
       height="280px"
       responsive
       fullWidth
-      wrapperClassName={`nativeadd ${className}`}
+      wrapperClassName={`banner2 ${className || 'mb30'}`}
     />
   );
 };

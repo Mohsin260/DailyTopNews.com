@@ -8,7 +8,9 @@ import TabWidget from '@/components/Layout/Sidebar/TabWidget';
 import TrendingNewsWidget from '@/components/Layout/Sidebar/TrendingNewsWidget';
 import MostShared from '@/components/Layout/Sidebar/MostShared';
 import NewsletterWidget from '@/components/Layout/Sidebar/NewsletterWidget';
+import BannerWidget from '@/components/Layout/Sidebar/BannerWidget';
 import BottomBannerArea from '@/components/Layout/common/BottomBannerArea';
+import AdSlot from '@/components/ui/AdSlot';
 import EntertainmentNews from '@/components/Layout/sections/EntertainmentNews';
 import { calendarIconBase64 } from '@/data/base64Assets';
 import { fetchArticles } from '@/lib/api';
@@ -55,6 +57,18 @@ export const AboutPage: React.FC = () => {
 
       <div className="archives padding-top-30">
         <div className="container">
+          <div className="row">
+            <div className="col-12">
+              <AdSlot
+                pageType="website"
+                position="top-leaderboard"
+                width="728px"
+                height="90px"
+                responsive
+                fullWidth
+              />
+            </div>
+          </div>
           <div className="row">
             <div className="col-md-6 col-lg-8">
               <div className="row">
@@ -139,11 +153,7 @@ export const AboutPage: React.FC = () => {
             <div className="col-md-6 col-lg-4">
               <TabWidget posts={[]} />
               <TrendingNewsWidget posts={[]} />
-              <div className="banner2 mb30">
-                <Link href="/">
-                  <img src="/assets/banner-2-zRgCfOgB.jpg" alt="thumb" />
-                </Link>
-              </div>
+              <BannerWidget pageType="website" className="mb30" />
               <MostShared title="Most Share" posts={[]} />
               <NewsletterWidget />
             </div>

@@ -8,6 +8,7 @@ import { POSITION_SIZE_CONFIG } from "@/lib/constants/adSizes";
 import { buildVisitorData, buildSspRequestUrl } from "@/lib/ads/buildVastUrl";
 import type { VisitorData } from "@/lib/ads/buildVastUrl";
 import AdActionsPopover from "./AdActionsPopover";
+import { fetchAdsWithFallback, fetchHomepageAdFallback } from "@/lib/ads/fetchAdsWithFallback";
 
 // ── HMR generation counter ──────────────────────────────────────────
 // Re-evaluated every time Fast Refresh re-executes this module.
@@ -303,7 +304,7 @@ function AdSlotInner({
 
     const { data, isLoading } = useQuery({
         queryKey: ["ads", pageType, position, adOverrideId, articleSlug],
-        queryFn: async () => {
+        queryFn: async (): Promise<{ items: any[]; adsEnabled?: boolean; usedFallback?: boolean }> => {
             // Fetch by specific ID — used for per-article ad overrides.
             // This is the ONLY path for article-page ads when adOverrideId is provided.
             if (adOverrideId) {
@@ -321,16 +322,23 @@ function AdSlotInner({
                 );
                 if (!res.ok) throw new Error("Failed to resolve ad");
                 const { item, adsEnabled } = await res.json();
-                return { items: item ? [item] : [], adsEnabled: adsEnabled !== false };
+                if (adsEnabled === false) return { items: [], adsEnabled: false };
+                if (item) return { items: [item], adsEnabled: true, usedFallback: false };
+                // No article ad for this slot — show the homepage ad for the same position
+                return fetchHomepageAdFallback(position) as Promise<{
+                    items: any[];
+                    adsEnabled?: boolean;
+                    usedFallback?: boolean;
+                }>;
             }
             // Global pageType+position query — used for homepage, category, website pages.
+            // Falls back to the homepage ad for the position when this pageType has none.
             if (!pageType || !position) return { items: [], adsEnabled: true };
-            const res = await fetch(
-                `/api/ads?pageType=${pageType}&position=${position}&activeOnly=true`,
-                { cache: "no-store" }
-            );
-            if (!res.ok) throw new Error("Failed to load ads");
-            return res.json() as Promise<{ items: Ad[]; adsEnabled?: boolean }>;
+            return fetchAdsWithFallback(pageType, position) as Promise<{
+                items: any[];
+                adsEnabled?: boolean;
+                usedFallback?: boolean;
+            }>;
         },
         // Only run when we have something to fetch:
         // - adOverrideId: fetch that specific ad by ID
@@ -344,13 +352,16 @@ function AdSlotInner({
     // Global site setting: when ads are turned off entirely, hide every slot.
     const adsGloballyDisabled = data?.adsEnabled === false;
 
-    // Strict match: the ad must belong to this exact pageType AND position.
-    // This ensures an ad configured for "homepage / top-leaderboard" never
-    // bleeds into an "article / top-leaderboard" slot or any other page/position.
+    // Match the ad to this exact position. The ad normally belongs to this
+    // pageType; when the query fell back (no ad configured for this pageType),
+    // the homepage ad for the same position (or its alias) is accepted instead —
+    // so slots on category/website/article pages show the homepage creative.
     const ad = adsGloballyDisabled ? undefined : data?.items?.find((a: Ad) =>
         adOverrideId
             ? a._id === adOverrideId
-            : a.pageType === pageType && a.position === position && a.enabled !== false
+            : a.enabled !== false &&
+              ((a.pageType === pageType && a.position === position) ||
+                  (data?.usedFallback === true && a.pageType === "homepage"))
     );
 
     // Build the visitorData object — used for all VAST/SSP macro resolution
@@ -1531,6 +1542,24 @@ ${ad.code}
                         [data-ad-position="${position}"] .ad-slot-content > iframe,
                         [data-ad-position="${position}"] #NewsPrk-video-ad-${position},
                         [data-ad-position="${position}"] #NewsPrk-banner-ad-${position} {
+                            width: 100% !important;
+                            height: 100% !important;
+                            max-width: 100% !important;
+                            max-height: 100% !important;
+                            display: block !important;
+                        }
+
+                        /* Creative root must fill the slot box exactly. Injected banner
+                           code typically wraps the image in <div style="margin:20px 0">,
+                           which shifted the media down and got clipped by the box — the
+                           ad then looked like a shrunken/offset native card instead of a
+                           rectangle at the true slot size (e.g. 350×280). Neutralize the
+                           creative-level margins and let the (already forced 100%×100%
+                           cover) media fill the frame edge to edge. */
+                        [data-ad-position="${position}"] .ad-slot-content > div,
+                        [data-ad-position="${position}"] .ad-slot-content > p,
+                        [data-ad-position="${position}"] .ad-slot-content > center {
+                            margin: 0 !important;
                             width: 100% !important;
                             height: 100% !important;
                             max-width: 100% !important;

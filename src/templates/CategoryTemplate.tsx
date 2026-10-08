@@ -8,6 +8,7 @@ import TrendingNewsWidget from '@/components/Layout/Sidebar/TrendingNewsWidget';
 import NewsletterWidget from '@/components/Layout/Sidebar/NewsletterWidget';
 import FollowUs from '@/components/Layout/Sidebar/FollowUs';
 import BannerWidget from '@/components/Layout/Sidebar/BannerWidget';
+import AdSlot from '@/components/ui/AdSlot';
 import { Icon } from '@/components/Layout/common/Icon';
 import type { Article, Category } from '@/types';
 
@@ -25,6 +26,20 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
   return (
     <>
       <Breadcrumb title={title} />
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <AdSlot
+              pageType="category"
+              position="top-leaderboard"
+              width="728px"
+              height="90px"
+              responsive
+              fullWidth
+            />
+          </div>
+        </div>
+      </div>
       <div className="archives padding-top-30">
         <div className="container">
           <div className="row">
@@ -87,12 +102,27 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
             </div>
 
             <div className="col-md-6 col-lg-4">
-              <TabWidget />
-              <TrendingNewsWidget />
+              <TabWidget posts={articles.slice(0, 4)} />
+              <TrendingNewsWidget posts={articles} />
               <NewsletterWidget />
               <FollowUs title="Follow Us" />
               <BannerWidget pageType="category" />
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="space-15" />
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <AdSlot
+              pageType="category"
+              position="bottom-leaderboard"
+              width="728px"
+              height="90px"
+              responsive
+              fullWidth
+            />
           </div>
         </div>
       </div>

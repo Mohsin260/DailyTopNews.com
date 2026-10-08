@@ -160,6 +160,7 @@ const PAGE_CONFIG: {
     description: "Ad placements on category listing pages",
     positions: [
       { id: "top-leaderboard", name: `Top Leaderboard (ATF — ${POSITION_SIZE_CONFIG["top-leaderboard"]?.label || "728×90"})`, description: "Above the fold" },
+      { id: "bottom-leaderboard", name: `Bottom Leaderboard Ad (${POSITION_SIZE_CONFIG["bottom-leaderboard"]?.label || "728×90"})`, description: "Below the category grid, above the footer" },
       { id: "sticky-footer", name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`, description: "Persistent at bottom" },
       { id: "sidebar-rectangle", name: `Sidebar Rectangle (${POSITION_SIZE_CONFIG["sidebar-rectangle"]?.label || "300×250"})`, description: "Category sidebar rectangle" },
     ],
@@ -167,8 +168,11 @@ const PAGE_CONFIG: {
   {
     type: "website",
     label: "Static/Legal Pages",
-    description: "Ad placements on static pages (About, Privacy, etc.)",
+    description: "Ad placements on static pages (About, Contact, 404, Privacy, etc.)",
     positions: [
+      { id: "top-leaderboard", name: `Top Leaderboard (ATF — ${POSITION_SIZE_CONFIG["top-leaderboard"]?.label || "728×90"})`, description: "Below the header, above page content" },
+      { id: "sidebar-rectangle", name: `Sidebar Rectangle (${POSITION_SIZE_CONFIG["sidebar-rectangle"]?.label || "300×250"})`, description: "Sidebar rectangle replacing the legacy banner2 image" },
+      { id: "above-footer", name: `Above Footer Leaderboard (${POSITION_SIZE_CONFIG["above-footer"]?.label || "728×90"})`, description: "Bottom banner area above the footer" },
       { id: "sticky-footer", name: `Sticky Footer Ad (${POSITION_SIZE_CONFIG["sticky-footer"]?.label || "728×90"})`, description: "Persistent at bottom" },
     ],
   },

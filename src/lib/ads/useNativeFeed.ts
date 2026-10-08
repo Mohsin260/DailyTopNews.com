@@ -85,7 +85,24 @@ export function useNativeFeed(pageType: PageType, enabled = true) {
           cache: "no-store",
         });
         if (!res.ok) return { items: [], adsEnabled: true };
-        return (await res.json()) as FeedResponse;
+        const data = (await res.json()) as FeedResponse;
+        // Non-homepage pages: merge the homepage in-feed ads after this page's
+        // own ads so any position without a page-specific ad still fills its
+        // frame with the homepage creative for that position (own ads win).
+        if (pageType !== "homepage") {
+          try {
+            const fb = await fetch(`/api/ads?pageType=homepage&activeOnly=true`, {
+              cache: "no-store",
+            });
+            if (fb.ok) {
+              const fbData = (await fb.json()) as FeedResponse;
+              return { ...data, items: [...(data.items || []), ...(fbData.items || [])] };
+            }
+          } catch {
+            // fallback fetch failed — keep the page's own ads
+          }
+        }
+        return data;
       } catch {
         return { items: [], adsEnabled: true };
       }

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 // import { X } from 'lucide-react';
 import { PageType, AdPosition } from '@/lib/models/AdSnippet';
 import { cn } from '@/lib/utils';
+import { fetchAdsWithFallback, fetchHomepageAdFallback } from '@/lib/ads/fetchAdsWithFallback';
 
 interface StickyFooterAdProps {
   pageType?: PageType;
@@ -130,16 +131,20 @@ export function StickyFooterAd({
         );
         if (!res.ok) return { items: [] as Ad[], adsEnabled: true };
         const { item, adsEnabled } = await res.json();
-        return { items: item ? [item] : [] as Ad[], adsEnabled: adsEnabled !== false };
+        if (adsEnabled === false) return { items: [] as Ad[], adsEnabled: false };
+        if (item) return { items: [item] as Ad[], adsEnabled: true };
+        // No sticky-footer ad for this article — fall back to the homepage one
+        return fetchHomepageAdFallback("sticky-footer") as Promise<{
+          items: Ad[];
+          adsEnabled?: boolean;
+        }>;
       }
-      const qs = new URLSearchParams({
-        pageType: resolvedPageType,
-        position: "sticky-footer",
-        activeOnly: "true",
-      });
-      const res = await fetch(`/api/ads?${qs.toString()}`, { cache: "no-store" });
-      if (!res.ok) return { items: [] as Ad[], adsEnabled: true };
-      return res.json() as Promise<{ items: Ad[]; adsEnabled?: boolean }>;
+      // Own pageType first, then the homepage sticky-footer ad as fallback so
+      // the frame shows an ad on every page (category/website included).
+      return fetchAdsWithFallback(resolvedPageType, "sticky-footer") as Promise<{
+        items: Ad[];
+        adsEnabled?: boolean;
+      }>;
     },
     staleTime: 0,
     gcTime: 0,

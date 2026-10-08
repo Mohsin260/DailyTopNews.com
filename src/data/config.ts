@@ -125,23 +125,24 @@ export const menuData: MenuItem[] = [
     child: true,
     icon: 'angle-down',
     submenu: [
-      { id: 41, link: '/business', linkText: 'Business' },
-      { id: 42, link: '/entertainment', linkText: 'Entertainment' },
-      { id: 43, link: '/features', linkText: 'Features' },
-      { id: 44, link: '/sports', linkText: 'Sports' },
-      { id: 45, link: '/trending', linkText: 'Trending' },
+      { id: 40, link: '/categories', linkText: 'All Categories' },
+      { id: 41, link: '/category/business', linkText: 'Business' },
+      { id: 42, link: '/category/entertainment', linkText: 'Entertainment' },
+      { id: 43, link: '/category/features', linkText: 'Features' },
+      { id: 44, link: '/category/sports', linkText: 'Sports' },
+      { id: 45, link: '/category/trending', linkText: 'Trending' },
     ],
   },
-  { id: 5, linkText: 'World', link: '/world' },
-  { id: 6, linkText: 'Sports', link: '/sports' },
+  { id: 5, linkText: 'World', link: '/category/world' },
+  { id: 6, linkText: 'Sports', link: '/category/sports' },
   { id: 7, linkText: 'Contact', link: '/contact' },
 ];
 
 export const footerMenus = [
-  { name: 'About', link: '/' },
-  { name: 'Advertise', link: '/' },
-  { name: 'Privacy & Policy', link: '/' },
-  { name: 'Contact Us', link: '/' },
+  { name: 'About', link: '/about' },
+  { name: 'Advertise', link: '/advertise' },
+  { name: 'Privacy & Policy', link: '/privacy-policy' },
+  { name: 'Contact Us', link: '/contact' },
 ];
 
 export const upcomingMatches = [

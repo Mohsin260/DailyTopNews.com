@@ -143,7 +143,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
                       </li>
                     </ul>
                   </div>
-                  <div className="lang d-none d-xl-block">
+                  {/* <div className="lang d-none d-xl-block">
                     <ul>
                       <li>
                         <Link href="/">
@@ -165,7 +165,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({
                         </ul>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                   <div className="temp d-none d-lg-block">
                     <div className="temp_wap">
                       <div className="temp_icon">

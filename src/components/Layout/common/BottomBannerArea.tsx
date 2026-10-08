@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import AdSlot from '@/components/ui/AdSlot';
 
 interface BottomBannerAreaProps {
   className?: string;
@@ -11,9 +11,14 @@ export const BottomBannerArea: React.FC<BottomBannerAreaProps> = ({ className })
         <div className="row">
           <div className="col-lg-8 m-auto">
             <div className="banner1">
-              <Link href="/">
-                <img src="/assets/banner-1-C4drpRxY.png" alt="bannerImg" />
-              </Link>
+              <AdSlot
+                pageType="website"
+                position="above-footer"
+                width="728px"
+                height="90px"
+                responsive
+                fullWidth
+              />
             </div>
           </div>
         </div>
