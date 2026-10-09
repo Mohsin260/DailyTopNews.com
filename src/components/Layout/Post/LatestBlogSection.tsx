@@ -20,7 +20,7 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
   if (posts.length === 0) return null;
 
   return (
-    <div className={`${dark ? 'primay_bg' : 'fourth_bg'} padding6030`}>
+    <div className={`latest-blog-section ${dark ? 'primay_bg' : 'fourth_bg'} padding6030`}>
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -29,7 +29,7 @@ export const LatestBlogSection: React.FC<LatestBlogSectionProps> = ({ dark = fal
             </div>
           </div>
         </div>
-        <div className="row justify-content-center">
+        <div className="row justify-content-center latest-blog-grid">
           {posts.map((item, idx) => (
             <div className="col-md-6 col-lg-4" key={idx}>
               {adSlot.hasAd && idx === adSlot.index ? (

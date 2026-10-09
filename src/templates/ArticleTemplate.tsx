@@ -37,7 +37,7 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
       <span className="space-30" />
       <div className="container">
         <div className="row">
-          <div className="col-md-6 col-lg-8">
+          <div className="col-md-6 col-lg-8 article-main-col">
             <div className="row">
               <div className="col-6 align-self-center">
                 <div className="page_category">
@@ -231,6 +231,8 @@ export const ArticleTemplate: React.FC<ArticleTemplateProps> = ({
             <div className="border_black" />
             <div className="space-40" />
 
+
+            {/* Next and Previous Article Links */}
             <div className="next_prev">
               <div className="row">
                 <div className="col-lg-6 align-self-center">

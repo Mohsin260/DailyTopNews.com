@@ -197,7 +197,10 @@ export default function NativeAdCard({
           </div>
         </div>
         <div className="single_post_text">
-          <h4>{titleLink}</h4>
+          <h4>
+            {titleLink}
+            <span className="native-sponsor-inline">{sponsoredLabel}</span>
+          </h4>
           <p>{excerpt}</p>
         </div>
       </div>
